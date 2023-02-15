@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:3306/meriadb_demo?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.jdbc.Driver
+#    url: jdbc:mariadb://localhost:3307/meriadb_demo?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+#    driver-class-name: org.mariadb.jdbc.Driver
