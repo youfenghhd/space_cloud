@@ -1,6 +1,6 @@
 package com.hhd.service;
 
-import com.hhd.pojo.User_dir;
+import com.hhd.pojo.UserDir;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author -无心
  * @since 2023-02-16
  */
-public interface IUser_dirService extends IService<User_dir> {
+public interface IUserDirService extends IService<UserDir> {
 
 }

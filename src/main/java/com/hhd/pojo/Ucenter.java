@@ -2,9 +2,13 @@ package com.hhd.pojo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.time.LocalDateTime;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import java.io.Serializable;
+import java.util.Date;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -51,17 +55,19 @@ public class Ucenter implements Serializable {
     /**
      * 创建时间
      */
-    private LocalDateTime create_time;
+    @TableField("create_time")
+    private Date createTime;
 
     /**
      * 更新时间
      */
-    private LocalDateTime modified_time;
+    @TableField("modified_time")
+    private Date modifiedTime;
 
     /**
      * 内存
      */
-    private Long Memory;
+    private Long memory;
 
     /**
      * 1启用/0禁用
@@ -72,7 +78,8 @@ public class Ucenter implements Serializable {
      * 逻辑删除	null表示正常	有date_time表示逻辑删除	noew_tiame-date_time>30day表示真实删除，设置数据库事件定时清理date_time>30day的记录
      */
     @TableLogic
-    private LocalDateTime logic_del_time;
+    @TableField("logic_del_time")
+    private Date logicDelTime;
 
 
 }

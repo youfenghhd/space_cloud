@@ -1,8 +1,8 @@
 package com.hhd.service.impl;
 
-import com.hhd.pojo.User_dir;
-import com.hhd.mapper.User_dirMapper;
-import com.hhd.service.IUser_dirService;
+import com.hhd.pojo.UserDir;
+import com.hhd.mapper.UserDirMapper;
+import com.hhd.service.IUserDirService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2023-02-16
  */
 @Service
-public class User_dirServiceImpl extends ServiceImpl<User_dirMapper, User_dir> implements IUser_dirService {
+public class UserDirServiceImpl extends ServiceImpl<UserDirMapper, UserDir> implements IUserDirService {
 
 }

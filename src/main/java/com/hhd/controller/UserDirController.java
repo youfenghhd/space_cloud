@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2023-02-16
  */
 @RestController
-@RequestMapping("/user_dir")
-public class User_dirController {
+@RequestMapping("/userdir")
+public class UserDirController {
 
 }
 

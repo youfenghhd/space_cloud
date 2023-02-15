@@ -1,8 +1,11 @@
 package com.hhd.pojo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -29,12 +32,14 @@ public class Admin implements Serializable {
     /**
      * 管理员名字
      */
-    private String adminname;
+    @TableField("adminname")
+    private String adminName;
 
     /**
      * 管理员登录名
      */
-    private String loginname;
+    @TableField("loginname")
+    private String loginName;
 
     /**
      * 管理员密码

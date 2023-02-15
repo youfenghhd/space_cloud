@@ -1,8 +1,11 @@
 package com.hhd.pojo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,7 +19,8 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class User_dir implements Serializable {
+@TableName("user_dir")
+public class UserDir implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -24,12 +28,13 @@ public class User_dir implements Serializable {
      * 用户id
      */
     @TableId(value = "user_id", type = IdType.ASSIGN_ID)
-    private String user_id;
+    private String userId;
 
     /**
      * 用户目录结构
      */
-    private String user_dir;
+    @TableField("user_dir")
+    private String userDir;
 
 
 }

@@ -2,9 +2,13 @@ package com.hhd.pojo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.time.LocalDateTime;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import java.io.Serializable;
+import java.util.Date;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -36,12 +40,14 @@ public class File implements Serializable {
     /**
      * 用户id
      */
-    private String user_id;
+    @TableField("user_id")
+    private String userId;
 
     /**
      * 文件名
      */
-    private String filename;
+    @TableField("filename")
+    private String fileName;
 
     /**
      * 文件类型
@@ -51,12 +57,14 @@ public class File implements Serializable {
     /**
      * 创建时间
      */
-    private LocalDateTime create_time;
+    @TableField("create_time")
+    private Date createTime;
 
     /**
      * 更新时间
      */
-    private LocalDateTime modified_time;
+    @TableField("modified_time")
+    private Date modifiedTime;
 
     /**
      * 是否收藏
@@ -66,12 +74,14 @@ public class File implements Serializable {
     /**
      * 目录
      */
-    private String file_dir;
+    @TableField("file_dir")
+    private String fileDir;
 
     /**
      * 文件分类类型
      */
-    private String file_type;
+    @TableField("file_type")
+    private String fileType;
 
     /**
      * md5值
@@ -81,7 +91,8 @@ public class File implements Serializable {
     /**
      * 视频播放id
      */
-    private String vidio_id;
+    @TableField("video_id")
+    private String videoId;
 
     /**
      * 文件大小
@@ -92,7 +103,8 @@ public class File implements Serializable {
      * 逻辑删除	null表示正常	有date_time表示逻辑删除	now_time-date_time>30表示真是删除，设置数据库事件定时清理date_time>30day的记录
      */
     @TableLogic
-    private LocalDateTime logic_del_time;
+    @TableField("logic_del_time")
+    private Date logicDelTime;
 
 
 }

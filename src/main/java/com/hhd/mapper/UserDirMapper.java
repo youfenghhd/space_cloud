@@ -1,6 +1,6 @@
 package com.hhd.mapper;
 
-import com.hhd.pojo.User_dir;
+import com.hhd.pojo.UserDir;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author -无心
  * @since 2023-02-16
  */
-public interface User_dirMapper extends BaseMapper<User_dir> {
+public interface UserDirMapper extends BaseMapper<UserDir> {
 
 }
