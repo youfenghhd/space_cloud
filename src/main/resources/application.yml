@@ -3,9 +3,15 @@ mybatis-plus:
     db-config:
       logic-delete-value: now()
       logic-not-delete-value: null
-
-server:
+  configuration:
+    log-impl=org:
+      apache:
+        ibatis:
+          logging:
+            stdout:
+              StdOutImpl:server:
   port: 80
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

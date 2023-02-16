@@ -17,6 +17,11 @@ import org.springframework.stereotype.Service;
 
 public interface IAdminService extends IService<Admin> {
 
+    /**
+     * 创建一个管理员
+     * @param admin
+     * @return
+     */
     int insert(Admin admin);
 
 }

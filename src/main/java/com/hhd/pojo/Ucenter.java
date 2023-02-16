@@ -1,11 +1,10 @@
 package com.hhd.pojo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.*;
+
+import java.text.DateFormat;
 import java.time.LocalDateTime;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -13,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
 
 /**
  * <p>
@@ -59,13 +59,13 @@ public class Ucenter implements Serializable {
     /**
      * 创建时间
      */
-    @TableField("create_time")
+    @TableField(value = "create_time",fill = FieldFill.INSERT)
     private Date createTime;
 
     /**
      * 更新时间
      */
-    @TableField("modified_time")
+    @TableField(value = "modified_time",fill = FieldFill.INSERT_UPDATE)
     private Date modifiedTime;
 
     /**
@@ -81,8 +81,8 @@ public class Ucenter implements Serializable {
     /**
      * 逻辑删除	null表示正常	有date_time表示逻辑删除	noew_tiame-date_time>30day表示真实删除，设置数据库事件定时清理date_time>30day的记录
      */
-    @TableLogic
-    @TableField("logic_del_time")
+    @TableLogic(value = "null")
+    @TableField(value = "logic_del_time",fill = FieldFill.DEFAULT)
     private Date logicDelTime;
 
 
