@@ -1,6 +1,6 @@
 package com.hhd.service;
 
-import com.hhd.pojo.UserDir;
+import com.hhd.pojo.entity.UserDir;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

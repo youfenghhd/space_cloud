@@ -1,29 +1,27 @@
 package com.hhd;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.hhd.mapper.UcenterMapper;
-import com.hhd.pojo.Ucenter;
-import com.hhd.pojo.register;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
+
+import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
 class SpaceCloudApplicationTests {
     @Test
     void contextLoads() {
     }
-    @Autowired
-    private UcenterMapper uMapper;
 
-    private register rg;
+    @Autowired
+    private RedisTemplate<String,String> redisTemplate;
+
     @Test
-    void testinsert(){
-        Ucenter u = new Ucenter();
-        u.setPassword("122345");
-        u.setMobile("125632131");
-        u.setPortrait("dhashdjs");
-        u.setNickname("ceshi");
-        uMapper.insert(u);
+    void test(){
+        redisTemplate.opsForValue().set("123456","143526412",1, TimeUnit.HOURS);
+        String s = redisTemplate.opsForValue().get("123456");
+
+        System.out.println("1:"+(s == null));
     }
+
 }

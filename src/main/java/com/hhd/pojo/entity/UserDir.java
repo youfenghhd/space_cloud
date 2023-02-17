@@ -1,4 +1,4 @@
-package com.hhd.pojo;
+package com.hhd.pojo.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -23,32 +23,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class Admin implements Serializable {
+@TableName("user_dir")
+public class UserDir implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 管理员id
+     * 用户id
      */
-    @TableId(value = "aid", type = IdType.ASSIGN_ID)
-    private String aid;
+    @TableId(value = "user_id", type = IdType.ASSIGN_ID)
+    private String userId;
 
     /**
-     * 管理员名字
+     * 用户目录结构
      */
-    @TableField("adminname")
-    private String adminName;
-
-    /**
-     * 管理员登录名
-     */
-    @TableField("loginname")
-    private String loginName;
-
-    /**
-     * 管理员密码
-     */
-    private String password;
+    @TableField("user_dir")
+    private String userDir;
 
 
 }

@@ -1,11 +1,9 @@
 package com.hhd.controller;
 
 
-import com.hhd.mapper.AdminMapper;
-import com.hhd.pojo.Admin;
+import com.hhd.pojo.entity.Admin;
 import com.hhd.service.IAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 

@@ -1,16 +1,9 @@
+
 mybatis-plus:
   global-config:
     db-config:
       logic-delete-value: now()
       logic-not-delete-value: null
-  configuration:
-    log-impl=org:
-      apache:
-        ibatis:
-          logging:
-            stdout:
-              StdOutImpl:server:
-  port: 80
 
 spring:
   datasource:
@@ -18,4 +11,24 @@ spring:
     url: jdbc:mysql://123.56.116.10:3306/hhd?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=Asia/Shanghai
     username: hhd
     password: 111111
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+    lettuce:
+      pool:
+        max-active: 20
+        max-wait: -1
+        max-idle: 5
+        min-idle: 0
 
+
+aliyun:
+  accessKeyId: "LTAI5tNbwSodZsassr2m2FaL"
+  accessKeySecret: "cTQJlRxi34QPN1Wz0L48GRhADnkDHS"
+
+server:
+  port: 80
+logging:
+  level:
+    root: error

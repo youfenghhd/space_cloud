@@ -123,7 +123,14 @@
             <artifactId>commons-pool2</artifactId>
         </dependency>
 
+<!--      阿里云sms短信服务依赖-->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>alibabacloud-dysmsapi20170525</artifactId>
+            <version>2.0.22</version>
+        </dependency>
 
+<!--        阿里云oss-->
     </dependencies>
 
     <build>

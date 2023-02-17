@@ -1,9 +1,6 @@
-package com.hhd.pojo;
+package com.hhd.pojo.domain;
 
 import com.baomidou.mybatisplus.annotation.*;
-
-import java.text.DateFormat;
-import java.time.LocalDateTime;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -12,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
 
 /**
  * <p>
@@ -26,7 +22,8 @@ import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class Ucenter implements Serializable {
+@TableName("ucenter")
+public class UCenter implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -85,5 +82,6 @@ public class Ucenter implements Serializable {
     @TableField(value = "logic_del_time",fill = FieldFill.DEFAULT)
     private Date logicDelTime;
 
-
+    @TableField(exist = false)
+    private String photoCode;
 }

@@ -15,7 +15,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public R error(Exception e) {
         System.out.println(e);
-        return R.error().message("全局异常");
+        return R.error().message(R.GLOBAL_ERR);
     }
 
 

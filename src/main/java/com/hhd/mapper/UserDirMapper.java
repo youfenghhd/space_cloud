@@ -1,6 +1,6 @@
 package com.hhd.mapper;
 
-import com.hhd.pojo.UserDir;
+import com.hhd.pojo.entity.UserDir;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 

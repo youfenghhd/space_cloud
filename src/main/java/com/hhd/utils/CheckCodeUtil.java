@@ -1,11 +1,15 @@
 package com.hhd.utils;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Random;
+
 /**
  * @author -无心
  * @date 2023/2/16 0:56:00
@@ -14,24 +18,34 @@ import java.util.Random;
 
 public class CheckCodeUtil {
 
-    public static final String VERIFY_CODES = "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private static Random random = new Random();
+    private static final String VERIFY_CODES = "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final Random random = new Random();
+    private static String [] patch = {"00000","0000","000","00","0",""};
 
+    public static String generateJpg() throws Exception {
+        OutputStream fos = Files.newOutputStream(Paths.get("src/main/resources/static/a.jpg"));
+        return CheckCodeUtil.outputVerifyImage(100, 50, fos, 4);
+    }
 
-    public static void main(String[] args) throws IOException {
-        OutputStream fos = new FileOutputStream("d://a.jpg");
-        String checkCode = CheckCodeUtil.outputVerifyImage(100, 50, fos, 4);
-
-        System.out.println(checkCode);
+    public static String generateTel(String tel) {
+        //随机密钥
+        int encryption = 44311688;
+        //获取tel的哈希值并异或加密
+        long result = tel.hashCode() ^ encryption;
+        //与当前时间异或加密
+        result = result ^ System.currentTimeMillis();
+        //取正数且不大于6位数
+        String code = result < 0 ? (-result%1000000)+"":result%1000000+"";
+        return code+patch[code.length()-1];
     }
 
 
     /**
      * 输出随机验证码图片流,并返回验证码值（一般传入输出流，响应response页面端，Web项目用的较多）
      *
-     * @param width 图片宽度
-     * @param height 图片高度
-     * @param os  输出流
+     * @param width      图片宽度
+     * @param height     图片高度
+     * @param os         输出流
      * @param verifySize 数据长度
      * @return 验证码数据
      * @throws IOException
@@ -88,7 +102,6 @@ public class CheckCodeUtil {
         outputImage(w, h, outputFile, verifyCode);
         return verifyCode;
     }
-
 
 
     /**

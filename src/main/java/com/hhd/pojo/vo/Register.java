@@ -1,4 +1,4 @@
-package com.hhd.pojo;
+package com.hhd.pojo.vo;
 
 import lombok.Data;
 
@@ -7,11 +7,11 @@ import lombok.Data;
  * @date 2023/2/16 16:01:24
  */
 @Data
-public class register {
+public class Register {
     private String mobile;
     private String password;
     private String nickname;
     private String portrait;
     private String smsCode;
-    private String checkCOde;
+    private String checkCode;
 }

@@ -3,8 +3,8 @@ package com.hhd.utils;
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -37,19 +37,20 @@ public class MD5 {
         }
     }
 
-    public static String getFileMD5String(File file){
-        String MD5Result = StringUtil.EMPTY_STRING;
+    public static String getFileMd5String(File file){
+        String md5Result = StringUtil.EMPTY_STRING;
         try {
-            InputStream fis = new FileInputStream(file);
+            InputStream fis = Files.newInputStream(file.toPath());
             byte[] buffer = new byte[fis.available()];
             while (fis.read(buffer) > 0) {
-                MD5Result = DigestUtils.md5Hex(buffer);
+                md5Result = DigestUtils.md5Hex(buffer);
             }
             fis.close();
         }catch (Exception e){
             e.printStackTrace();
+            throw new RuntimeException("计算文件MD5值错误！！+" + e);
         }
-        return MD5Result;
+        return md5Result;
     }
 
     public static void main(String[] args) {

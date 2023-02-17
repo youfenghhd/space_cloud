@@ -13,17 +13,35 @@ import java.util.Map;
  */
 @Data
 public class R {
+    public static final String GLOBAL_ERR = "全局异常";
     public static final String EMPTY_ERROR = "不能为空";
     public static final String CHECK_ERROR = "验证码错误";
-    public static final String PHONE_EXIST = "手机号已存在";
+    public static final String PHONE_EXIST = "手机号已注册";
+    public static final String PHONE_NON_EXIST = "手机号未注册";
+    public static final String CHECK_IO = "验证码生成错误";
+    public static final String PASSWORD_ERR = "登录密码错误";
+    public static final String EXECUTION_ERR = "执行异常";
+    public static final String INTER_ERR = "网络异常";
+    public static final String SEND_SMS_ERR = "短信发送失败";
     public static final Integer SUCCESS = 20000;
     public static final Integer ERROR = 20001;
 
+    public static final Integer SAVE_OK = 20011;
+    public static final Integer DELETE_OK = 20021;
+    public static final Integer UPDATE_OK = 20031;
+    public static final Integer GET_OK = 20041;
+
+    public static final Integer SAVE_ERR = 20010;
+    public static final Integer DELETE_ERR = 20020;
+    public static final Integer UPDATE_ERR = 20030;
+    public static final Integer GET_ERR = 20040;
+
+
     private Boolean success;
-    private Integer code;
+    private Integer status;
     private String message;
 
-    private R(){
+    private R() {
 
     }
 
@@ -39,9 +57,9 @@ public class R {
         return this;
     }
 
-    public static R ok(){
+    public static R ok() {
         R r = new R();
-        r.setCode(SUCCESS);
+        r.setStatus(SUCCESS);
         r.setSuccess(true);
         r.setMessage("成功");
         return r;
@@ -50,7 +68,7 @@ public class R {
     public static R error() {
         R r = new R();
         r.setSuccess(false);
-        r.setCode(ERROR);
+        r.setStatus(ERROR);
         r.setMessage("失败");
         return r;
     }
@@ -61,7 +79,7 @@ public class R {
     }
 
     public R code(Integer code) {
-        this.setCode(code);
+        this.setStatus(code);
         return this;
     }
 
