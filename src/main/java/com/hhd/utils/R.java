@@ -25,6 +25,7 @@ public class R {
     public static final String EXECUTION_ERR = "执行异常";
     public static final String INTER_ERR = "网络异常";
     public static final String SEND_SMS_ERR = "短信发送失败";
+    public static final String NAME_REPEAT = "名称重复";
     public static final Integer SUCCESS = 20000;
     public static final Integer ERROR = 20001;
 
