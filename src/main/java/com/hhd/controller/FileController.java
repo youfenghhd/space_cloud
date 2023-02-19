@@ -10,13 +10,11 @@ import com.hhd.pojo.vo.TreeNode;
 import com.hhd.service.IFileService;
 import com.hhd.service.IUserDirService;
 import com.hhd.utils.R;
-import org.bouncycastle.asn1.cms.PasswordRecipientInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SimpleTimeZone;
+
 
 /**
  * <p>
@@ -57,7 +55,7 @@ public class FileController {
         return  R.ok().data("fileInfo",fService.getFileInfo(id));
     }
 
-    @PostMapping("/{id}/{fileName}")
+    @PutMapping("/{id}/{fileName}")
     public R renameFile(@PathVariable String id, @PathVariable String fileName){
         LambdaQueryWrapper<File> lqw = new LambdaQueryWrapper<>();
         File one = fService.getOne(lqw.eq(File::getId,id));

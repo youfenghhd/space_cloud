@@ -2,7 +2,6 @@ package com.hhd.controller;
 
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.hhd.exceptionhandler.CloudException;
 import com.hhd.pojo.entity.File;
@@ -11,10 +10,8 @@ import com.hhd.pojo.vo.TreeNode;
 import com.hhd.service.IFileService;
 import com.hhd.service.IUserDirService;
 import com.hhd.utils.R;
-import org.bouncycastle.asn1.cms.PasswordRecipientInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
