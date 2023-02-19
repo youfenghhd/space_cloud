@@ -7,7 +7,7 @@ import com.aliyun.sdk.service.dysmsapi20170525.models.SendSmsRequest;
 import com.aliyun.sdk.service.dysmsapi20170525.models.SendSmsResponse;
 import com.google.gson.Gson;
 import com.hhd.exceptionhandler.CloudException;
-import com.hhd.service.SmsService;
+import com.hhd.service.ISmsService;
 import com.hhd.utils.CheckCodeUtil;
 import com.hhd.utils.R;
 
@@ -20,13 +20,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author -无心
  * @date 2023/2/17 16:33:43
  */
 @Service
-public class SmsServiceImpl implements SmsService {
+public class SmsServiceImpl implements ISmsService {
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
     @Value("${aliyun.accessKeyId}")
@@ -35,7 +36,7 @@ public class SmsServiceImpl implements SmsService {
     private String accessKeySecret;
 
     @Override
-    public R getSmsCode(String tel){
+    public boolean getSmsCode(String tel){
             String code = CheckCodeUtil.generateTel(tel);
             System.out.println(code);
             StaticCredentialProvider provider = StaticCredentialProvider.create(Credential.builder()
@@ -67,7 +68,7 @@ public class SmsServiceImpl implements SmsService {
         } catch (ExecutionException e) {
             throw new CloudException(R.ERROR,R.EXECUTION_ERR);
         }
-        redisTemplate.opsForValue().set(tel,code);
-        return R.ok();
+        redisTemplate.opsForValue().set(tel,code,2, TimeUnit.MINUTES);
+        return true;
     }
 }

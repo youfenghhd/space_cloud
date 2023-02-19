@@ -12,5 +12,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2023-02-16
  */
 public interface IUserDirService extends IService<UserDir> {
+    UserDir getUserDir(String id);
+
+    int setUserDir(UserDir userDir);
+
+    boolean deleteStruct(String userid,String url);
 
 }

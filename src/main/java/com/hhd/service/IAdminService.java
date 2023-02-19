@@ -1,7 +1,10 @@
 package com.hhd.service;
 
+import com.hhd.pojo.domain.UCenter;
 import com.hhd.pojo.entity.Admin;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * <p>
@@ -21,4 +24,37 @@ public interface IAdminService extends IService<Admin> {
      */
     int insert(Admin admin);
 
+    /**
+     * 管理员查询所有用户
+     * @return
+     */
+    List<UCenter> showNormalAll();
+
+    /**
+     * 查询回收站
+     * @return 查询结果
+     */
+    List<UCenter> showRecoveryAll();
+
+    /**
+     * 管理员修改用户状态
+     * @param  id:根据id修改状态
+     * @param status：1/0 启用禁用
+     * @return
+     */
+    int changeStatus(String id,String status);
+
+    /**
+     * 根据id讲用户逻辑删除
+     * @param id ：传入的id
+     * @return
+     */
+    int logicDelUser(String id);
+
+    /**
+     * 根据传入id将用户从逻辑删除恢复正常状态
+     * @param id 传入的id
+     * @return
+     */
+    int logicNormalUser(String id);
 }

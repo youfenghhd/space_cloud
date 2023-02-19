@@ -1,14 +1,10 @@
 package com.hhd.service;
 
-import com.hhd.utils.R;
-
-import java.util.concurrent.ExecutionException;
-
 /**
  * @author -无心
  * @date 2023/2/17 16:25:47
  */
-public interface SmsService {
+public interface ISmsService {
 
 
     /**
@@ -16,6 +12,6 @@ public interface SmsService {
      *
      * @return 获取验证码结果
      */
-    R getSmsCode(String tel) ;
+    boolean getSmsCode(String tel) ;
 
 }

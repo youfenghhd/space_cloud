@@ -1,6 +1,6 @@
 package com.hhd.controller;
 
-import com.hhd.service.SmsService;
+import com.hhd.service.ISmsService;
 import com.hhd.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -9,26 +9,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.concurrent.ExecutionException;
-
 /**
  * @author -无心
  * @date 2023/2/17 21:17:16
  */
 @RestController
-@RequestMapping("/sendsms")
+@RequestMapping("/sends")
 public class SmsController {
     @Autowired
-    private SmsService service;
+    private ISmsService service;
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
     @GetMapping("/{tel}")
     public R send(@PathVariable String tel) {
         if (redisTemplate.opsForValue().get(tel) != null) {
-            return service.getSmsCode(tel);
+            System.out.println("短信发送成功");
+            return R.ok();
         }
-        return R.error().message(R.SEND_SMS_ERR);
+        return service.getSmsCode(tel)?R.ok():R.error().message(R.SEND_SMS_ERR);
     }
 
 }

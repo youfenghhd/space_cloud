@@ -104,7 +104,7 @@ public class File implements Serializable {
     /**
      * 逻辑删除	null表示正常	有date_time表示逻辑删除	now_time-date_time>30表示真是删除，设置数据库事件定时清理date_time>30day的记录
      */
-    @TableLogic(value = "null")
+//    @TableLogic(value = "null")
     @TableField(value = "logic_del_time",fill = FieldFill.DEFAULT)
     private Date logicDelTime;
 

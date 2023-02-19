@@ -16,9 +16,11 @@ public class R {
     public static final String GLOBAL_ERR = "全局异常";
     public static final String EMPTY_ERROR = "不能为空";
     public static final String CHECK_ERROR = "验证码错误";
+    public static final String SMS_ERR ="短信码错误";
     public static final String PHONE_EXIST = "手机号已注册";
+    public static final String DISABLE_ERR = "账号被禁用";
     public static final String PHONE_NON_EXIST = "手机号未注册";
-    public static final String CHECK_IO = "验证码生成错误";
+    public static final String CHECK_IO_ERR = "验证码生成错误";
     public static final String PASSWORD_ERR = "登录密码错误";
     public static final String EXECUTION_ERR = "执行异常";
     public static final String INTER_ERR = "网络异常";

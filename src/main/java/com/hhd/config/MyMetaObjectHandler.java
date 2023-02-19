@@ -1,11 +1,10 @@
 package com.hhd.config;
 
+import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import org.apache.ibatis.reflection.MetaObject;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 
 /**
  * @author -无心
@@ -15,13 +14,12 @@ import java.util.Date;
 public class MyMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
-        this.setFieldValByName("createTime", new Date(), metaObject);
-        this.setFieldValByName("modifiedTime", new Date(), metaObject);
+        this.setFieldValByName("createTime", new DateTime().toString(), metaObject);
+        this.setFieldValByName("modifiedTime", new DateTime().toString(), metaObject);
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        this.setFieldValByName("modifiedTime", new Date(), metaObject);
-
+        this.setFieldValByName("modifiedTime", new DateTime().toString(), metaObject);
     }
 }
