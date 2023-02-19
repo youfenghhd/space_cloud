@@ -3,7 +3,7 @@ package com.hhd.controller;
 
 import com.hhd.service.ICkCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,12 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/checks")
 public class CheckCodeController {
-
     @Autowired
     private ICkCodeService service;
 
-    @PutMapping
-    public String generate(){
+    @PostMapping
+    public String generate() {
         return service.generate();
     }
 }

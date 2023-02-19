@@ -38,11 +38,10 @@ public interface IAdminService extends IService<Admin> {
 
     /**
      * 管理员修改用户状态
-     * @param  id:根据id修改状态
-     * @param status：1/0 启用禁用
+     * @param  uCenter:根据id修改状态
      * @return
      */
-    int changeStatus(String id,String status);
+    int changeStatus(UCenter uCenter);
 
     /**
      * 根据id讲用户逻辑删除

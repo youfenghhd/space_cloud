@@ -12,6 +12,7 @@ import com.hhd.service.IUserDirService;
 import com.hhd.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -70,8 +71,7 @@ public class UserDirController {
             System.out.println("ok");
             StringBuilder stringBuilder = new StringBuilder();
             delete(treeNode, id, stringBuilder);
-            String string = JSON.toJSONString(treeNode);
-            userDir.setUserDir(string);
+            userDir.setUserDir(JSON.toJSONString(treeNode));
             uService.setUserDir(userDir);
             return R.ok();
         }
@@ -83,7 +83,7 @@ public class UserDirController {
         UserDir userDir = uService.getUserDir(userid);
         TreeNode treeNode = JSON.parseObject(userDir.getUserDir(), new TypeReference<TreeNode>() {
         });
-        update(treeNode,id,name,1);
+        update(treeNode, id, name, 1);
         System.out.println(result);
         String string = JSON.toJSONString(treeNode);
         userDir.setUserDir(string);
@@ -96,7 +96,7 @@ public class UserDirController {
             files.setFileDir(file.getFileDir());
             fService.updateById(files);
         }
-        return uService.setUserDir(userDir)>0?R.ok().data("updateOk",treeNode):R.error();
+        return uService.setUserDir(userDir) > 0 ? R.ok().data("updateOk", treeNode) : R.error();
     }
 
 

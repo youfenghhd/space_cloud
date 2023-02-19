@@ -1,15 +1,15 @@
 package com.hhd.controller;
 
 
-import com.hhd.exceptionhandler.CloudException;
 import com.hhd.pojo.domain.UCenter;
 import com.hhd.pojo.vo.Register;
-import com.hhd.service.ICkCodeService;
 import com.hhd.service.IUCenterService;
-import com.hhd.utils.CheckCodeUtil;
 import com.hhd.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
@@ -37,7 +37,7 @@ public class UCenterController {
     }
 
     @PostMapping("/register")
-    public R register(@RequestBody Register register){
+    public R register(@RequestBody Register register) {
         return uService.register(register);
     }
 }

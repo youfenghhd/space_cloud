@@ -33,6 +33,7 @@ public interface UcenterMapper extends BaseMapper<UCenter> {
     /**
      * 查询回收站所有（逻辑删除所有）
      * @return 查询结果
+     * @param nowTime 当前时间
      */
     @Select("select * from ucenter where logic_del_time is not null and logic_del_time > #{nowTime}")
     List<UCenter> showRecoveryAll(String nowTime);

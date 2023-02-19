@@ -2,6 +2,7 @@ package com.hhd.service;
 
 import com.hhd.pojo.entity.File;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hhd.pojo.entity.UserDir;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
  * @since 2023-02-16
  */
 public interface IFileService extends IService<File> {
-    List<File> getAllFileInfo(String userid);
+    List<File> getAllFile(String userid);
 
     List<File> getFileInfo(String id);
 
@@ -23,7 +24,7 @@ public interface IFileService extends IService<File> {
      * @param
      * @return
      */
-    List<File> getCurFiles(String userDir, String id);
+    List<File> getCurFiles(UserDir userDir);
 
     File getFiles(String id);
 

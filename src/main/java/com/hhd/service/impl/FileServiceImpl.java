@@ -1,11 +1,11 @@
 package com.hhd.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.hhd.pojo.entity.File;
-import com.hhd.mapper.FileMapper;
-import com.hhd.service.IFileService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hhd.mapper.FileMapper;
+import com.hhd.pojo.entity.File;
+import com.hhd.pojo.entity.UserDir;
+import com.hhd.service.IFileService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.List;
 public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements IFileService {
 
     @Override
-    public List<File> getAllFileInfo(String userid) {
+    public List<File> getAllFile(String userid) {
         LambdaQueryWrapper<File> lqw = new LambdaQueryWrapper<>();
         return baseMapper.selectList(lqw.eq(File::getUserId,userid));
     }
@@ -34,9 +34,10 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements IF
     }
 
     @Override
-    public List<File> getCurFiles(String userDir, String id) {
+    public List<File> getCurFiles(UserDir userDir) {
         LambdaQueryWrapper<File> lqw = new LambdaQueryWrapper<>();
-        return baseMapper.selectList(lqw.eq(File::getFileDir,userDir).eq(File::getUserId,id));
+        return baseMapper.selectList(lqw.eq(File::getFileDir,userDir.getUserDir())
+                .eq(File::getUserId,userDir.getUserId()));
     }
 
     @Override

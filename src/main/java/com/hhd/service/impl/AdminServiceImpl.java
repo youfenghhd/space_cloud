@@ -2,22 +2,18 @@ package com.hhd.service.impl;
 
 import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hhd.mapper.AdminMapper;
 import com.hhd.mapper.UcenterMapper;
 import com.hhd.pojo.domain.UCenter;
 import com.hhd.pojo.entity.Admin;
-import com.hhd.mapper.AdminMapper;
 import com.hhd.service.IAdminService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import wiremock.org.apache.commons.lang3.time.DateUtils;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * <p>
@@ -56,9 +52,9 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     }
 
     @Override
-    public int changeStatus(String id, String status) {
+    public int changeStatus(UCenter uCenter) {
         LambdaUpdateWrapper<UCenter> lqw = new LambdaUpdateWrapper<>();
-        lqw.set(UCenter::getStatus, Objects.equals(status, "1")).eq(UCenter::getId, id);
+        lqw.set(UCenter::getStatus, uCenter.getStatus()).eq(UCenter::getId, uCenter.getId());
         return uMapper.update(new UCenter(), lqw);
     }
 
