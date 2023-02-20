@@ -32,7 +32,6 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     private UcenterMapper uMapper;
 
 
-
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Override

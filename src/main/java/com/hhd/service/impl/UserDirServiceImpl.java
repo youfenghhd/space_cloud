@@ -36,7 +36,7 @@ public class UserDirServiceImpl extends ServiceImpl<UserDirMapper, UserDir> impl
 
     @Override
     public boolean deleteStruct(String userid, String url) {
-        LambdaQueryWrapper<File> lqw= new LambdaQueryWrapper<>();
-        return service.remove(lqw.like(File::getFileDir,url).eq(File::getUserId,userid));
+        LambdaQueryWrapper<File> lqw = new LambdaQueryWrapper<>();
+        return service.remove(lqw.like(File::getFileDir, url).eq(File::getUserId, userid));
     }
 }

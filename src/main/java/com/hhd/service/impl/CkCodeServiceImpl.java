@@ -17,6 +17,7 @@ public class CkCodeServiceImpl implements ICkCodeService {
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
+
     @Override
     public String generate() {
         String generate;
@@ -25,7 +26,7 @@ public class CkCodeServiceImpl implements ICkCodeService {
         } catch (Exception e) {
             throw new CloudException(R.ERROR, R.CHECK_IO_ERR);
         }
-        redisTemplate.opsForValue().set("checkCode",generate);
+        redisTemplate.opsForValue().set("checkCode", generate);
         return generate;
     }
 }

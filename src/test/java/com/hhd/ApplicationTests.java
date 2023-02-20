@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 @SpringBootTest
-class SpaceCloudApplicationTests {
+class ApplicationTests {
     @Test
     void contextLoads() {
     }

@@ -20,7 +20,7 @@ public class CheckCodeUtil {
 
     private static final String VERIFY_CODES = "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final Random random = new Random();
-    private static String [] patch = {"00000","0000","000","00","0",""};
+    private static String[] patch = {"00000", "0000", "000", "00", "0", ""};
 
     public static String generateJpg() throws Exception {
         OutputStream fos = Files.newOutputStream(Paths.get("src/main/resources/static/a.jpg"));
@@ -35,8 +35,8 @@ public class CheckCodeUtil {
         //与当前时间异或加密
         result = result ^ System.currentTimeMillis();
         //取正数且不大于6位数
-        String code = result < 0 ? (-result%1000000)+"":result%1000000+"";
-        return code+patch[code.length()-1];
+        String code = result < 0 ? (-result % 1000000) + "" : result % 1000000 + "";
+        return code + patch[code.length() - 1];
     }
 
 

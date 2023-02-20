@@ -1,14 +1,12 @@
 package com.hhd.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.hhd.exceptionhandler.CloudException;
-import com.hhd.pojo.domain.UCenter;
-import com.hhd.mapper.UcenterMapper;
-import com.hhd.pojo.vo.Register;
-import com.hhd.service.ICkCodeService;
-import com.hhd.service.IUCenterService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.hhd.utils.CheckCodeUtil;
+import com.hhd.exceptionhandler.CloudException;
+import com.hhd.mapper.UcenterMapper;
+import com.hhd.pojo.domain.UCenter;
+import com.hhd.pojo.vo.Register;
+import com.hhd.service.IUCenterService;
 import com.hhd.utils.MD5;
 import com.hhd.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +30,7 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
     private RedisTemplate<String, String> redisTemplate;
     @Autowired
     private UcenterMapper uMapper;
+
     @Override
     public R register(Register register) {
         String mobile = register.getMobile();

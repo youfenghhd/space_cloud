@@ -2,6 +2,7 @@ package com.hhd.utils;
 
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.codec.digest.DigestUtils;
+
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -37,7 +38,7 @@ public class MD5 {
         }
     }
 
-    public static String getFileMd5String(File file){
+    public static String getFileMd5String(File file) {
         String md5Result = StringUtil.EMPTY_STRING;
         try {
             InputStream fis = Files.newInputStream(file.toPath());
@@ -46,7 +47,7 @@ public class MD5 {
                 md5Result = DigestUtils.md5Hex(buffer);
             }
             fis.close();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("计算文件MD5值错误！！+" + e);
         }

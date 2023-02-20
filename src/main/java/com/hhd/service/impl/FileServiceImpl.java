@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author -无心
@@ -24,32 +24,32 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements IF
     @Override
     public List<File> getAllFile(String userid) {
         LambdaQueryWrapper<File> lqw = new LambdaQueryWrapper<>();
-        return baseMapper.selectList(lqw.eq(File::getUserId,userid));
+        return baseMapper.selectList(lqw.eq(File::getUserId, userid));
     }
 
     @Override
     public List<File> getFileInfo(String id) {
         LambdaQueryWrapper<File> lqw = new LambdaQueryWrapper<>();
-        return baseMapper.selectList(lqw.eq(File::getId,id));
+        return baseMapper.selectList(lqw.eq(File::getId, id));
     }
 
     @Override
     public List<File> getCurFiles(UserDir userDir) {
         LambdaQueryWrapper<File> lqw = new LambdaQueryWrapper<>();
-        return baseMapper.selectList(lqw.eq(File::getFileDir,userDir.getUserDir())
-                .eq(File::getUserId,userDir.getUserId()));
+        return baseMapper.selectList(lqw.eq(File::getFileDir, userDir.getUserDir())
+                .eq(File::getUserId, userDir.getUserId()));
     }
 
     @Override
     public File getFiles(String id) {
         LambdaQueryWrapper<File> lqw = new LambdaQueryWrapper<>();
-        return baseMapper.selectOne(lqw.eq(File::getId,id));
+        return baseMapper.selectOne(lqw.eq(File::getId, id));
     }
 
     @Override
     public List<File> getFindFile(String userid, String name) {
-        LambdaQueryWrapper<File> lqw= new LambdaQueryWrapper<>();
-        return baseMapper.selectList(lqw.eq(File::getUserId,userid).like(File::getFileName,name));
+        LambdaQueryWrapper<File> lqw = new LambdaQueryWrapper<>();
+        return baseMapper.selectList(lqw.eq(File::getUserId, userid).like(File::getFileName, name));
     }
 
     @Override

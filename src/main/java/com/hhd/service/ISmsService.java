@@ -12,6 +12,6 @@ public interface ISmsService {
      *
      * @return 获取验证码结果
      */
-    boolean getSmsCode(String tel) ;
+    boolean getSmsCode(String tel);
 
 }

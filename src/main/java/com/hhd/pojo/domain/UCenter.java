@@ -1,21 +1,17 @@
 package com.hhd.pojo.domain;
 
-import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.annotation.*;
-
-import java.io.Serializable;
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author -无心
@@ -59,13 +55,13 @@ public class UCenter implements Serializable {
     /**
      * 创建时间
      */
-    @TableField(value = "create_time",fill = FieldFill.INSERT)
+    @TableField(value = "create_time", fill = FieldFill.INSERT)
     private String createTime;
 
     /**
      * 更新时间
      */
-    @TableField(value = "modified_time",fill = FieldFill.INSERT_UPDATE)
+    @TableField(value = "modified_time", fill = FieldFill.INSERT_UPDATE)
     private String modifiedTime;
 
     /**
@@ -82,7 +78,7 @@ public class UCenter implements Serializable {
      * 逻辑删除	null表示正常	有date_time表示逻辑删除	noew_tiame-date_time>30day表示真实删除，设置数据库事件定时清理date_time>30day的记录
      */
 //    @TableLogic(value = "null")
-    @TableField(value = "logic_del_time",fill = FieldFill.DEFAULT)
+    @TableField(value = "logic_del_time", fill = FieldFill.DEFAULT)
     private String logicDelTime;
 
 

@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler(CloudException.class)
-    public R error(CloudException c){
+    public R error(CloudException c) {
         return R.error().code(c.getCode()).message(c.getMsg());
     }
 

@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author -无心
@@ -16,6 +16,6 @@ public interface IUserDirService extends IService<UserDir> {
 
     int setUserDir(UserDir userDir);
 
-    boolean deleteStruct(String userid,String url);
+    boolean deleteStruct(String userid, String url);
 
 }

@@ -29,46 +29,46 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class SmsServiceImpl implements ISmsService {
     @Autowired
-    private RedisTemplate<String,String> redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
     @Value("${aliyun.accessKeyId}")
     private String accessKeyId;
     @Value("${aliyun.accessKeySecret}")
     private String accessKeySecret;
 
     @Override
-    public boolean getSmsCode(String tel){
-            String code = CheckCodeUtil.generateTel(tel);
-            System.out.println(code);
-            StaticCredentialProvider provider = StaticCredentialProvider.create(Credential.builder()
-                    .accessKeyId(accessKeyId)
-                    .accessKeySecret(accessKeySecret)
-                    .build());
+    public boolean getSmsCode(String tel) {
+        String code = CheckCodeUtil.generateTel(tel);
+        System.out.println(code);
+        StaticCredentialProvider provider = StaticCredentialProvider.create(Credential.builder()
+                .accessKeyId(accessKeyId)
+                .accessKeySecret(accessKeySecret)
+                .build());
 
-            AsyncClient client = AsyncClient.builder()
-                    .region("cn-hangzhou")
-                    .credentialsProvider(provider)
-                    .overrideConfiguration(
-                            ClientOverrideConfiguration.create()
-                                    .setEndpointOverride("dysmsapi.aliyuncs.com")
-                    )
-                    .build();
+        AsyncClient client = AsyncClient.builder()
+                .region("cn-hangzhou")
+                .credentialsProvider(provider)
+                .overrideConfiguration(
+                        ClientOverrideConfiguration.create()
+                                .setEndpointOverride("dysmsapi.aliyuncs.com")
+                )
+                .build();
 
-            SendSmsRequest sendSmsRequest = SendSmsRequest.builder()
-                    .signName("黄辉达网盘毕业项目")
-                    .templateCode("SMS_270150313")
-                    .phoneNumbers(tel)
-                    .templateParam("{\"code\":\""+code+"\"}")
-                    .build();
+        SendSmsRequest sendSmsRequest = SendSmsRequest.builder()
+                .signName("黄辉达网盘毕业项目")
+                .templateCode("SMS_270150313")
+                .phoneNumbers(tel)
+                .templateParam("{\"code\":\"" + code + "\"}")
+                .build();
         try {
             CompletableFuture<SendSmsResponse> response = client.sendSms(sendSmsRequest);
             SendSmsResponse resp = response.get();
             System.out.println(new Gson().toJson(resp));
         } catch (InterruptedException e) {
-            throw new CloudException(R.ERROR,R.INTER_ERR);
+            throw new CloudException(R.ERROR, R.INTER_ERR);
         } catch (ExecutionException e) {
-            throw new CloudException(R.ERROR,R.EXECUTION_ERR);
+            throw new CloudException(R.ERROR, R.EXECUTION_ERR);
         }
-        redisTemplate.opsForValue().set(tel,code,2, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(tel, code, 2, TimeUnit.MINUTES);
         return true;
     }
 }

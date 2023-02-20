@@ -15,6 +15,7 @@ public class TreeNode {
     private String name;
     private static int idCounter = 0;
     private List<TreeNode> childrenList;
+
     public TreeNode() {
         this.id = ++idCounter;
     }
