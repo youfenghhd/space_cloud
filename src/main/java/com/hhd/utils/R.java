@@ -2,6 +2,7 @@ package com.hhd.utils;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +13,8 @@ import java.util.Map;
  * 统一返回结果的类
  */
 @Data
-public class R {
+public class R implements Serializable {
+    private static final long serialVersionUID = 1L;
     public static final String GLOBAL_ERR = "全局异常";
     public static final String EMPTY_ERROR = "不能为空";
     public static final String CHECK_ERROR = "验证码错误";

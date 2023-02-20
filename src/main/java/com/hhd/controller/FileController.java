@@ -12,6 +12,8 @@ import com.hhd.service.IUserDirService;
 import com.hhd.utils.R;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ public class FileController {
     @Autowired
     private IUserDirService uService;
 
+    @Cacheable(cacheNames = "fuzzy")
     @GetMapping("/{userid}/{name}")
     public R findFuzzy(@PathVariable String name, @PathVariable String userid) {
         List<File> files = fService.getFindFile(userid, name);
@@ -47,11 +50,13 @@ public class FileController {
         return R.ok().data("files", files).data("list", list);
     }
 
+    @CachePut("userFiles")
     @PostMapping("/addFile")
     public R addFile(@RequestBody File file) {
         return fService.save(file) ? R.ok().data("addFile", file) : R.error();
     }
 
+    @Cacheable(cacheNames = "userFiles")
     @GetMapping("/{userid}")
     public R getAllFile(@PathVariable String userid) {
         return R.ok().data("allFilesOfUser", fService.getAllFile(userid));
@@ -73,7 +78,7 @@ public class FileController {
 //        return fService.updateById(file) ? R.ok() : R.error();
 //    }
     @PutMapping("/rename")
-    public R renameFile1(@RequestBody File files) {
+    public R renameFile(@RequestBody File files) {
         LambdaQueryWrapper<File> lqw = new LambdaQueryWrapper<>();
         File file = fService.getOne(lqw.eq(File::getId, files.getId()));
         file.setFileName(files.getFileName());

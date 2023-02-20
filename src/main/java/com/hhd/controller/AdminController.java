@@ -5,6 +5,8 @@ import com.hhd.pojo.domain.UCenter;
 import com.hhd.service.IAdminService;
 import com.hhd.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -30,27 +32,32 @@ public class AdminController {
 //        return service.insert(admin) > 0 ? "success" : "error";
 //    }
 
+    @Cacheable(cacheNames = "normal", unless = "#result==null")
     @GetMapping
     public R findNormal() {
         return R.ok().data("normal", service.showNormalAll());
     }
 
+    @Cacheable(cacheNames = "recovery", unless = "#result==null")
     @GetMapping("/recovery")
     public R findRecovery() {
         return R.ok().data("recovery", service.showRecoveryAll());
     }
 
+    @CachePut("normal")
     @PutMapping("/status")
     public R changeStatus(@RequestBody UCenter user) {
         return service.changeStatus(user) > 0 ?
                 R.ok() : R.error();
     }
 
+    @CachePut("recovery")
     @PutMapping("/del")
     public R logicDelUser(@RequestBody String id) {
         return service.logicDelUser(id) > 0 ? R.ok() : R.error();
     }
 
+    @CachePut("normal")
     @PutMapping("/normal")
     public R logicNormalUser(@RequestBody String id) {
         return service.logicNormalUser(id) > 0 ? R.ok() : R.error();

@@ -2,6 +2,7 @@ package com.hhd.pojo.vo;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -9,7 +10,8 @@ import java.util.List;
  * @date 2023/2/17 10:40:30
  */
 @Data
-public class TreeNode {
+public class TreeNode implements Serializable {
+    private static final long serialVersionUID = 1L;
     private long id;
     private long parentId;
     private String name;

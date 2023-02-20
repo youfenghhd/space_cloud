@@ -28,7 +28,7 @@ spring:
         min-idle: 0
   cache:
     redis:
-      time-to-live: 60000
+      time-to-live: 300000
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
