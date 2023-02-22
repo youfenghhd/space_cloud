@@ -9,6 +9,8 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * <p>
  * 前端控制器
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/admins")
+@CrossOrigin
 public class AdminController {
     @Autowired
     private IAdminService service;
@@ -32,35 +35,40 @@ public class AdminController {
 //        return service.insert(admin) > 0 ? "success" : "error";
 //    }
 
-    @Cacheable(cacheNames = "normal", unless = "#result==null")
+    @Cacheable(cacheNames = "normalUser", unless = "#result==null")
     @GetMapping
     public R findNormal() {
         return R.ok().data("normal", service.showNormalAll());
     }
 
-    @Cacheable(cacheNames = "recovery", unless = "#result==null")
+    @Cacheable(cacheNames = "recoveryUser", unless = "#result==null")
     @GetMapping("/recovery")
     public R findRecovery() {
         return R.ok().data("recovery", service.showRecoveryAll());
     }
 
-    @CachePut("normal")
+    @CachePut("normalUser")
     @PutMapping("/status")
     public R changeStatus(@RequestBody UCenter user) {
         return service.changeStatus(user) > 0 ?
                 R.ok() : R.error();
     }
 
-    @CachePut("recovery")
+    @CachePut("recoveryUser")
     @PutMapping("/del")
     public R logicDelUser(@RequestBody String id) {
         return service.logicDelUser(id) > 0 ? R.ok() : R.error();
     }
 
-    @CachePut("normal")
+    @CachePut("normalUser")
     @PutMapping("/normal")
     public R logicNormalUser(@RequestBody String id) {
         return service.logicNormalUser(id) > 0 ? R.ok() : R.error();
+    }
+
+    @DeleteMapping("/delUser")
+    public R delUserById(@RequestBody List<String> id) {
+        return service.delById(id) > 0 ? R.ok() : R.error();
     }
 }
 

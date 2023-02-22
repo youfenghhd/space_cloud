@@ -4,7 +4,7 @@ package com.hhd.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.hhd.exceptionhandler.CloudException;
-import com.hhd.pojo.entity.File;
+import com.hhd.pojo.entity.Files;
 import com.hhd.pojo.entity.UserDir;
 import com.hhd.pojo.vo.TreeNode;
 import com.hhd.service.IFileService;
@@ -87,10 +87,10 @@ public class UserDirController {
         System.out.println(result);
         String string = JSON.toJSONString(treeNode);
         userDir.setUserDir(string);
-        List<File> list = fService.getList(userid, url, result, name);
-        for (File file : list) {
+        List<Files> list = fService.getList(userid, url, result, name);
+        for (Files file : list) {
             String id1 = file.getId();
-            File files = new File();
+            Files files = new Files();
             files.setId(id1);
             files.setSize(file.getSize());
             files.setFileDir(file.getFileDir());

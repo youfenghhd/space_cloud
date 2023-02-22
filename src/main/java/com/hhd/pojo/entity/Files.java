@@ -1,16 +1,12 @@
 package com.hhd.pojo.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * <p>
@@ -24,7 +20,8 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class File implements Serializable {
+@TableName("file")
+public class Files implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -59,14 +56,14 @@ public class File implements Serializable {
     /**
      * 创建时间
      */
-    @TableField("create_time")
-    private Date createTime;
+    @TableField(value = "create_time", fill = FieldFill.INSERT)
+    private String createTime;
 
     /**
      * 更新时间
      */
-    @TableField("modified_time")
-    private Date modifiedTime;
+    @TableField(value = "modified_time", fill = FieldFill.INSERT_UPDATE)
+    private String modifiedTime;
 
     /**
      * 是否收藏
@@ -106,7 +103,7 @@ public class File implements Serializable {
      */
 //    @TableLogic(value = "null")
     @TableField(value = "logic_del_time", fill = FieldFill.DEFAULT)
-    private Date logicDelTime;
+    private String logicDelTime;
 
 
 }

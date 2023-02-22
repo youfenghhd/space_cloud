@@ -1,7 +1,7 @@
 package com.hhd.service;
 
-import com.hhd.pojo.domain.UCenter;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hhd.pojo.domain.UCenter;
 import com.hhd.pojo.vo.Register;
 import com.hhd.utils.R;
 
@@ -32,5 +32,6 @@ public interface IUCenterService extends IService<UCenter> {
      */
     Map<String, UCenter> login(UCenter center);
 
+    UCenter selectOne(String userId);
 
 }

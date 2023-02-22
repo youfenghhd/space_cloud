@@ -4,10 +4,9 @@ mybatis-plus:
     db-config:
       logic-not-delete-value: "null"
       logic-delete-field: logicDelTime
-      logic-delete-value: "is not null"
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
+    map-underscore-to-camel-case: true
 
 
 spring:
@@ -32,10 +31,20 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+  servlet:
+    multipart:
+      max-request-size: 1024MB
+      max-file-size: 1024MB
 
 aliyun:
-  accessKeyId: "LTAI5tNbwSodZsassr2m2FaL"
-  accessKeySecret: "cTQJlRxi34QPN1Wz0L48GRhADnkDHS"
+  oss:
+    file:
+      endpoint: "oss-cn-beijing.aliyuncs.com"
+      accessKeyId: "LTAI5tS7CFT4mUV63oLtajid"
+      accessKeySecret: "3A86QFxrfEzSTfk2sNVwy7aP363i1f"
+      bucketName: "huanghuida"
+      httpsPrefix: "https://"
+
 
 server:
   port: 80

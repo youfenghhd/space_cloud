@@ -2,7 +2,7 @@ package com.hhd.service.impl;
 
 import com.hhd.exceptionhandler.CloudException;
 import com.hhd.service.ICkCodeService;
-import com.hhd.utils.CheckCodeUtil;
+import com.hhd.utils.CheckCodeUtils;
 import com.hhd.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -22,7 +22,7 @@ public class CkCodeServiceImpl implements ICkCodeService {
     public String generate() {
         String generate;
         try {
-            generate = CheckCodeUtil.generateJpg();
+            generate = CheckCodeUtils.generateJpg();
         } catch (Exception e) {
             throw new CloudException(R.ERROR, R.CHECK_IO_ERR);
         }

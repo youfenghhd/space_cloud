@@ -8,7 +8,7 @@ import com.aliyun.sdk.service.dysmsapi20170525.models.SendSmsResponse;
 import com.google.gson.Gson;
 import com.hhd.exceptionhandler.CloudException;
 import com.hhd.service.ISmsService;
-import com.hhd.utils.CheckCodeUtil;
+import com.hhd.utils.CheckCodeUtils;
 import com.hhd.utils.R;
 
 
@@ -30,14 +30,14 @@ import java.util.concurrent.TimeUnit;
 public class SmsServiceImpl implements ISmsService {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
-    @Value("${aliyun.accessKeyId}")
+    @Value("${aliyun.oss.file.accessKeyId}")
     private String accessKeyId;
-    @Value("${aliyun.accessKeySecret}")
+    @Value("${aliyun.oss.file.accessKeySecret}")
     private String accessKeySecret;
 
     @Override
     public boolean getSmsCode(String tel) {
-        String code = CheckCodeUtil.generateTel(tel);
+        String code = CheckCodeUtils.generateTel(tel);
         System.out.println(code);
         StaticCredentialProvider provider = StaticCredentialProvider.create(Credential.builder()
                 .accessKeyId(accessKeyId)

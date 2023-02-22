@@ -71,6 +71,7 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
         ucenter.setPassword(MD5.encrypt(password));
         ucenter.setNickname(nickname);
         ucenter.setPortrait(portrait);
+        ucenter.setMemory(0L);
         return uMapper.insert(ucenter) > 0 ? R.ok() : R.error();
     }
 
@@ -107,6 +108,12 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
         Map<String, UCenter> map = new HashMap<>(1);
         map.put("String", exist);
         return map;
+    }
+
+    @Override
+    public UCenter selectOne(String userId) {
+        LambdaQueryWrapper<UCenter> lqw = new LambdaQueryWrapper<>();
+        return uMapper.selectOne(lqw.eq(UCenter::getId,userId));
     }
 
 

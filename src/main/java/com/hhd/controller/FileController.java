@@ -4,13 +4,12 @@ package com.hhd.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.hhd.pojo.entity.File;
+import com.hhd.pojo.entity.Files;
 import com.hhd.pojo.entity.UserDir;
 import com.hhd.pojo.vo.TreeNode;
 import com.hhd.service.IFileService;
 import com.hhd.service.IUserDirService;
 import com.hhd.utils.R;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -37,10 +36,10 @@ public class FileController {
     @Autowired
     private IUserDirService uService;
 
-    @Cacheable(cacheNames = "fuzzy")
+    @Cacheable(cacheNames = "fuzzy", unless = "#result==null")
     @GetMapping("/{userid}/{name}")
     public R findFuzzy(@PathVariable String name, @PathVariable String userid) {
-        List<File> files = fService.getFindFile(userid, name);
+        List<Files> files = fService.getFindFile(userid, name);
         System.out.println(files);
         UserDir userDir = uService.getUserDir(userid);
         TreeNode treeNode = JSON.parseObject(userDir.getUserId(), new TypeReference<TreeNode>() {
@@ -52,80 +51,83 @@ public class FileController {
 
     @CachePut("userFiles")
     @PostMapping("/addFile")
-    public R addFile(@RequestBody File file) {
-        return fService.save(file) ? R.ok().data("addFile", file) : R.error();
+    public R addFile(@RequestBody Files files) {
+        return fService.save(files) ? R.ok().data("addFile", files) : R.error();
     }
 
-    @Cacheable(cacheNames = "userFiles")
+    @Cacheable(cacheNames = "nomalFiles", unless = "#result==null")
     @GetMapping("/{userid}")
-    public R getAllFile(@PathVariable String userid) {
-        return R.ok().data("allFilesOfUser", fService.getAllFile(userid));
+    public R showNormalAll(@PathVariable String userid) {
+        return R.ok().data("allFilesOfUser", fService.showNormalAll(userid));
     }
 
+    @Cacheable(cacheNames = "recoveryFile", unless = "#result==null")
+    @GetMapping("/recovery")
+    public R findRecovery() {
+        return R.ok().data("recovery", fService.showRecoveryAll());
+    }
+
+
+    @Cacheable(cacheNames = "fileInfo", unless = "#result==null")
     @GetMapping("/info/{id}")
     public R getFileInfo(@PathVariable String id) {
         return R.ok().data("fileinfo", fService.getFileInfo(id));
     }
 
-    //    @PutMapping("/{id}/{fileName}")
-//    public R renameFile(@PathVariable String id, @PathVariable String fileName) {
-//        LambdaQueryWrapper<File> lqw = new LambdaQueryWrapper<>();
-//        File one = fService.getOne(lqw.eq(File::getId, id));
-//        File file = new File();
-//        file.setId(id);
-//        file.setFileName(fileName);
-//        file.setSize(one.getSize());
-//        return fService.updateById(file) ? R.ok() : R.error();
-//    }
+
+    @CachePut("userFiles")
     @PutMapping("/rename")
-    public R renameFile(@RequestBody File files) {
-        LambdaQueryWrapper<File> lqw = new LambdaQueryWrapper<>();
-        File file = fService.getOne(lqw.eq(File::getId, files.getId()));
+    public R renameFile(@RequestBody Files files) {
+        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
+        Files file = fService.getOne(lqw.eq(Files::getId, files.getId()));
         file.setFileName(files.getFileName());
         return fService.updateById(file) ? R.ok() : R.error();
     }
 
-
+    @CachePut("userFiles")
     @PutMapping("/collection")
     public R CollectionFile(@RequestParam("id") String[] id) {
         boolean flag = false;
         for (String s : id) {
             System.out.println(s);
-            File file = new File();
-            file.setId(s);
-            file.setCollection(1);
-            flag = fService.updateById(file);
+            Files files = new Files();
+            files.setId(s);
+            files.setCollection(1);
+            flag = fService.updateById(files);
         }
         return flag ? R.ok() : R.error();
     }
 
+    @CachePut("userFiles")
     @PutMapping("/noncollecton")
     public R nonCollectionFile(@RequestParam("id") String[] id) {
         boolean flag = false;
         for (String s : id) {
             System.out.println(s);
-            File file = new File();
-            file.setId(s);
-            file.setCollection(0);
-            flag = fService.updateById(file);
+            Files files = new Files();
+            files.setId(s);
+            files.setCollection(0);
+            flag = fService.updateById(files);
         }
         return flag ? R.ok() : R.error();
     }
 
+    @Cacheable(cacheNames = "dirFile")
     @PostMapping("/{id}")
     public R getDirFile(@RequestBody UserDir userDir) {
         return R.ok().data("filesOfDir", fService.getCurFiles(userDir));
     }
 
+    @CachePut("dirFile")
     @PostMapping("/moveFile")
     public R moveFile(@RequestBody String movingPath, @RequestParam("id") String[] id) {
         boolean flag = false;
         for (String s : id) {
             System.out.println(s);
-            File file = new File();
-            file.setId(s);
-            file.setFileDir(movingPath);
-            flag = fService.updateById(file);
+            Files files = new Files();
+            files.setId(s);
+            files.setFileDir(movingPath);
+            flag = fService.updateById(files);
         }
         return flag ? R.ok() : R.error();
     }
@@ -146,7 +148,18 @@ public class FileController {
             }
             finTreeNode(node, name, lists);
         }
+    }
 
+    @CachePut("recoveryFile")
+    @PutMapping("/del")
+    public R logicDelFile(@RequestBody String id) {
+        return fService.logicDelFile(id) > 0 ? R.ok() : R.error();
+    }
+
+    @CachePut("normalFile")
+    @PutMapping("/normal")
+    public R logicNormalFile(@RequestBody String id) {
+        return fService.logicNormalFile(id) > 0 ? R.ok() : R.error();
     }
 }
 

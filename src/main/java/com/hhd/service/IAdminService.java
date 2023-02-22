@@ -62,4 +62,11 @@ public interface IAdminService extends IService<Admin> {
      * @return
      */
     int logicNormalUser(String id);
+
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
+    int delById(List<String> id);
 }

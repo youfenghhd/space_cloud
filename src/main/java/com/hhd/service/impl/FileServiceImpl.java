@@ -1,13 +1,18 @@
 package com.hhd.service.impl;
 
+import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hhd.mapper.FileMapper;
-import com.hhd.pojo.entity.File;
+import com.hhd.pojo.entity.Files;
 import com.hhd.pojo.entity.UserDir;
 import com.hhd.service.IFileService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import wiremock.org.apache.commons.lang3.time.DateUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -19,44 +24,56 @@ import java.util.List;
  * @since 2023-02-16
  */
 @Service
-public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements IFileService {
+public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements IFileService {
+
+
+    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    @Autowired
+    private FileMapper fMapper;
 
     @Override
-    public List<File> getAllFile(String userid) {
-        LambdaQueryWrapper<File> lqw = new LambdaQueryWrapper<>();
-        return baseMapper.selectList(lqw.eq(File::getUserId, userid));
+    public List<Files> showNormalAll(String userid) {
+        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
+        return baseMapper.selectList(lqw.eq(Files::getUserId, userid));
     }
 
     @Override
-    public List<File> getFileInfo(String id) {
-        LambdaQueryWrapper<File> lqw = new LambdaQueryWrapper<>();
-        return baseMapper.selectList(lqw.eq(File::getId, id));
+    public List<Files> showRecoveryAll() {
+        DateTime nowTime = new DateTime();
+        return fMapper.showRecoveryAll(simpleDateFormat.format(nowTime));
     }
 
     @Override
-    public List<File> getCurFiles(UserDir userDir) {
-        LambdaQueryWrapper<File> lqw = new LambdaQueryWrapper<>();
-        return baseMapper.selectList(lqw.eq(File::getFileDir, userDir.getUserDir())
-                .eq(File::getUserId, userDir.getUserId()));
+    public List<Files> getFileInfo(String id) {
+        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
+        return baseMapper.selectList(lqw.eq(Files::getId, id));
     }
 
     @Override
-    public File getFiles(String id) {
-        LambdaQueryWrapper<File> lqw = new LambdaQueryWrapper<>();
-        return baseMapper.selectOne(lqw.eq(File::getId, id));
+    public List<Files> getCurFiles(UserDir userDir) {
+        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
+        return baseMapper.selectList(lqw.eq(Files::getFileDir, userDir.getUserDir())
+                .eq(Files::getUserId, userDir.getUserId()));
     }
 
     @Override
-    public List<File> getFindFile(String userid, String name) {
-        LambdaQueryWrapper<File> lqw = new LambdaQueryWrapper<>();
-        return baseMapper.selectList(lqw.eq(File::getUserId, userid).like(File::getFileName, name));
+    public Files getFiles(String id) {
+        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
+        return baseMapper.selectOne(lqw.eq(Files::getId, id));
     }
 
     @Override
-    public List<File> getList(String userid, String url, int result, String name) {
-        LambdaQueryWrapper<File> lqw = new LambdaQueryWrapper<>();
-        List<File> files = baseMapper.selectList(lqw.eq(File::getUserId, userid).like(File::getFileDir, url));
-        for (File file : files) {
+    public List<Files> getFindFile(String userid, String name) {
+        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
+        return baseMapper.selectList(lqw.eq(Files::getUserId, userid).like(Files::getFileName, name));
+    }
+
+    @Override
+    public List<Files> getList(String userid, String url, int result, String name) {
+        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
+        List<Files> files = baseMapper.selectList(lqw.eq(Files::getUserId, userid).like(Files::getFileDir, url));
+        for (Files file : files) {
             String fileDir = file.getFileDir();
             String[] split = fileDir.split("/", -1);
             split[result] = name;
@@ -72,5 +89,23 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements IF
         System.out.println(files);
 
         return files;
+    }
+
+    @Override
+    public int logicDelFile(String id) {
+        LambdaUpdateWrapper<Files> lqw = new LambdaUpdateWrapper<>();
+        return baseMapper.update(new Files(), lqw.set(Files::getLogicDelTime, simpleDateFormat.format(DateUtils.addDays(new DateTime(), 30)))
+                .eq(Files::getId, id));
+    }
+
+    @Override
+    public int logicNormalFile(String id) {
+        return fMapper.logicNormalFile(id);
+    }
+
+    @Override
+    public List<Files> selectMd5File(String md5) {
+        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
+        return fMapper.selectList(lqw.eq(Files::getMd5,md5));
     }
 }

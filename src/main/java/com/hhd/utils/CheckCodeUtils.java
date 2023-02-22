@@ -16,7 +16,7 @@ import java.util.Random;
  * 生成验证码工具类
  */
 
-public class CheckCodeUtil {
+public class CheckCodeUtils {
 
     private static final String VERIFY_CODES = "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final Random random = new Random();
@@ -24,7 +24,7 @@ public class CheckCodeUtil {
 
     public static String generateJpg() throws Exception {
         OutputStream fos = Files.newOutputStream(Paths.get("src/main/resources/static/a.jpg"));
-        return CheckCodeUtil.outputVerifyImage(100, 50, fos, 4);
+        return CheckCodeUtils.outputVerifyImage(100, 50, fos, 4);
     }
 
     public static String generateTel(String tel) {

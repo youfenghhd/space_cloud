@@ -70,5 +70,10 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         return uMapper.logicNormalUser(id);
     }
 
+    @Override
+    public int delById(List<String> id) {
+        return uMapper.delById(id);
+    }
+
 
 }

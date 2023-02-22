@@ -2,10 +2,7 @@ package com.hhd.mapper;
 
 import com.hhd.pojo.domain.UCenter;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -28,7 +25,7 @@ public interface UcenterMapper extends BaseMapper<UCenter> {
      * @return
      */
 
-    @Update("update ucenter set logic_del_time = null ,status = 1 where id = #{id}")
+    @Update("update ucenter set logic_del_time = null where id = #{id}")
     int logicNormalUser(@Param("id") String id);
 
     /**
@@ -39,4 +36,12 @@ public interface UcenterMapper extends BaseMapper<UCenter> {
      */
     @Select("select * from ucenter where logic_del_time is not null and logic_del_time > #{nowTime}")
     List<UCenter> showRecoveryAll(String nowTime);
+
+    /**
+     * 真实删除
+     *
+     * @param id
+     * @return
+     */
+    int delById(List<String> id);
 }
