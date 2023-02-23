@@ -1,10 +1,7 @@
 package com.hhd.utils;
 
-import com.aliyun.oss.OSSClient;
-import com.aliyun.oss.OSSClientBuilder;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,7 +9,7 @@ import org.springframework.stereotype.Component;
  * @date 2023/2/19 22:24:45
  */
 @Component
-public class initOssCilent implements InitializingBean {
+public class InitOssClient implements InitializingBean {
     @Value("${aliyun.oss.file.httpsPrefix}")
     private String httpsPrefix;
     @Value("${aliyun.oss.file.endpoint}")
@@ -23,6 +20,8 @@ public class initOssCilent implements InitializingBean {
     private String accessKeySecret;
     @Value("${aliyun.oss.file.bucketName}")
     private String bucketName;
+    @Value("${aliyun.oss.file.regionId}")
+    private String regionId;
 
 
     public static String HTTPS_PREFIX;
@@ -30,6 +29,7 @@ public class initOssCilent implements InitializingBean {
     public static String ACCESS_KEY_ID;
     public static String ACCESS_KEY_SECRET;
     public static String BUCKET_NAME;
+    public static String REGION_ID;
 
     @Override
     public void afterPropertiesSet() {
@@ -38,11 +38,8 @@ public class initOssCilent implements InitializingBean {
         ACCESS_KEY_ID = accessKeyId;
         ACCESS_KEY_SECRET = accessKeySecret;
         BUCKET_NAME = bucketName;
+        REGION_ID = regionId;
     }
 
-    @Bean
-    public OSSClient ossClient() {
-        return (OSSClient) new OSSClientBuilder().build(ossEndpoint, accessKeyId, accessKeySecret);
 
-    }
 }

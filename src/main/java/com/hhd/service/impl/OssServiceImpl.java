@@ -1,23 +1,23 @@
 package com.hhd.service.impl;
 
 import cn.hutool.core.date.DateTime;
-import com.aliyun.oss.ClientException;
-import com.aliyun.oss.OSS;
-import com.aliyun.oss.OSSClientBuilder;
-import com.aliyun.oss.OSSException;
+import com.aliyun.oss.*;
 import com.aliyun.oss.model.*;
 import com.aliyun.vod.upload.impl.UploadVideoImpl;
 import com.aliyun.vod.upload.req.UploadStreamRequest;
-import com.aliyun.vod.upload.req.UploadVideoRequest;
 import com.aliyun.vod.upload.resp.UploadStreamResponse;
-import com.aliyun.vod.upload.resp.UploadVideoResponse;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hhd.exceptionhandler.CloudException;
 import com.hhd.pojo.entity.Files;
+import com.hhd.service.IFileService;
 import com.hhd.service.IOssService;
 import com.hhd.utils.MD5;
-import com.hhd.utils.initOssCilent;
+import com.hhd.utils.InitOssClient;
+import com.hhd.utils.R;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import wiremock.com.github.jknack.handlebars.Lambda;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +33,8 @@ import java.util.Map;
 @Service
 public class OssServiceImpl implements IOssService {
     private final MD5 md5 = new MD5();
+    @Autowired
+    private IFileService fService;
 
     @Override
     public Map<String, Files> upload(MultipartFile file, Files files) {
@@ -41,13 +43,13 @@ public class OssServiceImpl implements IOssService {
         files.setFileName(file.getOriginalFilename().substring(0, file.getOriginalFilename().indexOf(".")));
         files.setMd5(md5.getFileMd5String(file));
 
-        String url = initOssCilent.HTTPS_PREFIX + initOssCilent.BUCKET_NAME + "." + initOssCilent.END_POINT + "/" + objectName;
+        String url = InitOssClient.HTTPS_PREFIX + InitOssClient.BUCKET_NAME + "." + InitOssClient.END_POINT + "/" + objectName;
         files.setUrl(url);
         System.out.println(files);
-        OSS ossClient = new OSSClientBuilder().build(initOssCilent.END_POINT, initOssCilent.ACCESS_KEY_ID, initOssCilent.ACCESS_KEY_SECRET);
+        OSS ossClient = new OSSClientBuilder().build(InitOssClient.END_POINT, InitOssClient.ACCESS_KEY_ID, InitOssClient.ACCESS_KEY_SECRET);
         try {
             // 创建InitiateMultipartUploadRequest对象。
-            InitiateMultipartUploadRequest request = new InitiateMultipartUploadRequest(initOssCilent.BUCKET_NAME, objectName);
+            InitiateMultipartUploadRequest request = new InitiateMultipartUploadRequest(InitOssClient.BUCKET_NAME, objectName);
 
             // 初始化分片。
             InitiateMultipartUploadResult upresult = ossClient.initiateMultipartUpload(request);
@@ -74,7 +76,7 @@ public class OssServiceImpl implements IOssService {
                 // 跳过已经上传的分片。
                 instream.skip(startPos);
                 UploadPartRequest uploadPartRequest = new UploadPartRequest();
-                uploadPartRequest.setBucketName(initOssCilent.BUCKET_NAME);
+                uploadPartRequest.setBucketName(InitOssClient.BUCKET_NAME);
                 uploadPartRequest.setKey(objectName);
                 uploadPartRequest.setUploadId(uploadId);
                 uploadPartRequest.setInputStream(instream);
@@ -87,7 +89,7 @@ public class OssServiceImpl implements IOssService {
             }
 
             CompleteMultipartUploadRequest completeMultipartUploadRequest =
-                    new CompleteMultipartUploadRequest(initOssCilent.BUCKET_NAME, objectName, uploadId, parteTags);
+                    new CompleteMultipartUploadRequest(InitOssClient.BUCKET_NAME, objectName, uploadId, parteTags);
 
             CompleteMultipartUploadResult completeMultipartUploadResult = ossClient.completeMultipartUpload(completeMultipartUploadRequest);
             System.out.println(completeMultipartUploadResult.getETag());
@@ -126,8 +128,8 @@ public class OssServiceImpl implements IOssService {
 
         try {
             InputStream inputStream = file.getInputStream();
-            UploadStreamRequest request = new UploadStreamRequest(initOssCilent.ACCESS_KEY_ID,
-                    initOssCilent.ACCESS_KEY_SECRET, title, fileName, inputStream);
+            UploadStreamRequest request = new UploadStreamRequest(InitOssClient.ACCESS_KEY_ID,
+                    InitOssClient.ACCESS_KEY_SECRET, title, fileName, inputStream);
 
             UploadVideoImpl uploader = new UploadVideoImpl();
             UploadStreamResponse response = uploader.uploadStream(request);
@@ -147,4 +149,28 @@ public class OssServiceImpl implements IOssService {
             return null;
         }
     }
+
+    @Override
+    public String delete(String id) {
+        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(Files::getId, id);
+        Files one = fService.getOne(lqw);
+        String time = one.getCreateTime();
+        String createTime = new DateTime(time).toDateStr();
+        String fileName = one.getFileName();
+        fService.remove(lqw);
+        OSS ossClient = new OSSClientBuilder().build(InitOssClient.END_POINT,
+                InitOssClient.ACCESS_KEY_ID, InitOssClient.ACCESS_KEY_SECRET);
+        try{
+            String fileKey =createTime + "/" + fileName;
+            ossClient.deleteObject(InitOssClient.BUCKET_NAME, fileKey);
+        }catch (Exception e){
+            return "error";
+        }finally {
+            ossClient.shutdown();
+        }
+        return "success";
+    }
+
+
 }

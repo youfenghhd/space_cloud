@@ -44,7 +44,7 @@ aliyun:
       accessKeySecret: "3A86QFxrfEzSTfk2sNVwy7aP363i1f"
       bucketName: "huanghuida"
       httpsPrefix: "https://"
-
+      regionId: "cn-Shanghai"
 
 server:
   port: 80

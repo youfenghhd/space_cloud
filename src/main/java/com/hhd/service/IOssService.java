@@ -22,8 +22,16 @@ public interface IOssService {
     /**
      * 上传视频点播
      * @param file vedio and audio
+     * @param files 你管那么多干嘛
      * @return
      */
     Files uploadVideo(MultipartFile file,Files files);
+
+    /**
+     * 删东西啊还能干嘛
+     * @param id 文件id
+     * @return 成功/失败
+     */
+    String delete(String id);
 
 }
