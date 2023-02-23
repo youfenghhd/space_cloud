@@ -25,16 +25,6 @@ import java.util.List;
 public class AdminController {
     @Autowired
     private IAdminService service;
-//    @PostMapping("/save")
-//    public String instr() {
-//        Admin admin = new Admin();
-//        admin.setAdminName("罗苡雪");
-//        admin.setLoginName("lyx");
-//        admin.setPassword("e10adc3949ba59abbe56e057f20f883e");
-//        System.out.println(admin);
-//        return service.insert(admin) > 0 ? "success" : "error";
-//    }
-
     @Cacheable(cacheNames = "normalUser", unless = "#result==null")
     @GetMapping
     public R findNormal() {

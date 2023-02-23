@@ -57,7 +57,7 @@ public class UserDirController {
         String string = JSON.toJSONString(tNode);
         System.out.println(string);
         userDir.setUserDir(string);
-        return uService.setUserDir(userDir) > 0 ? R.ok().data("dir", userDir) : R.error().data("dir", null);
+        return uService.setUserDir(userDir) > 0 ? R.ok().data("dir", userDir) : R.error();
 
     }
 

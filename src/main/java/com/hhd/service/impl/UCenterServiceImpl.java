@@ -106,7 +106,7 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
             throw new CloudException(R.ERROR, R.CHECK_ERROR);
         }
         Map<String, UCenter> map = new HashMap<>(1);
-        map.put("String", exist);
+        map.put("token", exist);
         return map;
     }
 

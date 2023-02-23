@@ -199,7 +199,7 @@ public class OssServiceImpl implements IOssService {
             //调用初始化对象的方法实现删除
             client.getAcsResponse(request);
         } catch (Exception e) {
-            throw new CloudException(R.ERROR, "音/视频删除失败");
+            throw new CloudException(R.ERROR, R.DELETE_VA_ERR);
         }
         return R.ok();
     }

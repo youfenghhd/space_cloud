@@ -28,6 +28,7 @@ public class R implements Serializable {
     public static final String INTER_ERR = "网络异常";
     public static final String SEND_SMS_ERR = "短信发送失败";
     public static final String NAME_REPEAT = "名称重复";
+    public static final String DELETE_VA_ERR = "删除音/视频失败";
     public static final Integer SUCCESS = 20000;
     public static final Integer ERROR = 20001;
 

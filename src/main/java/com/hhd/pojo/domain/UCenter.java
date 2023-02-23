@@ -78,6 +78,7 @@ public class UCenter implements Serializable {
     /**
      * 下载地址
      */
+    @TableField(value = "download_add")
     private String downLoadAdd;
 
     /**
