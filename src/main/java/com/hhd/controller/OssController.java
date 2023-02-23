@@ -18,6 +18,7 @@ import com.hhd.utils.InitOssClient;
 import com.hhd.utils.MD5;
 import com.hhd.utils.R;
 import com.hhd.utils.mimeTypeUtils;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -159,8 +160,9 @@ public class OssController {
         return R.ok().data("urlList", urlList);
     }
 
+    @Operation(method = "下载文件")
     @PostMapping("/downLoad")
-    public R downLoad(@RequestBody List<String> id){
+    public R downLoad(@RequestBody List<String> id) {
         for (String thread : id) {
             oService.downLoad(thread);
         }
