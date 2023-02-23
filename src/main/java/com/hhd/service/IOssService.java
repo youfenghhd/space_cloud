@@ -4,7 +4,6 @@ import com.hhd.pojo.entity.Files;
 import com.hhd.utils.R;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,5 +47,5 @@ public interface IOssService {
      * @param id 根据文件下载
      * @return 返回状态
      */
-    R downLoad(List<String> id);
+    R downLoad(String id);
 }

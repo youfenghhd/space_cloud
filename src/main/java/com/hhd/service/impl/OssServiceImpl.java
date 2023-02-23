@@ -21,6 +21,7 @@ import com.hhd.utils.MD5;
 import com.hhd.utils.InitOssClient;
 import com.hhd.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import wiremock.com.github.jknack.handlebars.Lambda;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static com.hhd.utils.InitVodClient.initVodClient;
 
@@ -204,54 +206,56 @@ public class OssServiceImpl implements IOssService {
         return R.ok();
     }
 
+    @Async
     @Override
-    public R downLoad(List<String> id) {
-        for (String s : id) {
-            OSS ossClient = new OSSClientBuilder().build(InitOssClient.END_POINT,
-                    InitOssClient.ACCESS_KEY_ID, InitOssClient.ACCESS_KEY_SECRET);
-            LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
-            Files one = fService.getOne(lqw.eq(Files::getId, s));
-            LambdaQueryWrapper<UCenter> lqw1 = new LambdaQueryWrapper<>();
-            UCenter user = uService.getOne(lqw1.eq(UCenter::getId, one.getUserId()));
-            String objectName = one.getUrl().substring(47);
+    public R downLoad(String id) {
+        try {
+            TimeUnit.SECONDS.sleep(5);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        OSS ossClient = new OSSClientBuilder().build(InitOssClient.END_POINT,
+                InitOssClient.ACCESS_KEY_ID, InitOssClient.ACCESS_KEY_SECRET);
+        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
+        Files one = fService.getOne(lqw.eq(Files::getId, id));
+        LambdaQueryWrapper<UCenter> lqw1 = new LambdaQueryWrapper<>();
+        UCenter user = uService.getOne(lqw1.eq(UCenter::getId, one.getUserId()));
+        String objectName = one.getUrl().substring(47);
 
-            System.out.println(objectName);
+        System.out.println(objectName);
 
-            try {
-                DownloadFileRequest downloadFileRequest = new DownloadFileRequest(InitOssClient.BUCKET_NAME, objectName);
-                // 指定Object下载到本地文件的完整路径
-                downloadFileRequest.setDownloadFile(user.getDownLoadAdd()+"\\"+one.getFileName()+"."+one.getType());
-                downloadFileRequest.setPartSize(1 * 1024 * 1024);
-                downloadFileRequest.setTaskNum(10);
-                downloadFileRequest.setEnableCheckpoint(true);
-                // 设置断点记录文件的完整路径
-                downloadFileRequest.setCheckpointFile(user.getDownLoadAdd()+"\\"+one.getFileName()+".dcp");
+        try {
+            DownloadFileRequest downloadFileRequest = new DownloadFileRequest(InitOssClient.BUCKET_NAME, objectName);
+            // 指定Object下载到本地文件的完整路径
+            downloadFileRequest.setDownloadFile(user.getDownLoadAdd() + "\\" + one.getFileName() + "." + one.getType());
+            downloadFileRequest.setPartSize(1 * 1024 * 1024);
+            downloadFileRequest.setTaskNum(10);
+            downloadFileRequest.setEnableCheckpoint(true);
+            // 设置断点记录文件的完整路径
+            downloadFileRequest.setCheckpointFile(user.getDownLoadAdd() + "\\" + one.getFileName() + ".dcp");
 
 
-                DownloadFileResult downloadRes = ossClient.downloadFile(downloadFileRequest);
+            DownloadFileResult downloadRes = ossClient.downloadFile(downloadFileRequest);
 
-                ObjectMetadata objectMetadata = downloadRes.getObjectMetadata();
+            ObjectMetadata objectMetadata = downloadRes.getObjectMetadata();
 
-            } catch (OSSException oe) {
-                System.out.println("Caught an OSSException, which means your request made it to OSS, "
-                        + "but was rejected with an error response for some reason.");
-                System.out.println("Error Message:" + oe.getErrorMessage());
-                System.out.println("Error Code:" + oe.getErrorCode());
-                System.out.println("Request ID:" + oe.getRequestId());
-                System.out.println("Host ID:" + oe.getHostId());
-            } catch (Throwable ce) {
-                System.out.println("Caught an ClientException, which means the client encountered "
-                        + "a serious internal problem while trying to communicate with OSS, "
-                        + "such as not being able to access the network.");
-                System.out.println("Error Message:" + ce.getMessage());
-            } finally {
-                if (ossClient != null) {
-                    ossClient.shutdown();
-                }
+        } catch (OSSException oe) {
+            System.out.println("Caught an OSSException, which means your request made it to OSS, "
+                    + "but was rejected with an error response for some reason.");
+            System.out.println("Error Message:" + oe.getErrorMessage());
+            System.out.println("Error Code:" + oe.getErrorCode());
+            System.out.println("Request ID:" + oe.getRequestId());
+            System.out.println("Host ID:" + oe.getHostId());
+        } catch (Throwable ce) {
+            System.out.println("Caught an ClientException, which means the client encountered "
+                    + "a serious internal problem while trying to communicate with OSS, "
+                    + "such as not being able to access the network.");
+            System.out.println("Error Message:" + ce.getMessage());
+        } finally {
+            if (ossClient != null) {
+                ossClient.shutdown();
             }
         }
         return R.ok();
     }
-
-
 }

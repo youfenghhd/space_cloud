@@ -161,7 +161,10 @@ public class OssController {
 
     @PostMapping("/downLoad")
     public R downLoad(@RequestBody List<String> id){
-        return oService.downLoad(id);
+        for (String thread : id) {
+            oService.downLoad(thread);
+        }
+        return R.ok();
     }
 }
 
