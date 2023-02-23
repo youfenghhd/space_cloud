@@ -5,11 +5,9 @@ import com.hhd.pojo.domain.UCenter;
 import com.hhd.pojo.vo.Register;
 import com.hhd.service.IUCenterService;
 import com.hhd.utils.R;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -39,6 +37,26 @@ public class UCenterController {
     @PostMapping("/register")
     public R register(@RequestBody Register register) {
         return uService.register(register);
+    }
+
+    @Operation(summary = "根据id查询用户信息")
+    @GetMapping("getInfo/{id}")
+    public R getInfo(@PathVariable String id) {
+        UCenter uCenter = uService.selectOne(id);
+        return R.ok().data("user", uCenter);
+    }
+
+    @PostMapping("update")
+    public R updateInfo(@RequestBody UCenter uCenter) {
+        UCenter original = uService.selectOne(uCenter.getId());
+        UCenter end = new UCenter();
+        end.setId(uCenter.getId());
+        end.setMemory(original.getMemory());
+        end.setPortrait(uCenter.getPortrait());
+        end.setDownLoadAdd(uCenter.getDownLoadAdd());
+        end.setNickname(uCenter.getNickname());
+        end.setPassword(uCenter.getPassword());
+        return uService.updateById(end)?R.ok():R.error();
     }
 }
 

@@ -6,11 +6,17 @@ import com.aliyun.oss.model.*;
 import com.aliyun.vod.upload.impl.UploadVideoImpl;
 import com.aliyun.vod.upload.req.UploadStreamRequest;
 import com.aliyun.vod.upload.resp.UploadStreamResponse;
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.vod.model.v20170321.DeleteVideoRequest;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hhd.exceptionhandler.CloudException;
+import com.hhd.mapper.FileMapper;
+import com.hhd.pojo.domain.UCenter;
 import com.hhd.pojo.entity.Files;
 import com.hhd.service.IFileService;
 import com.hhd.service.IOssService;
+import com.hhd.service.IUCenterService;
+import com.hhd.utils.InitVodClient;
 import com.hhd.utils.MD5;
 import com.hhd.utils.InitOssClient;
 import com.hhd.utils.R;
@@ -26,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.hhd.utils.InitVodClient.initVodClient;
+
 /**
  * @author -无心
  * @date 2023/2/18 22:18:00
@@ -35,6 +43,8 @@ public class OssServiceImpl implements IOssService {
     private final MD5 md5 = new MD5();
     @Autowired
     private IFileService fService;
+    @Autowired
+    private IUCenterService uService;
 
     @Override
     public Map<String, Files> upload(MultipartFile file, Files files) {
@@ -150,26 +160,97 @@ public class OssServiceImpl implements IOssService {
         }
     }
 
+
     @Override
-    public String delete(String id) {
+    public R delete(String id) {
         LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
         lqw.eq(Files::getId, id);
         Files one = fService.getOne(lqw);
         String time = one.getCreateTime();
         String createTime = new DateTime(time).toDateStr();
         String fileName = one.getFileName();
-        fService.remove(lqw);
+        fService.delById(id);
         OSS ossClient = new OSSClientBuilder().build(InitOssClient.END_POINT,
                 InitOssClient.ACCESS_KEY_ID, InitOssClient.ACCESS_KEY_SECRET);
-        try{
-            String fileKey =createTime + "/" + fileName;
+        try {
+            String fileKey = createTime + "/" + fileName;
             ossClient.deleteObject(InitOssClient.BUCKET_NAME, fileKey);
-        }catch (Exception e){
-            return "error";
-        }finally {
+        } catch (Exception e) {
+            return R.error();
+        } finally {
             ossClient.shutdown();
         }
-        return "success";
+        return R.ok();
+    }
+
+    @Override
+    public R deleteVa(String id) {
+        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
+        Files one = fService.getOne(lqw.eq(Files::getId, id));
+        String videoId = one.getVideoId();
+        fService.delById(id);
+        try {
+            //初始化对象
+            DefaultAcsClient client = initVodClient();
+            //创建删除视频request对象
+            DeleteVideoRequest request = new DeleteVideoRequest();
+            //向request设置视频id
+            request.setVideoIds(videoId);
+            //调用初始化对象的方法实现删除
+            client.getAcsResponse(request);
+        } catch (Exception e) {
+            throw new CloudException(R.ERROR, "音/视频删除失败");
+        }
+        return R.ok();
+    }
+
+    @Override
+    public R downLoad(List<String> id) {
+        for (String s : id) {
+            OSS ossClient = new OSSClientBuilder().build(InitOssClient.END_POINT,
+                    InitOssClient.ACCESS_KEY_ID, InitOssClient.ACCESS_KEY_SECRET);
+            LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
+            Files one = fService.getOne(lqw.eq(Files::getId, s));
+            LambdaQueryWrapper<UCenter> lqw1 = new LambdaQueryWrapper<>();
+            UCenter user = uService.getOne(lqw1.eq(UCenter::getId, one.getUserId()));
+            String objectName = one.getUrl().substring(47);
+
+            System.out.println(objectName);
+
+            try {
+                DownloadFileRequest downloadFileRequest = new DownloadFileRequest(InitOssClient.BUCKET_NAME, objectName);
+                // 指定Object下载到本地文件的完整路径
+                downloadFileRequest.setDownloadFile(user.getDownLoadAdd()+"\\"+one.getFileName()+"."+one.getType());
+                downloadFileRequest.setPartSize(1 * 1024 * 1024);
+                downloadFileRequest.setTaskNum(10);
+                downloadFileRequest.setEnableCheckpoint(true);
+                // 设置断点记录文件的完整路径
+                downloadFileRequest.setCheckpointFile(user.getDownLoadAdd()+"\\"+one.getFileName()+".dcp");
+
+
+                DownloadFileResult downloadRes = ossClient.downloadFile(downloadFileRequest);
+
+                ObjectMetadata objectMetadata = downloadRes.getObjectMetadata();
+
+            } catch (OSSException oe) {
+                System.out.println("Caught an OSSException, which means your request made it to OSS, "
+                        + "but was rejected with an error response for some reason.");
+                System.out.println("Error Message:" + oe.getErrorMessage());
+                System.out.println("Error Code:" + oe.getErrorCode());
+                System.out.println("Request ID:" + oe.getRequestId());
+                System.out.println("Host ID:" + oe.getHostId());
+            } catch (Throwable ce) {
+                System.out.println("Caught an ClientException, which means the client encountered "
+                        + "a serious internal problem while trying to communicate with OSS, "
+                        + "such as not being able to access the network.");
+                System.out.println("Error Message:" + ce.getMessage());
+            } finally {
+                if (ossClient != null) {
+                    ossClient.shutdown();
+                }
+            }
+        }
+        return R.ok();
     }
 
 

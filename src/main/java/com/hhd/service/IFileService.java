@@ -38,4 +38,6 @@ public interface IFileService extends IService<Files> {
     int logicNormalFile(String id);
     List<Files> selectMd5File(String md5);
 
+    int delById(String id);
+
 }

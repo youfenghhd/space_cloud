@@ -8,6 +8,11 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true
 
+# 生产环境需设置为false
+springfox:
+  documentation:
+    swagger-ui:
+      enabled: true
 
 spring:
   datasource:
@@ -35,6 +40,14 @@ spring:
     multipart:
       max-request-size: 1024MB
       max-file-size: 1024MB
+  profiles:
+    active: test
+
+
+
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
 
 aliyun:
   oss:

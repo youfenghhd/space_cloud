@@ -67,13 +67,19 @@ public class UCenter implements Serializable {
     /**
      * 内存
      */
+    @TableField(fill = FieldFill.INSERT)
     private Long memory;
 
     /**
      * 1启用/0禁用
      */
-
     private Boolean status;
+
+    /**
+     * 下载地址
+     */
+    private String downLoadAdd;
+
     /**
      * 逻辑删除	null表示正常	有date_time表示逻辑删除	noew_tiame-date_time>30day表示真实删除，设置数据库事件定时清理date_time>30day的记录
      */

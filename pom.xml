@@ -145,6 +145,19 @@
             <artifactId>commons-pool2</artifactId>
         </dependency>
 
+<!--        Swagger-->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+
+
         <!--      阿里云sms短信服务依赖-->
         <dependency>
             <groupId>com.aliyun</groupId>

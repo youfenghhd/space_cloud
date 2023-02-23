@@ -1,8 +1,10 @@
 package com.hhd.service;
 
 import com.hhd.pojo.entity.Files;
+import com.hhd.utils.R;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,6 +34,19 @@ public interface IOssService {
      * @param id 文件id
      * @return 成功/失败
      */
-    String delete(String id);
+    R delete(String id);
 
+    /**
+     * 删点播呗
+     * @param id videoId
+     * @return 成功/失败
+     */
+    R deleteVa(String id);
+
+    /**
+     * 断点续传下载
+     * @param id 根据文件下载
+     * @return 返回状态
+     */
+    R downLoad(List<String> id);
 }

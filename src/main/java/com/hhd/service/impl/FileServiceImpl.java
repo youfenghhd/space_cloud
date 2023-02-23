@@ -108,4 +108,9 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
         LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
         return fMapper.selectList(lqw.eq(Files::getMd5,md5));
     }
+
+    @Override
+    public int delById(String id) {
+        return fMapper.delById(id);
+    }
 }
