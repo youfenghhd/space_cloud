@@ -7,6 +7,7 @@ import com.hhd.mapper.UcenterMapper;
 import com.hhd.pojo.domain.UCenter;
 import com.hhd.pojo.vo.Register;
 import com.hhd.service.IUCenterService;
+import com.hhd.utils.JwtUtils;
 import com.hhd.utils.MD5;
 import com.hhd.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,12 +102,13 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
             throw new CloudException(R.ERROR, R.PASSWORD_ERR);
         }
 
-        String code1 = redisTemplate.opsForValue().get("checkCode");
-        if (!code.equals(code1)) {
-            throw new CloudException(R.ERROR, R.CHECK_ERROR);
-        }
+//        String code1 = redisTemplate.opsForValue().get("checkCode");
+//        if (!code.equals(code1)) {
+//            throw new CloudException(R.ERROR, R.CHECK_ERROR);
+//        }
+        String token = JwtUtils.getJwtToken(exist);
         Map<String, UCenter> map = new HashMap<>(1);
-        map.put("token", exist);
+        map.put(token, exist);
         return map;
     }
 

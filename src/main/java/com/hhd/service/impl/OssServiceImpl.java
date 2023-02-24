@@ -209,11 +209,6 @@ public class OssServiceImpl implements IOssService {
     @Async
     @Override
     public R downLoad(String id) {
-        try {
-            TimeUnit.SECONDS.sleep(5);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
         System.out.println(Thread.currentThread().getName());
         OSS ossClient = new OSSClientBuilder().build(InitOssClient.END_POINT,
                 InitOssClient.ACCESS_KEY_ID, InitOssClient.ACCESS_KEY_SECRET);

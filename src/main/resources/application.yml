@@ -18,9 +18,9 @@ spring:
   datasource:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://123.56.116.10:3306/hhd?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=Asia/Shanghai
-      username: hhd
-      password: 111111
+      url: jdbc:mysql:///hhd?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=Asia/Shanghai
+      username: "root"
+      password: "000000"
       initial-size: 10
       max-active: 20
   redis:

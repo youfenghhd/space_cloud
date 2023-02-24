@@ -39,6 +39,7 @@ public class UCenterController {
         return uService.register(register);
     }
 
+
     @Operation(summary = "根据id查询用户信息")
     @GetMapping("getInfo/{id}")
     public R getInfo(@PathVariable String id) {

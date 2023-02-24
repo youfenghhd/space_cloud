@@ -10,6 +10,8 @@ import com.hhd.pojo.vo.TreeNode;
 import com.hhd.service.IFileService;
 import com.hhd.service.IUserDirService;
 import com.hhd.utils.R;
+import com.hhd.utils.TokenUtil;
+import com.hhd.utils.UserLoginToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -54,7 +56,7 @@ public class FileController {
     public R addFile(@RequestBody Files files) {
         return fService.save(files) ? R.ok().data("addFile", files) : R.error();
     }
-
+    @UserLoginToken
     @Cacheable(cacheNames = "nomalFiles", unless = "#result==null")
     @GetMapping("/{userid}")
     public R showNormalAll(@PathVariable String userid) {

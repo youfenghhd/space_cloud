@@ -4,6 +4,7 @@ package com.hhd.controller;
 import com.hhd.pojo.domain.UCenter;
 import com.hhd.service.IAdminService;
 import com.hhd.utils.R;
+import com.hhd.utils.UserLoginToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -31,11 +32,13 @@ public class AdminController {
         return R.ok().data("normal", service.showNormalAll());
     }
 
+
     @Cacheable(cacheNames = "recoveryUser", unless = "#result==null")
     @GetMapping("/recovery")
     public R findRecovery() {
         return R.ok().data("recovery", service.showRecoveryAll());
     }
+
 
     @CachePut("normalUser")
     @PutMapping("/status")
