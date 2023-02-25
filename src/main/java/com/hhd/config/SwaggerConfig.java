@@ -28,6 +28,8 @@ import java.util.List;
 @Configuration
 @EnableOpenApi
 public class SwaggerConfig {
+//    http://localhost/doc.html
+//    http://localhost/swagger-ui/index.html
     @Bean
     public Docket createRestApi(){
         //返回文档概要信息
@@ -45,7 +47,6 @@ public class SwaggerConfig {
         return new ApiInfoBuilder()
                 .title("Space_Cloud API接口文档")
                 .description("space_cloud网盘项目")
-//                .termsOfServiceUrl("http://localhost:8088")
                 .contact(new Contact("黄辉达","","1610766552@qq.com"))
                 .version("1.0.0")
                 .build();

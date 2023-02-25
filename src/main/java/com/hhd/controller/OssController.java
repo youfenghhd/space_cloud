@@ -56,7 +56,7 @@ public class OssController {
         return R.ok().data("url", entry.getKey());
     }
 
-    @Operation(summary = "多线程分片式断点续传上传文件")
+    @Operation(summary = "分片式断点续传上传文件")
     @PostMapping("/upload")
     public R upload(MultipartFile file, String dir, String userId) {
         UCenter user = uService.selectOne(userId);
@@ -71,7 +71,8 @@ public class OssController {
                     exist.setUserId(userId);
                     exist.setFileDir(dir);
                     exist.setId(null);
-                    return fService.save(exist) ? R.ok().data(exist.getUrl(), exist) : R.error();
+                    return fService.save(exist) ?
+                            R.ok().data("url", exist.getUrl()).data("files", exist).message("文件已实现秒传") : R.error();
                 }
             }
             Files files = new Files();
@@ -109,22 +110,23 @@ public class OssController {
 
 
     @Operation(summary = "删除oss云端文件")
-    @DeleteMapping("/remove")
-    public R remove(@RequestBody String[] idList, @RequestParam String userId) {
+    @DeleteMapping("/remove/{userId}")
+    public R remove(@RequestBody String[] idList, @PathVariable String userId) {
+        R r = R.error();
         LambdaQueryWrapper<UCenter> lqw = new LambdaQueryWrapper<>();
         UCenter user = uService.getOne(lqw.eq(UCenter::getId, userId));
         for (String s : idList) {
-            LambdaQueryWrapper<Files> lqw1 = new LambdaQueryWrapper<>();
             Files files = fService.getFiles(s);
             user.setMemory(user.getMemory() - files.getSize());
             user.setId(userId);
             uService.updateById(user);
             if ("video".equals(files.getFileType()) || "audio".equals(files.getFileType())) {
-                return oService.deleteVa(s);
+                r = oService.deleteVa(s);
+                break;
             }
-            return oService.delete(s);
+                r = oService.delete(s);
         }
-        return null;
+        return r;
     }
 
 
@@ -158,10 +160,12 @@ public class OssController {
                 }
             } catch (ServerException e) {
                 e.printStackTrace();
+                return R.error();
             } catch (ClientException e) {
                 System.out.println("ErrCode:" + e.getErrCode());
                 System.out.println("ErrMsg:" + e.getErrMsg());
                 System.out.println("RequestId:" + e.getRequestId());
+                return R.error();
             }
 
         }
