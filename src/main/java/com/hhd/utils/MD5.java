@@ -52,7 +52,7 @@ public class MD5 {
 //    }
 
 
-    public  String getFileMd5String(MultipartFile file) {
+    public static String getFileMd5String(MultipartFile file) {
         try {
             //获取文件的byte信息
             byte[] uploadBytes = file.getBytes();
@@ -66,7 +66,6 @@ public class MD5 {
             throw new RuntimeException("" + e);
         }
     }
-
 
 
     public static void main(String[] args) {

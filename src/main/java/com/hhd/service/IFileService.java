@@ -15,37 +15,77 @@ import java.util.List;
  */
 public interface IFileService extends IService<Files> {
     /**
-     * 查询所有正常的文件
+     * 查询当前用户所有正常的文件
      *
-     * @param userid 根据用户查询
-     * @return 差距结果
+     * @param userid 根据用户id查询
+     * @return 查询结果
      */
     List<Files> showNormalAll(String userid);
 
+    /**
+     * 查询当前用户回收站文件
+     *
+     * @param userid 根据用户id查询
+     * @return 查询结果
+     */
     List<Files> showRecoveryAll(String userid);
 
-    List<Files> getFileInfo(String id);
 
     /**
      * 获取当前目录下的所有文件
      *
-     * @param userDir
-     * @return return
+     * @param id      根据用户id
+     * @param userDir 根据用户目录
+     * @return return 返回所有文件结果
      */
     List<Files> getCurFiles(String userDir, String id);
 
-    Files getFiles(String id);
-
+    /**
+     * 查询用户id下的模糊文件
+     *
+     * @param userid 根据用户id查询
+     * @param name   文件模糊名
+     * @return 查询结果集合
+     */
     List<Files> getFindFile(String userid, String name);
 
+    /**
+     * @param userid
+     * @param url
+     * @param result
+     * @param name
+     * @return
+     */
     List<Files> getList(String userid, String url, int result, String name);
 
-    int logicDelFile(String id);
+    /**
+     * 逻辑删除
+     *
+     * @param id 根据文件id删除
+     */
+    void logicDelFile(String id);
 
-    int logicNormalFile(String id);
+    /**
+     * 逻辑删除恢复正常
+     *
+     * @param id 根据id
+     */
+    void logicNormalFile(String id);
 
+    /**
+     * 查找相同的md5值的文件
+     *
+     * @param md5 字面意思
+     * @return 结果集合
+     */
     List<Files> selectMd5File(String md5);
 
+    /**
+     * 根据文件id查询文件详情或是否存在
+     *
+     * @param fileId 文件id
+     * @return 查询结果
+     */
     Files selectOne(String fileId);
 
     /**
@@ -55,12 +95,36 @@ public interface IFileService extends IService<Files> {
      */
     void delById(String id);
 
-    List<Files> findVideo();
+    /**
+     * 查询用户id下的video文件
+     *
+     * @param userId 根据用户id查询
+     * @return 查询结果
+     */
+    List<Files> findVideo(String userId);
 
-    List<Files> findAudio();
+    /**
+     * 查询用户id下的audio文件
+     *
+     * @param userId 根据用户id查询
+     * @return 查询结果
+     */
+    List<Files> findAudio(String userId);
 
-    List<Files> findImage();
+    /**
+     * 查询用户id下的image文件
+     *
+     * @param userId 根据用户id查询
+     * @return 查询结果
+     */
+    List<Files> findImage(String userId);
 
-    List<Files> findOther();
+    /**
+     * 查询用户id下的其他分类文件
+     *
+     * @param userId 根据用户id查询
+     * @return 查询结果
+     */
+    List<Files> findOther(String userId);
 
 }

@@ -175,13 +175,11 @@ public class OssServiceImpl implements IOssService {
     public R delete(String id) {
         LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
         Files exist = fService.getOne(lqw.eq(Files::getId, id));
-        String time = exist.getCreateTime();
-        String createTime = new DateTime(time).toDateStr();
+        String createTime = new DateTime(exist.getCreateTime()).toDateStr();
         String fileName = exist.getFileName();
         String type = exist.getType();
         fService.delById(id);
-        LambdaQueryWrapper<Files> lqw1 = new LambdaQueryWrapper<>();
-        if (fService.count(lqw1.eq(Files::getMd5, exist.getMd5())) != 0L) {
+        if (fService.selectMd5File(exist.getMd5()) != null) {
             return R.ok();
         }
         OSS ossClient = new OSSClientBuilder().build(InitOssClient.END_POINT,
@@ -203,8 +201,7 @@ public class OssServiceImpl implements IOssService {
         Files one = fService.getOne(lqw.eq(Files::getId, id));
         String videoId = one.getVideoId();
         delete(id);
-        LambdaQueryWrapper<Files> lqw1 = new LambdaQueryWrapper<>();
-        if (fService.count(lqw1.eq(Files::getMd5, one.getMd5())) != 0L) {
+        if (fService.selectMd5File(one.getMd5()) != null) {
             return R.ok();
         }
         try {
@@ -224,7 +221,7 @@ public class OssServiceImpl implements IOssService {
 
     @Async
     @Override
-    public R downLoad(String id) {
+    public void downLoad(String id) {
         System.out.println(Thread.currentThread().getName());
         OSS ossClient = new OSSClientBuilder().build(InitOssClient.END_POINT,
                 InitOssClient.ACCESS_KEY_ID, InitOssClient.ACCESS_KEY_SECRET);
@@ -272,6 +269,6 @@ public class OssServiceImpl implements IOssService {
                 ossClient.shutdown();
             }
         }
-        return R.ok();
+        R.ok();
     }
 }

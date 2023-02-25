@@ -48,7 +48,7 @@ public class UCenterController {
 
 
     @Operation(summary = "根据id查询用户信息")
-    @Cacheable(cacheNames = "info",unless = "#result==null")
+    @Cacheable(cacheNames = "info", unless = "#result==null")
     @GetMapping("getInfo/{id}")
     public R getInfo(@PathVariable String id) {
         UCenter uCenter = uService.selectOne(id);

@@ -13,30 +13,34 @@ import java.util.Map;
 public interface IOssService {
 
     /**
-     *  上传
-     * @param file 文件
-     * @param files 载入史册！！！
+     * 上传
+     *
+     * @param file  image,file等
+     * @param files 自定义入库的实例
      * @return <String url ,FIle 头像>
      */
     Map<String, Files> upload(MultipartFile file, Files files);
 
     /**
      * 上传视频点播
-     * @param file vedio and audio
-     * @param files 你管那么多干嘛
-     * @return
+     *
+     * @param file  video and audio
+     * @param files 自定义入库的实例
+     * @return 返回入库结果
      */
-    Files uploadVideo(MultipartFile file,Files files);
+    Files uploadVideo(MultipartFile file, Files files);
 
     /**
-     * 删东西啊还能干嘛
+     * 删oss
+     *
      * @param id 文件id
      * @return 成功/失败
      */
     R delete(String id);
 
     /**
-     * 删点播呗
+     * 删vod点播顺便删oss
+     *
      * @param id videoId
      * @return 成功/失败
      */
@@ -44,8 +48,8 @@ public interface IOssService {
 
     /**
      * 断点续传下载
+     *
      * @param id 根据文件下载
-     * @return 返回状态
      */
-    R downLoad(String id);
+    void downLoad(String id);
 }

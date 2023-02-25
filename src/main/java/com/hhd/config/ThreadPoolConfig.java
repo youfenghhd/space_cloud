@@ -37,7 +37,7 @@ public class ThreadPoolConfig implements AsyncConfigurer {
 
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-        return (ex, method, params)->{
+        return (ex, method, params) -> {
             log.error("调用异步方法异常: \n" + method, ex);
         };
     }

@@ -31,7 +31,7 @@ public class mimeTypeUtils {
         }
         String s = metadata.get(HttpHeaders.CONTENT_TYPE);
         for (int i = 0; i < TYPE.length; i++) {
-            if(StringUtils.startsWithIgnoreCase(s,TYPE[i])){
+            if (StringUtils.startsWithIgnoreCase(s, TYPE[i])) {
                 return i;
             }
         }

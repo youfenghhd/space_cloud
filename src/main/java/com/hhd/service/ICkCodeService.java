@@ -7,6 +7,7 @@ package com.hhd.service;
 public interface ICkCodeService {
     /**
      * 获取图片验证码
+     *
      * @return 验证码字符串答案
      */
     String generate();

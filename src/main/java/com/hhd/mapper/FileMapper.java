@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author -无心
@@ -20,7 +20,7 @@ public interface FileMapper extends BaseMapper<Files> {
      * 修改逻辑删除
      *
      * @param id 根据传入id修改
-     * @return
+     * @return 查询结果
      */
 
     @Update("update file set logic_del_time = null where id = #{id}")
@@ -29,14 +29,16 @@ public interface FileMapper extends BaseMapper<Files> {
     /**
      * 查询回收站所有（逻辑删除所有）
      *
+     * @param userId  给出用户的回收站
      * @param nowTime 当前时间
      * @return 查询结果
      */
     @Select("select * from file where logic_del_time is not null and logic_del_time > #{nowTime} and user_id = #{userId}")
-    List<Files> showRecoveryAll(String nowTime,String userId);
+    List<Files> showRecoveryAll(String nowTime, String userId);
 
     /**
      * 真实删除
+     *
      * @param id
      * @return
      */

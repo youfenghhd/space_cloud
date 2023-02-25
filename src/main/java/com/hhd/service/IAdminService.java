@@ -20,15 +20,15 @@ public interface IAdminService extends IService<Admin> {
     /**
      * 创建一个管理员
      *
-     * @param admin
-     * @return
+     * @param admin 创建用户
+     * @return 创建结果
      */
     int insert(Admin admin);
 
     /**
      * 管理员查询所有用户
      *
-     * @return
+     * @return 查询结果列表
      */
     List<UCenter> showNormalAll();
 
@@ -51,7 +51,7 @@ public interface IAdminService extends IService<Admin> {
      * 根据id讲用户逻辑删除
      *
      * @param id ：传入的id
-     * @return      成功/失败
+     * @return 成功/失败
      */
     int logicDelUser(String id);
 
@@ -65,6 +65,7 @@ public interface IAdminService extends IService<Admin> {
 
     /**
      * 真实删除
+     *
      * @param id 传入的id
      * @return 成功/失败
      */

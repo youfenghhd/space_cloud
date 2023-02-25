@@ -19,7 +19,7 @@ public class JwtUtils {
         Calendar expires = Calendar.getInstance();
         expires.add(Calendar.MINUTE, 20);
         return JWT.create().withAudience(uCenter.getId())
-                .withClaim("userId",uCenter.getId())
+                .withClaim("userId", uCenter.getId())
                 .withExpiresAt(expires.getTime())
                 .sign(Algorithm.HMAC256(uCenter.getPassword()));
     }

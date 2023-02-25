@@ -115,7 +115,7 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
     @Override
     public UCenter selectOne(String userId) {
         LambdaQueryWrapper<UCenter> lqw = new LambdaQueryWrapper<>();
-        return uMapper.selectOne(lqw.eq(UCenter::getId,userId));
+        return uMapper.selectOne(lqw.eq(UCenter::getId, userId));
     }
 
 

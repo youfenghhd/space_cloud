@@ -28,10 +28,10 @@ import java.util.List;
 @Configuration
 @EnableOpenApi
 public class SwaggerConfig {
-//    http://localhost/doc.html
+    //    http://localhost/doc.html
 //    http://localhost/swagger-ui/index.html
     @Bean
-    public Docket createRestApi(){
+    public Docket createRestApi() {
         //返回文档概要信息
         return new Docket(DocumentationType.OAS_30)
                 .apiInfo(apiInfo())
@@ -39,21 +39,21 @@ public class SwaggerConfig {
                 .apis(RequestHandlerSelectors.withMethodAnnotation(Operation.class))
                 .paths(PathSelectors.any())
                 .build()
-                .globalResponses(HttpMethod.GET,getGlobalResponseMessage())
-                .globalResponses(HttpMethod.POST,getGlobalResponseMessage());
+                .globalResponses(HttpMethod.GET, getGlobalResponseMessage())
+                .globalResponses(HttpMethod.POST, getGlobalResponseMessage());
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("Space_Cloud API接口文档")
                 .description("space_cloud网盘项目")
-                .contact(new Contact("黄辉达","","1610766552@qq.com"))
+                .contact(new Contact("黄辉达", "", "1610766552@qq.com"))
                 .version("1.0.0")
                 .build();
     }
 
     private List<Response> getGlobalResponseMessage() {
-        List<Response> responseList=new ArrayList<>();
+        List<Response> responseList = new ArrayList<>();
         responseList.add(new ResponseBuilder().code("404").description("未找到资源").build());
         return responseList;
     }

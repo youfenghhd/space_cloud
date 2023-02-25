@@ -32,6 +32,12 @@ public interface IUCenterService extends IService<UCenter> {
      */
     Map<String, UCenter> login(UCenter center);
 
+    /**
+     * 查找用户
+     *
+     * @param userId 根据id查找
+     * @return 查找结果
+     */
     UCenter selectOne(String userId);
 
 }

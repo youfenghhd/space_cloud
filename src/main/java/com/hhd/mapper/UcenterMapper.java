@@ -22,7 +22,7 @@ public interface UcenterMapper extends BaseMapper<UCenter> {
      * 修改逻辑删除
      *
      * @param id 根据传入id修改
-     * @return
+     * @return 修改结果
      */
 
     @Update("update ucenter set logic_del_time = null where id = #{id}")
@@ -40,8 +40,8 @@ public interface UcenterMapper extends BaseMapper<UCenter> {
     /**
      * 真实删除
      *
-     * @param id
-     * @return
+     * @param id 根据id真实删除
+     * @return 删除结果
      */
     int delById(List<String> id);
 }

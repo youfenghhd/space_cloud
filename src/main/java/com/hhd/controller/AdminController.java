@@ -28,6 +28,7 @@ import java.util.List;
 public class AdminController {
     @Autowired
     private IAdminService service;
+
     @Cacheable(cacheNames = "normalUser", unless = "#result==null")
     @Operation(summary = "查找所有正常的用户")
     @GetMapping
@@ -35,34 +36,36 @@ public class AdminController {
         return R.ok().data("normal", service.showNormalAll());
     }
 
-    @Operation(summary ="查找回收站")
+    @Operation(summary = "查找回收站")
     @Cacheable(cacheNames = "recoveryUser", unless = "#result==null")
     @GetMapping("/recovery")
     public R findRecovery() {
         return R.ok().data("recovery", service.showRecoveryAll());
     }
 
-    @Operation(summary ="禁用/启用状态")
+    @Operation(summary = "禁用/启用状态")
     @CachePut("normalUser")
     @PutMapping("/status")
     public R changeStatus(@RequestBody UCenter user) {
         return service.changeStatus(user) > 0 ?
                 R.ok() : R.error();
     }
-    @Operation(summary ="用户加入回收站")
+
+    @Operation(summary = "用户加入回收站")
     @CachePut("recoveryUser")
     @PutMapping("/del")
     public R logicDelUser(@RequestBody String id) {
         return service.logicDelUser(id) > 0 ? R.ok() : R.error();
     }
 
-    @Operation(summary ="用户移出回收站")
+    @Operation(summary = "用户移出回收站")
     @CachePut("normalUser")
     @PutMapping("/normal")
     public R logicNormalUser(@RequestBody String id) {
         return service.logicNormalUser(id) > 0 ? R.ok() : R.error();
     }
-    @Operation(summary ="从回收站彻底删除")
+
+    @Operation(summary = "从回收站彻底删除")
     @DeleteMapping("/delUser")
     public R delUserById(@RequestBody List<String> id) {
         return service.delById(id) > 0 ? R.ok() : R.error();

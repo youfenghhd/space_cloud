@@ -31,9 +31,9 @@ public class R implements Serializable {
     public static final String NOT_FOUND = "没有找到";
     public static final String DELETE_VA_ERR = "删除音/视频失败";
     public static final String NOT_LOGGED = "尚未登陆，无法操作";
-    public static final String USER_WRONGFUL="用户认证失败,请重新登陆";
-    public static final String USER_NON_EXISTENT="用户不存在,请重新登陆";
-    public static final String LOGIN_WRONGFUL="登录状态已过期,请重新登陆";
+    public static final String USER_WRONGFUL = "用户认证失败,请重新登陆";
+    public static final String USER_NON_EXISTENT = "用户不存在,请重新登陆";
+    public static final String LOGIN_WRONGFUL = "登录状态已过期,请重新登陆";
     public static final Integer SUCCESS = 20000;
     public static final Integer ERROR = 20001;
 

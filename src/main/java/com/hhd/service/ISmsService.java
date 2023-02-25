@@ -10,6 +10,7 @@ public interface ISmsService {
     /**
      * 手机验证码接口
      *
+     * @param tel 手机号
      * @return 获取验证码结果
      */
     boolean getSmsCode(String tel);

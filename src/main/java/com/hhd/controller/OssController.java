@@ -39,7 +39,7 @@ import java.util.Map;
 @RequestMapping("/oss")
 public class OssController {
 
-    private final MD5 md5 = new MD5();
+//    private final MD5 md5 = new MD5();
     @Autowired
     private IOssService oService;
     @Autowired
@@ -65,7 +65,7 @@ public class OssController {
             user.setMemory(memory);
             user.setId(userId);
             uService.updateById(user);
-            List<Files> filesList = fService.selectMd5File(md5.getFileMd5String(file));
+            List<Files> filesList = fService.selectMd5File(MD5.getFileMd5String(file));
             for (Files exist : filesList) {
                 if (exist != null) {
                     exist.setUserId(userId);
@@ -116,7 +116,7 @@ public class OssController {
         LambdaQueryWrapper<UCenter> lqw = new LambdaQueryWrapper<>();
         UCenter user = uService.getOne(lqw.eq(UCenter::getId, userId));
         for (String s : idList) {
-            Files files = fService.getFiles(s);
+            Files files = fService.selectOne(s);
             user.setMemory(user.getMemory() - files.getSize());
             user.setId(userId);
             uService.updateById(user);
@@ -124,7 +124,7 @@ public class OssController {
                 r = oService.deleteVa(s);
                 break;
             }
-                r = oService.delete(s);
+            r = oService.delete(s);
         }
         return r;
     }

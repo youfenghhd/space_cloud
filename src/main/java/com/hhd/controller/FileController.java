@@ -50,7 +50,7 @@ public class FileController {
         System.out.println(files);
         UserDir userDir = uService.getUserDir(file.getUserId());
         TreeNode treeNode = JSON.parseObject(userDir.getUserDir(), new TypeReference<TreeNode>() {
-                });
+        });
         List<TreeNode> list = new ArrayList<>();
         findTreeNode(treeNode, file.getFileName(), list);
         return R.ok().data("files", files).data("list", list);
@@ -85,7 +85,7 @@ public class FileController {
     @Cacheable(cacheNames = "fileInfo", unless = "#result==null")
     @GetMapping("/info/{id}")
     public R getFileInfo(@PathVariable String id) {
-        return R.ok().data("fileinfo", fService.getFileInfo(id));
+        return R.ok().data("fileinfo", fService.selectOne(id));
     }
 
     @Operation(summary = "重命名文件")
@@ -178,30 +178,30 @@ public class FileController {
 
     @Operation(summary = "音频文件分类")
     //    @UserLoginToken
-    @GetMapping("/findaudio")
-    public R findAudio() {
-        return R.ok().data("audio", fService.findAudio());
+    @GetMapping("/findaudio/{userId}")
+    public R findAudio(@PathVariable String userId) {
+        return R.ok().data("audio", fService.findAudio(userId));
     }
 
     @Operation(summary = "视频文件分类")
     //    @UserLoginToken
-    @GetMapping("/findvideo")
-    public R findVideo() {
-        return R.ok().data("audio", fService.findVideo());
+    @GetMapping("/findvideo/{userId}")
+    public R findVideo(@PathVariable String userId) {
+        return R.ok().data("audio", fService.findVideo(userId));
     }
 
     @Operation(summary = "图片文件分类")
     //    @UserLoginToken
-    @GetMapping("/findimage")
-    public R findImage() {
-        return R.ok().data("audio", fService.findImage());
+    @GetMapping("/findimage/{userId}")
+    public R findImage(@PathVariable String userId) {
+        return R.ok().data("audio", fService.findImage(userId));
     }
 
     @Operation(summary = "其他文件分类")
     //    @UserLoginToken
-    @GetMapping("/findOther")
-    public R findOther() {
-        return R.ok().data("audio", fService.findOther());
+    @GetMapping("/findOther/{userId}")
+    public R findOther(@PathVariable String userId) {
+        return R.ok().data("audio", fService.findOther(userId));
     }
 
     public void findTreeNode(TreeNode treeNode, String name, List<TreeNode> lists) {

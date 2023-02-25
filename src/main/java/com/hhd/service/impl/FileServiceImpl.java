@@ -44,13 +44,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
     @Override
     public List<Files> showRecoveryAll(String userid) {
         DateTime nowTime = new DateTime();
-        return fMapper.showRecoveryAll(simpleDateFormat.format(nowTime),userid);
-    }
-
-    @Override
-    public List<Files> getFileInfo(String id) {
-        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
-        return baseMapper.selectList(lqw.eq(Files::getId, id));
+        return fMapper.showRecoveryAll(simpleDateFormat.format(nowTime), userid);
     }
 
     @Override
@@ -58,12 +52,6 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
         LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
         return baseMapper.selectList(lqw.eq(Files::getFileDir, userDir)
                 .eq(Files::getUserId, id));
-    }
-
-    @Override
-    public Files getFiles(String id) {
-        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
-        return baseMapper.selectOne(lqw.eq(Files::getId, id));
     }
 
     @Override
@@ -95,15 +83,15 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
     }
 
     @Override
-    public int logicDelFile(String id) {
+    public void logicDelFile(String id) {
         LambdaUpdateWrapper<Files> lqw = new LambdaUpdateWrapper<>();
-        return baseMapper.update(new Files(), lqw.set(Files::getLogicDelTime, simpleDateFormat.format(DateUtils.addDays(new DateTime(), 30)))
+        baseMapper.update(new Files(), lqw.set(Files::getLogicDelTime, simpleDateFormat.format(DateUtils.addDays(new DateTime(), 30)))
                 .eq(Files::getId, id));
     }
 
     @Override
-    public int logicNormalFile(String id) {
-        return fMapper.logicNormalFile(id);
+    public void logicNormalFile(String id) {
+        fMapper.logicNormalFile(id);
     }
 
     @Override
@@ -124,26 +112,30 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
     }
 
     @Override
-    public List<Files> findVideo() {
+    public List<Files> findVideo(String userId) {
         LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
-        return fMapper.selectList(lqw.eq(Files::getFileType, VIDEO));
+        return fMapper.selectList(lqw.eq(Files::getFileType, VIDEO)
+                .eq(Files::getUserId, userId));
     }
 
     @Override
-    public List<Files> findAudio() {
+    public List<Files> findAudio(String userId) {
         LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
-        return fMapper.selectList(lqw.eq(Files::getFileType, AUDIO));
+        return fMapper.selectList(lqw.eq(Files::getFileType, AUDIO)
+                .eq(Files::getUserId, userId));
     }
 
     @Override
-    public List<Files> findImage() {
+    public List<Files> findImage(String userId) {
         LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
-        return fMapper.selectList(lqw.eq(Files::getFileType, IMAGE));
+        return fMapper.selectList(lqw.eq(Files::getFileType, IMAGE)
+                .eq(Files::getUserId, userId));
     }
 
     @Override
-    public List<Files> findOther() {
+    public List<Files> findOther(String userId) {
         LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
-        return fMapper.selectList(lqw.eq(Files::getFileType, OTHER));
+        return fMapper.selectList(lqw.eq(Files::getFileType, OTHER)
+                .eq(Files::getUserId, userId));
     }
 }
