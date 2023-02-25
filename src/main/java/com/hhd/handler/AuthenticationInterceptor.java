@@ -44,8 +44,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         httpServletResponse.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Authorization,"
                 + " Content-Type, Accept, Connection, User-Agent, Cookie,token");
 
+        // 从 http 请求头中取出 token
+        String token = request.getHeader("Authorization");
 
-        String token = request.getHeader("Authorization");// 从 http 请求头中取出 token
         // 如果不是映射到方法直接通过
         if (!(object instanceof HandlerMethod)) {
             return true;
@@ -65,25 +66,26 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             if (userLoginToken.required()) {
                 // 执行认证
                 if (token == null) {
-                    throw new CloudException(R.ERROR,R.NOT_LOGGED);
+                    throw new CloudException(R.ERROR, R.NOT_LOGGED);
                 }
                 // 获取 token 中的 user id
                 String userId;
                 try {
                     userId = JWT.decode(token.substring(7)).getAudience().get(0);
+                    System.out.println(userId);
                 } catch (JWTDecodeException j) {
-                    throw new CloudException(R.ERROR,R.USER_WRONGFUL);
+                    throw new CloudException(R.ERROR, R.USER_WRONGFUL);
                 }
                 UCenter user = uService.getById(userId);
                 if (user == null) {
-                    throw new CloudException(R.ERROR,R.USER_NON_EXISTENT);
+                    throw new CloudException(R.ERROR, R.USER_NON_EXISTENT);
                 }
                 // 验证 token
                 try {
                     JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(user.getPassword())).build();
                     jwtVerifier.verify(token.substring(7));
                 } catch (JWTVerificationException e) {
-                    throw new CloudException(R.ERROR,R.LOGIN_WRONGFUL);
+                    throw new CloudException(R.ERROR, R.LOGIN_WRONGFUL);
                 }
                 return true;
             }

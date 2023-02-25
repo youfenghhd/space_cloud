@@ -2,7 +2,6 @@ package com.hhd.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hhd.pojo.entity.Files;
-import com.hhd.pojo.entity.UserDir;
 
 import java.util.List;
 
@@ -15,9 +14,16 @@ import java.util.List;
  * @since 2023-02-16
  */
 public interface IFileService extends IService<Files> {
+    /**
+     * 查询所有正常的文件
+     *
+     * @param userid 根据用户查询
+     * @return 差距结果
+     */
     List<Files> showNormalAll(String userid);
 
-    List<Files> showRecoveryAll();
+    List<Files> showRecoveryAll(String userid);
+
     List<Files> getFileInfo(String id);
 
     /**
@@ -26,7 +32,7 @@ public interface IFileService extends IService<Files> {
      * @param userDir
      * @return return
      */
-    List<Files> getCurFiles(UserDir userDir);
+    List<Files> getCurFiles(String userDir, String id);
 
     Files getFiles(String id);
 
@@ -35,9 +41,26 @@ public interface IFileService extends IService<Files> {
     List<Files> getList(String userid, String url, int result, String name);
 
     int logicDelFile(String id);
+
     int logicNormalFile(String id);
+
     List<Files> selectMd5File(String md5);
 
-    int delById(String id);
+    Files selectOne(String fileId);
+
+    /**
+     * 真删除
+     *
+     * @param id 删除文件的id
+     */
+    void delById(String id);
+
+    List<Files> findVideo();
+
+    List<Files> findAudio();
+
+    List<Files> findImage();
+
+    List<Files> findOther();
 
 }

@@ -10,8 +10,9 @@ import com.hhd.pojo.vo.TreeNode;
 import com.hhd.service.IFileService;
 import com.hhd.service.IUserDirService;
 import com.hhd.utils.R;
-import com.hhd.utils.TokenUtil;
 import com.hhd.utils.UserLoginToken;
+import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -30,7 +31,9 @@ import java.util.List;
  * @since 2023-02-16
  */
 @RestController
+@CrossOrigin
 @RequestMapping("/files")
+@Api(tags = "文件处理")
 public class FileController {
 
     @Autowired
@@ -38,57 +41,68 @@ public class FileController {
     @Autowired
     private IUserDirService uService;
 
+    @Operation(summary = "模糊查询文件")
+    //    @UserLoginToken
     @Cacheable(cacheNames = "fuzzy", unless = "#result==null")
-    @GetMapping("/{userid}/{name}")
-    public R findFuzzy(@PathVariable String name, @PathVariable String userid) {
-        List<Files> files = fService.getFindFile(userid, name);
+    @GetMapping("/fuzzy")
+    public R findFuzzy(@RequestBody Files file) {
+        List<Files> files = fService.getFindFile(file.getUserId(), file.getFileName());
         System.out.println(files);
-        UserDir userDir = uService.getUserDir(userid);
-        TreeNode treeNode = JSON.parseObject(userDir.getUserId(), new TypeReference<TreeNode>() {
-        });
+        UserDir userDir = uService.getUserDir(file.getUserId());
+        TreeNode treeNode = JSON.parseObject(userDir.getUserDir(), new TypeReference<TreeNode>() {
+                });
         List<TreeNode> list = new ArrayList<>();
-        finTreeNode(treeNode, name, list);
+        findTreeNode(treeNode, file.getFileName(), list);
         return R.ok().data("files", files).data("list", list);
     }
 
+    @Operation(summary = "添加文件进数据库")
+    //    @UserLoginToken
     @CachePut("userFiles")
     @PostMapping("/addFile")
     public R addFile(@RequestBody Files files) {
         return fService.save(files) ? R.ok().data("addFile", files) : R.error();
     }
-    @UserLoginToken
+
+    @Operation(summary = "查询所有正常状态文件")
+//    @UserLoginToken
     @Cacheable(cacheNames = "nomalFiles", unless = "#result==null")
-    @GetMapping("/{userid}")
+    @GetMapping("/normal/{userid}")
     public R showNormalAll(@PathVariable String userid) {
         return R.ok().data("allFilesOfUser", fService.showNormalAll(userid));
     }
 
+    @Operation(summary = "查询回收站文件")
+    //    @UserLoginToken
     @Cacheable(cacheNames = "recoveryFile", unless = "#result==null")
-    @GetMapping("/recovery")
-    public R findRecovery() {
-        return R.ok().data("recovery", fService.showRecoveryAll());
+    @GetMapping("/recovery/{userid}")
+    public R findRecovery(@PathVariable String userid) {
+        return R.ok().data("recovery", fService.showRecoveryAll(userid));
     }
 
-
+    @Operation(summary = "查询文件详情")
+    //    @UserLoginToken
     @Cacheable(cacheNames = "fileInfo", unless = "#result==null")
     @GetMapping("/info/{id}")
     public R getFileInfo(@PathVariable String id) {
         return R.ok().data("fileinfo", fService.getFileInfo(id));
     }
 
-
+    @Operation(summary = "重命名文件")
+    //    @UserLoginToken
     @CachePut("userFiles")
     @PutMapping("/rename")
     public R renameFile(@RequestBody Files files) {
-        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
-        Files file = fService.getOne(lqw.eq(Files::getId, files.getId()));
-        file.setFileName(files.getFileName());
-        return fService.updateById(file) ? R.ok() : R.error();
+        Files exist = fService.selectOne(files.getId());
+        exist.setFileName(files.getFileName());
+        return fService.updateById(exist) ? R.ok() : R.error();
     }
 
+    @Operation(summary = "收藏文件")
+    //    @UserLoginToken
     @CachePut("userFiles")
     @PutMapping("/collection")
-    public R CollectionFile(@RequestParam("id") String[] id) {
+    public R CollectionFile(@RequestBody String[] id) {
         boolean flag = false;
         for (String s : id) {
             System.out.println(s);
@@ -100,9 +114,11 @@ public class FileController {
         return flag ? R.ok() : R.error();
     }
 
+    @Operation(summary = "取消收藏文件")
+    //    @UserLoginToken
     @CachePut("userFiles")
     @PutMapping("/noncollecton")
-    public R nonCollectionFile(@RequestParam("id") String[] id) {
+    public R nonCollectionFile(@RequestBody String[] id) {
         boolean flag = false;
         for (String s : id) {
             System.out.println(s);
@@ -114,15 +130,19 @@ public class FileController {
         return flag ? R.ok() : R.error();
     }
 
+    @Operation(summary = "查询当前目录下文件")
+    //    @UserLoginToken
     @Cacheable(cacheNames = "dirFile")
-    @PostMapping("/{id}")
-    public R getDirFile(@RequestBody UserDir userDir) {
-        return R.ok().data("filesOfDir", fService.getCurFiles(userDir));
+    @PostMapping("/current")
+    public R getDirFile(@RequestBody String id, @RequestParam String userDir) {
+        return R.ok().data("filesOfDir", fService.getCurFiles(userDir, id));
     }
 
+    @Operation(summary = "移动文件夹")
+    //    @UserLoginToken
     @CachePut("dirFile")
     @PostMapping("/moveFile")
-    public R moveFile(@RequestBody String movingPath, @RequestParam("id") String[] id) {
+    public R moveFile(@RequestParam String movingPath, @RequestBody String[] id) {
         boolean flag = false;
         for (String s : id) {
             System.out.println(s);
@@ -134,7 +154,57 @@ public class FileController {
         return flag ? R.ok() : R.error();
     }
 
-    public void finTreeNode(TreeNode treeNode, String name, List<TreeNode> lists) {
+    @Operation(summary = "文件加入回收站")
+    //    @UserLoginToken
+    @CachePut("recoveryFile")
+    @PutMapping("/del")
+    public R logicDelFile(@RequestBody List<String> id) {
+        for (String s : id) {
+            fService.logicDelFile(s);
+        }
+        return R.ok();
+    }
+
+    @Operation(summary = "文件移出回收站")
+    //    @UserLoginToken
+    @CachePut("normalFile")
+    @PutMapping("/normal")
+    public R logicNormalFile(@RequestBody List<String> id) {
+        for (String s : id) {
+            fService.logicNormalFile(s);
+        }
+        return R.ok();
+    }
+
+    @Operation(summary = "音频文件分类")
+    //    @UserLoginToken
+    @GetMapping("/findaudio")
+    public R findAudio() {
+        return R.ok().data("audio", fService.findAudio());
+    }
+
+    @Operation(summary = "视频文件分类")
+    //    @UserLoginToken
+    @GetMapping("/findvideo")
+    public R findVideo() {
+        return R.ok().data("audio", fService.findVideo());
+    }
+
+    @Operation(summary = "图片文件分类")
+    //    @UserLoginToken
+    @GetMapping("/findimage")
+    public R findImage() {
+        return R.ok().data("audio", fService.findImage());
+    }
+
+    @Operation(summary = "其他文件分类")
+    //    @UserLoginToken
+    @GetMapping("/findOther")
+    public R findOther() {
+        return R.ok().data("audio", fService.findOther());
+    }
+
+    public void findTreeNode(TreeNode treeNode, String name, List<TreeNode> lists) {
         List<TreeNode> list = treeNode.getChildrenList();
         if (list == null || list.isEmpty()) {
             return;
@@ -145,23 +215,10 @@ public class FileController {
                 List<TreeNode> list1 = node.getChildrenList();
                 System.out.println(list1);
                 if (list1.size() >= 1) {
-                    finTreeNode(node, name, lists);
+                    findTreeNode(node, name, lists);
                 }
             }
-            finTreeNode(node, name, lists);
+            findTreeNode(node, name, lists);
         }
     }
-
-    @CachePut("recoveryFile")
-    @PutMapping("/del")
-    public R logicDelFile(@RequestBody String id) {
-        return fService.logicDelFile(id) > 0 ? R.ok() : R.error();
-    }
-
-    @CachePut("normalFile")
-    @PutMapping("/normal")
-    public R logicNormalFile(@RequestBody String id) {
-        return fService.logicNormalFile(id) > 0 ? R.ok() : R.error();
-    }
 }
-

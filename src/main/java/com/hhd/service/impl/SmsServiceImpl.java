@@ -9,12 +9,10 @@ import com.google.gson.Gson;
 import com.hhd.exceptionhandler.CloudException;
 import com.hhd.service.ISmsService;
 import com.hhd.utils.CheckCodeUtils;
+import com.hhd.utils.InitOssClient;
 import com.hhd.utils.R;
-
-
 import darabonba.core.client.ClientOverrideConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -30,18 +28,14 @@ import java.util.concurrent.TimeUnit;
 public class SmsServiceImpl implements ISmsService {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
-    @Value("${aliyun.oss.file.accessKeyId}")
-    private String accessKeyId;
-    @Value("${aliyun.oss.file.accessKeySecret}")
-    private String accessKeySecret;
 
     @Override
     public boolean getSmsCode(String tel) {
         String code = CheckCodeUtils.generateTel(tel);
         System.out.println(code);
         StaticCredentialProvider provider = StaticCredentialProvider.create(Credential.builder()
-                .accessKeyId(accessKeyId)
-                .accessKeySecret(accessKeySecret)
+                .accessKeyId(InitOssClient.ACCESS_KEY_ID)
+                .accessKeySecret(InitOssClient.ACCESS_KEY_SECRET)
                 .build());
 
         AsyncClient client = AsyncClient.builder()
@@ -68,7 +62,7 @@ public class SmsServiceImpl implements ISmsService {
         } catch (ExecutionException e) {
             throw new CloudException(R.ERROR, R.EXECUTION_ERR);
         }
-        redisTemplate.opsForValue().set(tel, code, 2, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(tel, code, 1, TimeUnit.MINUTES);
         return true;
     }
 }

@@ -48,6 +48,7 @@ public class OssServiceImpl implements IOssService {
     @Autowired
     private IUCenterService uService;
 
+    @Async
     @Override
     public Map<String, Files> upload(MultipartFile file, Files files) {
         String objectName = new DateTime().toDateStr() + "/" + file.getOriginalFilename();
@@ -72,9 +73,7 @@ public class OssServiceImpl implements IOssService {
             // 每个分片的大小，用于计算文件有多少个分片。单位为字节。
             final long partSize = 1024 * 1024L;
 
-
-            // 填写本地文件的完整路径。
-//            final File sampleFiles = new File(path);
+//            计算文件分片
             long fileLength = file.getSize();
             int partCount = (int) (fileLength / partSize);
             if (fileLength % partSize != 0) {
@@ -129,7 +128,7 @@ public class OssServiceImpl implements IOssService {
         return map;
     }
 
-
+    @Async
     @Override
     public Files uploadVideo(MultipartFile file, Files files) {
         String fileName = file.getOriginalFilename();

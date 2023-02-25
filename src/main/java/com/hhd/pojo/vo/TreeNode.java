@@ -1,8 +1,8 @@
 package com.hhd.pojo.vo;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +10,8 @@ import java.util.List;
  * @date 2023/2/17 10:40:30
  */
 @Data
-public class TreeNode implements Serializable {
+@ApiModel(value = "目录树节点", description = "目录树节点")
+public class TreeNode {
     private static final long serialVersionUID = 1L;
     private long id;
     private long parentId;

@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hhd.mapper.FileMapper;
 import com.hhd.pojo.entity.Files;
-import com.hhd.pojo.entity.UserDir;
 import com.hhd.service.IFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +27,10 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
 
 
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private final String VIDEO = "video";
+    private final String AUDIO = "audio";
+    private final String IMAGE = "image";
+    private final String OTHER = "file";
 
     @Autowired
     private FileMapper fMapper;
@@ -39,9 +42,9 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
     }
 
     @Override
-    public List<Files> showRecoveryAll() {
+    public List<Files> showRecoveryAll(String userid) {
         DateTime nowTime = new DateTime();
-        return fMapper.showRecoveryAll(simpleDateFormat.format(nowTime));
+        return fMapper.showRecoveryAll(simpleDateFormat.format(nowTime),userid);
     }
 
     @Override
@@ -51,10 +54,10 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
     }
 
     @Override
-    public List<Files> getCurFiles(UserDir userDir) {
+    public List<Files> getCurFiles(String userDir, String id) {
         LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
-        return baseMapper.selectList(lqw.eq(Files::getFileDir, userDir.getUserDir())
-                .eq(Files::getUserId, userDir.getUserId()));
+        return baseMapper.selectList(lqw.eq(Files::getFileDir, userDir)
+                .eq(Files::getUserId, id));
     }
 
     @Override
@@ -106,11 +109,41 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
     @Override
     public List<Files> selectMd5File(String md5) {
         LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
-        return fMapper.selectList(lqw.eq(Files::getMd5,md5));
+        return fMapper.selectList(lqw.eq(Files::getMd5, md5));
     }
 
     @Override
-    public int delById(String id) {
-        return fMapper.delById(id);
+    public Files selectOne(String fileId) {
+        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
+        return fMapper.selectOne(lqw.eq(Files::getId, fileId));
+    }
+
+    @Override
+    public void delById(String id) {
+        fMapper.delById(id);
+    }
+
+    @Override
+    public List<Files> findVideo() {
+        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
+        return fMapper.selectList(lqw.eq(Files::getFileType, VIDEO));
+    }
+
+    @Override
+    public List<Files> findAudio() {
+        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
+        return fMapper.selectList(lqw.eq(Files::getFileType, AUDIO));
+    }
+
+    @Override
+    public List<Files> findImage() {
+        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
+        return fMapper.selectList(lqw.eq(Files::getFileType, IMAGE));
+    }
+
+    @Override
+    public List<Files> findOther() {
+        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
+        return fMapper.selectList(lqw.eq(Files::getFileType, OTHER));
     }
 }

@@ -29,10 +29,10 @@ public class R implements Serializable {
     public static final String SEND_SMS_ERR = "短信发送失败";
     public static final String NAME_REPEAT = "名称重复";
     public static final String DELETE_VA_ERR = "删除音/视频失败";
-    public static final String NOT_LOGGED = "尚未登陆无法操作";
-    public static final String USER_WRONGFUL="用户不合法,请重新登陆";
-    public static final String USER_NON_EXISTENT="用户不合法,请重新登陆";
-    public static final String LOGIN_WRONGFUL="登录状态不合法,请重新登陆";
+    public static final String NOT_LOGGED = "尚未登陆，无法操作";
+    public static final String USER_WRONGFUL="用户认证失败,请重新登陆";
+    public static final String USER_NON_EXISTENT="用户不存在,请重新登陆";
+    public static final String LOGIN_WRONGFUL="登录状态已过期,请重新登陆";
     public static final Integer SUCCESS = 20000;
     public static final Integer ERROR = 20001;
 

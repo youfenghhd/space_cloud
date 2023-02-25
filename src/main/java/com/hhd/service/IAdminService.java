@@ -43,7 +43,7 @@ public interface IAdminService extends IService<Admin> {
      * 管理员修改用户状态
      *
      * @param uCenter:根据id修改状态
-     * @return
+     * @return 成功/失败
      */
     int changeStatus(UCenter uCenter);
 
@@ -51,7 +51,7 @@ public interface IAdminService extends IService<Admin> {
      * 根据id讲用户逻辑删除
      *
      * @param id ：传入的id
-     * @return
+     * @return      成功/失败
      */
     int logicDelUser(String id);
 
@@ -59,14 +59,14 @@ public interface IAdminService extends IService<Admin> {
      * 根据传入id将用户从逻辑删除恢复正常状态
      *
      * @param id 传入的id
-     * @return
+     * @return 成功/失败
      */
     int logicNormalUser(String id);
 
     /**
-     * 删除
-     * @param id
-     * @return
+     * 真实删除
+     * @param id 传入的id
+     * @return 成功/失败
      */
     int delById(List<String> id);
 }

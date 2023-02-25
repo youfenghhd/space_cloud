@@ -3,6 +3,8 @@ package com.hhd.pojo.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,31 +24,24 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
+@ApiModel(value = "管理员对象")
 public class Admin implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 管理员id
-     */
+    @ApiModelProperty(value = "管理员id")
     @TableId(value = "aid", type = IdType.ASSIGN_ID)
     private String aid;
 
-    /**
-     * 管理员名字
-     */
+    @ApiModelProperty(value = "管理员名字")
     @TableField("adminname")
     private String adminName;
 
-    /**
-     * 管理员登录名
-     */
+    @ApiModelProperty(value = "管理员登录名")
     @TableField("loginname")
     private String loginName;
 
-    /**
-     * 管理员密码
-     */
+    @ApiModelProperty(value = "管理员密码")
     private String password;
 
 

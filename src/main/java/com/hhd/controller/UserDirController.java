@@ -10,7 +10,10 @@ import com.hhd.pojo.vo.TreeNode;
 import com.hhd.service.IFileService;
 import com.hhd.service.IUserDirService;
 import com.hhd.utils.R;
+import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -26,6 +29,8 @@ import java.util.List;
  * @since 2023-02-16
  */
 @RestController
+@CrossOrigin
+@Api(tags = "文件夹")
 @RequestMapping("/dirs")
 public class UserDirController {
     @Autowired
@@ -34,6 +39,8 @@ public class UserDirController {
     private IFileService fService;
     private int result = 1;
 
+    @Operation(summary = "获取当前文件夹")
+    @Cacheable(cacheNames = "getFile", unless = "#result==null")
     @GetMapping("/{id}")
     public R getFile(@PathVariable String id) {
         System.out.println(id);
@@ -42,7 +49,7 @@ public class UserDirController {
         return R.ok().data("dir", userDir);
     }
 
-
+    @Operation(summary = "根据传入的路径，名字，和父文件id新建文件夹")
     @PostMapping("/{userid}/{name}/{id}")
     public R setDir(@PathVariable long id, @PathVariable String name, @PathVariable String userid) {
         UserDir userDir = uService.getUserDir(userid);
@@ -61,7 +68,7 @@ public class UserDirController {
 
     }
 
-
+    @Operation(summary = "根据传入的userId、目录路径url、和父文件夹id的删除文件夹")
     @DeleteMapping("/{userid}/{id}")
     public R delDir(@PathVariable String userid, @PathVariable long id, @RequestBody String url) {
         UserDir userDir = uService.getUserDir(userid);
@@ -78,6 +85,7 @@ public class UserDirController {
         return R.error();
     }
 
+    @Operation(summary = "根据传入的名字，userId，目录路径url，父文件id修改文件夹")
     @PutMapping("/{userid}/{name}/{id}")
     public R updateDir(@PathVariable long id, @PathVariable String name, @PathVariable String userid, @RequestBody String url) {
         UserDir userDir = uService.getUserDir(userid);

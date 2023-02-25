@@ -32,8 +32,8 @@ public interface FileMapper extends BaseMapper<Files> {
      * @param nowTime 当前时间
      * @return 查询结果
      */
-    @Select("select * from file where logic_del_time is not null and logic_del_time > #{nowTime}")
-    List<Files> showRecoveryAll(String nowTime);
+    @Select("select * from file where logic_del_time is not null and logic_del_time > #{nowTime} and user_id = #{userId}")
+    List<Files> showRecoveryAll(String nowTime,String userId);
 
     /**
      * 真实删除

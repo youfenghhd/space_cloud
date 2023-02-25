@@ -18,6 +18,7 @@ import com.hhd.utils.InitOssClient;
 import com.hhd.utils.MD5;
 import com.hhd.utils.R;
 import com.hhd.utils.mimeTypeUtils;
+import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,8 @@ import java.util.Map;
  * @date 2023/2/19 22:18:49
  */
 @RestController
+@CrossOrigin
+@Api(tags = "上传下载处理")
 @RequestMapping("/oss")
 public class OssController {
 
@@ -46,12 +49,14 @@ public class OssController {
 
     private static final long TWO_G = 2147483648L;
 
+    @Operation(summary = "上传头像")
     @PostMapping("/portrait")
     public R setPortrait(MultipartFile file) {
         Map.Entry<String, Files> entry = oService.upload(file, new Files()).entrySet().iterator().next();
         return R.ok().data("url", entry.getKey());
     }
 
+    @Operation(summary = "多线程分片式断点续传上传文件")
     @PostMapping("/upload")
     public R upload(MultipartFile file, String dir, String userId) {
         UCenter user = uService.selectOne(userId);
@@ -103,8 +108,9 @@ public class OssController {
     }
 
 
+    @Operation(summary = "删除oss云端文件")
     @DeleteMapping("/remove")
-    public R remove(@RequestBody String[] idList, String userId) {
+    public R remove(@RequestBody String[] idList, @RequestParam String userId) {
         LambdaQueryWrapper<UCenter> lqw = new LambdaQueryWrapper<>();
         UCenter user = uService.getOne(lqw.eq(UCenter::getId, userId));
         for (String s : idList) {
@@ -121,6 +127,8 @@ public class OssController {
         return null;
     }
 
+
+    @Operation(summary = "根据videoId获取播放地址")
     @PostMapping("/getPlay")
     public R getPlay(@RequestBody List<String> list) {
         ArrayList<Map<String, Object>> urlList = new ArrayList<>();
@@ -160,7 +168,7 @@ public class OssController {
         return R.ok().data("urlList", urlList);
     }
 
-    @Operation(method = "下载文件")
+    @Operation(summary = "多线程分片式断点续传下载文件")
     @PostMapping("/downLoad")
     public R downLoad(@RequestBody List<String> id) {
         for (String thread : id) {
