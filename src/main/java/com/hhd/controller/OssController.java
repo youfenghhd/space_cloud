@@ -130,9 +130,9 @@ public class OssController {
     }
 
 
-    @Operation(summary = "根据videoId获取播放地址")
+    @Operation(summary = "根据FileId获取播放地址")
     @PostMapping("/getPlay")
-    public R getPlay(@RequestBody List<String> list) {
+    public R getPlay(@RequestBody List<Files> list) {
         ArrayList<Map<String, Object>> urlList = new ArrayList<>();
         Files file = new Files();
         // 创建SubmitMediaInfoJob实例并初始化
@@ -142,8 +142,10 @@ public class OssController {
         IAcsClient client = new DefaultAcsClient(profile);
         GetPlayInfoRequest request = new GetPlayInfoRequest();
         // 视频ID。
-        for (String s : list) {
+        for (Files files : list) {
+            Files one = fService.selectOne(files.getId());
             Map<String, Object> map = new HashMap<>(8);
+            String s = one.getVideoId();
             file.setVideoId(s);
             map.put("videoId", s);
             request.setVideoId(s);

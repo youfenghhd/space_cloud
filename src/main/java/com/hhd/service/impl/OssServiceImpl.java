@@ -7,9 +7,7 @@ import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.*;
 import com.aliyun.vod.upload.impl.UploadVideoImpl;
-import com.aliyun.vod.upload.req.UploadStreamRequest;
 import com.aliyun.vod.upload.req.UploadVideoRequest;
-import com.aliyun.vod.upload.resp.UploadStreamResponse;
 import com.aliyun.vod.upload.resp.UploadVideoResponse;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.vod.model.v20170321.DeleteVideoRequest;
@@ -23,12 +21,10 @@ import com.hhd.service.IUCenterService;
 import com.hhd.utils.InitOssClient;
 import com.hhd.utils.MD5;
 import com.hhd.utils.R;
-import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -135,6 +131,8 @@ public class OssServiceImpl implements IOssService {
 
     @Override
     public Files uploadVideo(MultipartFile file, Files files) {
+        upload(file, files);
+
         LambdaQueryWrapper<UCenter> lqw = new LambdaQueryWrapper<>();
         UCenter one = uService.getOne(lqw.eq(UCenter::getId, files.getUserId()));
         Path pathCreate;
@@ -143,11 +141,7 @@ public class OssServiceImpl implements IOssService {
         } catch (Exception e) {
             throw new CloudException(R.ERROR, R.EXECUTION_ERR);
         }
-        files.setMd5(md5.getFileMd5String(file));
         String name = file.getOriginalFilename();
-        String title = name.substring(0, name.lastIndexOf("."));
-        files.setType(name.substring(name.lastIndexOf(".")).substring(1));
-        files.setFileName(title);
         String fileName = pathCreate.toString() + file.getOriginalFilename();
         //上传文件名称需为上传文件绝对路径，MultipartFile无法直接获取，转储指定地址
         File f = new File(fileName);
@@ -156,7 +150,8 @@ public class OssServiceImpl implements IOssService {
         } catch (Exception e) {
             throw new CloudException(R.ERROR, R.EXECUTION_ERR);
         }
-        UploadVideoRequest request = new UploadVideoRequest(InitOssClient.ACCESS_KEY_ID, InitOssClient.ACCESS_KEY_SECRET, title, fileName);
+        UploadVideoRequest request = new UploadVideoRequest(InitOssClient.ACCESS_KEY_ID,
+                InitOssClient.ACCESS_KEY_SECRET, files.getFileName(), fileName);
         request.setPartSize(2 * 1024 * 1024L);
         request.setTaskNum(5);
         request.setEnableCheckpoint(true);
@@ -207,7 +202,7 @@ public class OssServiceImpl implements IOssService {
         LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
         Files one = fService.getOne(lqw.eq(Files::getId, id));
         String videoId = one.getVideoId();
-        fService.delById(id);
+        delete(id);
         LambdaQueryWrapper<Files> lqw1 = new LambdaQueryWrapper<>();
         if (fService.count(lqw1.eq(Files::getMd5, one.getMd5())) != 0L) {
             return R.ok();
