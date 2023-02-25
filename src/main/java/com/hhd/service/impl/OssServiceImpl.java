@@ -179,7 +179,8 @@ public class OssServiceImpl implements IOssService {
         String fileName = exist.getFileName();
         String type = exist.getType();
         fService.delById(id);
-        if (fService.selectMd5File(exist.getMd5()) != null) {
+        LambdaQueryWrapper<Files> lqw1 = new LambdaQueryWrapper<>();
+        if (fService.count(lqw1.eq(Files::getMd5, exist.getMd5())) != 0L) {
             return R.ok();
         }
         OSS ossClient = new OSSClientBuilder().build(InitOssClient.END_POINT,
@@ -201,7 +202,8 @@ public class OssServiceImpl implements IOssService {
         Files one = fService.getOne(lqw.eq(Files::getId, id));
         String videoId = one.getVideoId();
         delete(id);
-        if (fService.selectMd5File(one.getMd5()) != null) {
+        LambdaQueryWrapper<Files> lqw1 = new LambdaQueryWrapper<>();
+        if (fService.count(lqw1.eq(Files::getMd5, one.getMd5())) != 0L) {
             return R.ok();
         }
         try {
