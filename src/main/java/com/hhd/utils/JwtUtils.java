@@ -2,6 +2,7 @@ package com.hhd.utils;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.hhd.pojo.domain.Admin;
 import com.hhd.pojo.domain.UCenter;
 
 import java.util.Calendar;
@@ -15,12 +16,22 @@ public class JwtUtils {
 //    public static final String SELECT = "H!4H@3$Dh^d%AgYhG9qMp5Xs";
 
     public static String getJwtToken(UCenter uCenter) {
-        HashMap<String, Object> headers = new HashMap<>();
+        HashMap<String, Object> headers = new HashMap<>(8);
         Calendar expires = Calendar.getInstance();
         expires.add(Calendar.MINUTE, 20);
         return JWT.create().withAudience(uCenter.getId())
                 .withClaim("userId", uCenter.getId())
                 .withExpiresAt(expires.getTime())
                 .sign(Algorithm.HMAC256(uCenter.getPassword()));
+    }
+
+    public static String getJwtToken(Admin admin) {
+        HashMap<String, Object> headers = new HashMap<>(8);
+        Calendar expires = Calendar.getInstance();
+        expires.add(Calendar.MINUTE, 20);
+        return JWT.create().withAudience(admin.getAid())
+                .withClaim("userId", admin.getAid())
+                .withExpiresAt(expires.getTime())
+                .sign(Algorithm.HMAC256(admin.getPassword()));
     }
 }

@@ -21,7 +21,7 @@ public class R implements Serializable {
     public static final String SMS_ERR = "短信码错误";
     public static final String PHONE_EXIST = "手机号已注册";
     public static final String DISABLE_ERR = "账号被禁用";
-    public static final String PHONE_NON_EXIST = "手机号未注册";
+    public static final String NON_REGISTER = "登录名未注册";
     public static final String CHECK_IO_ERR = "验证码生成错误";
     public static final String PASSWORD_ERR = "登录密码错误";
     public static final String EXECUTION_ERR = "执行异常";

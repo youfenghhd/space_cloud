@@ -1,10 +1,11 @@
 package com.hhd.service;
 
-import com.hhd.pojo.domain.UCenter;
-import com.hhd.pojo.entity.Admin;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hhd.pojo.domain.UCenter;
+import com.hhd.pojo.domain.Admin;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -16,6 +17,13 @@ import java.util.List;
  */
 
 public interface IAdminService extends IService<Admin> {
+    /**
+     * 管理员登录
+     *
+     * @param admin 管理员身份验证
+     * @return String:token center:查询到的信息
+     */
+    Map<String, Admin> login(Admin admin);
 
     /**
      * 创建一个管理员
@@ -24,6 +32,7 @@ public interface IAdminService extends IService<Admin> {
      * @return 创建结果
      */
     int insert(Admin admin);
+
 
     /**
      * 管理员查询所有用户

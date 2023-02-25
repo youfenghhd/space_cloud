@@ -1,4 +1,4 @@
-package com.hhd.pojo.entity;
+package com.hhd.pojo.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -44,5 +44,8 @@ public class Admin implements Serializable {
     @ApiModelProperty(value = "管理员密码")
     private String password;
 
+    @ApiModelProperty(value = "图片验证码")
+    @TableField(exist = false)
+    private String code;
 
 }

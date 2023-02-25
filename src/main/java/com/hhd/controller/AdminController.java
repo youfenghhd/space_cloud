@@ -29,6 +29,14 @@ public class AdminController {
     @Autowired
     private IAdminService service;
 
+//    @Operation(summary = "用户登录")
+//    @PostMapping("/login")
+//    public R login(@RequestBody UCenter ucenter) {
+//        Map.Entry<String, UCenter> entry = uService.login(ucenter).entrySet().iterator().next();
+//        String token = entry.getKey();
+//        UCenter user = entry.getValue();
+//        return R.ok().data("token", token).data("user", user);
+//    }
     @Cacheable(cacheNames = "normalUser", unless = "#result==null")
     @Operation(summary = "查找所有正常的用户")
     @GetMapping

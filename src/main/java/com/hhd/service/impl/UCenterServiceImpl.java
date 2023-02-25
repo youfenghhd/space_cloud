@@ -91,7 +91,7 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
         UCenter exist = uMapper.selectOne(lqw);
         System.out.println(exist);
         if (exist == null) {
-            throw new CloudException(R.ERROR, R.PHONE_NON_EXIST);
+            throw new CloudException(R.ERROR, R.NON_REGISTER);
         }
 
         if (!exist.getStatus()) {
