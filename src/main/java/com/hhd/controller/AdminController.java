@@ -1,6 +1,7 @@
 package com.hhd.controller;
 
 
+import com.hhd.pojo.domain.Admin;
 import com.hhd.pojo.domain.UCenter;
 import com.hhd.service.IAdminService;
 import com.hhd.utils.R;
@@ -12,6 +13,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -29,14 +31,14 @@ public class AdminController {
     @Autowired
     private IAdminService service;
 
-//    @Operation(summary = "用户登录")
-//    @PostMapping("/login")
-//    public R login(@RequestBody UCenter ucenter) {
-//        Map.Entry<String, UCenter> entry = uService.login(ucenter).entrySet().iterator().next();
-//        String token = entry.getKey();
-//        UCenter user = entry.getValue();
-//        return R.ok().data("token", token).data("user", user);
-//    }
+    @Operation(summary = "用户登录")
+    @PostMapping("/login")
+    public R login(@RequestBody Admin admin) {
+        Map.Entry<String, Admin> entry = service.login(admin).entrySet().iterator().next();
+        String token = entry.getKey();
+        Admin admins = entry.getValue();
+        return R.ok().data("token", token).data("admin", admins);
+    }
     @Cacheable(cacheNames = "normalUser", unless = "#result==null")
     @Operation(summary = "查找所有正常的用户")
     @GetMapping

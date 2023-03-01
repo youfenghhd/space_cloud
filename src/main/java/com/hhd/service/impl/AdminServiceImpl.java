@@ -39,7 +39,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     private UcenterMapper uMapper;
 
     @Autowired
-    private RedisTemplate<String, String> Template;
+    private RedisTemplate<String, String> template;
 
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -59,7 +59,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         if (!MD5.encrypt(password).equals(exist.getPassword())) {
             throw new CloudException(R.ERROR, R.PASSWORD_ERR);
         }
-        String code1 = Template.opsForValue().get("checkCode");
+        String code1 = template.opsForValue().get("checkCode");
         if (!code.equals(code1)) {
             throw new CloudException(R.ERROR, R.CHECK_ERROR);
         }

@@ -40,4 +40,12 @@ public interface IUCenterService extends IService<UCenter> {
      */
     UCenter selectOne(String userId);
 
+    /**
+     * 查找手机有无被注册
+     *
+     * @param mobile 手机号
+     * @return R
+     */
+    R selectOneByMobile(String mobile);
+
 }

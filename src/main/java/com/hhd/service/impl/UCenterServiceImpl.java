@@ -50,7 +50,7 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
 
         //redis获取图片验证码判断
         String code = redisTemplate.opsForValue().get("checkCode");
-        if (!ckCode.equals(code)) {
+        if (!ckCode.equalsIgnoreCase(code)) {
             throw new CloudException(R.ERROR, R.CHECK_ERROR);
         }
         //redis获取短信验证码判断
@@ -89,7 +89,6 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
         lqw.eq(UCenter::getMobile, mobile)
                 .eq(UCenter::getStatus, true);
         UCenter exist = uMapper.selectOne(lqw);
-        System.out.println(exist);
         if (exist == null) {
             throw new CloudException(R.ERROR, R.NON_REGISTER);
         }
@@ -97,13 +96,11 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
         if (!exist.getStatus()) {
             throw new CloudException(R.ERROR, R.DISABLE_ERR);
         }
-
         if (!MD5.encrypt(password).equals(exist.getPassword())) {
             throw new CloudException(R.ERROR, R.PASSWORD_ERR);
         }
-
         String code1 = redisTemplate.opsForValue().get("checkCode");
-        if (!code.equals(code1)) {
+        if (!code.equalsIgnoreCase(code1)) {
             throw new CloudException(R.ERROR, R.CHECK_ERROR);
         }
         String token = JwtUtils.getJwtToken(exist);
@@ -116,6 +113,12 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
     public UCenter selectOne(String userId) {
         LambdaQueryWrapper<UCenter> lqw = new LambdaQueryWrapper<>();
         return uMapper.selectOne(lqw.eq(UCenter::getId, userId));
+    }
+
+    @Override
+    public R selectOneByMobile(String mobile) {
+        LambdaQueryWrapper<UCenter> lqw = new LambdaQueryWrapper<>();
+        return uMapper.selectOne(lqw.eq(UCenter::getMobile,mobile))!=null?R.ok():R.error();
     }
 
 

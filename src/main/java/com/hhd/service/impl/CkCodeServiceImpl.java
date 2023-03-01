@@ -26,6 +26,7 @@ public class CkCodeServiceImpl implements ICkCodeService {
         } catch (Exception e) {
             throw new CloudException(R.ERROR, R.CHECK_IO_ERR);
         }
+        System.out.println(generate);
         redisTemplate.opsForValue().set("checkCode", generate);
         return generate;
     }

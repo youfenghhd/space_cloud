@@ -69,5 +69,14 @@ public class UCenterController {
         end.setPassword(MD5.encrypt(uCenter.getPassword()));
         return uService.updateById(end) ? R.ok() : R.error();
     }
+
+
+    @Operation(summary = "查询手机有无被注册")
+    @Cacheable("mobile")
+    @GetMapping("mobile/{mobile}")
+    public R selectMobileUser(@PathVariable String mobile){
+        return uService.selectOneByMobile(mobile);
+    }
+
 }
 
