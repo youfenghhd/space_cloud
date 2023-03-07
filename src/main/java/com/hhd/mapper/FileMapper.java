@@ -23,7 +23,7 @@ public interface FileMapper extends BaseMapper<Files> {
      * @return 查询结果
      */
 
-    @Update("update file set logic_del_time = null where id = #{id}")
+    @Update("update file set logic_del_time = null , file_dir = '/root' where id = #{id}")
     int logicNormalFile(@Param("id") String id);
 
     /**
@@ -35,6 +35,23 @@ public interface FileMapper extends BaseMapper<Files> {
      */
     @Select("select * from file where logic_del_time is not null and logic_del_time > #{nowTime} and user_id = #{userId}")
     List<Files> showRecoveryAll(String nowTime, String userId);
+
+    /**
+     * 找存在
+     * @param id 按id
+     * @return 结果
+     */
+    @Select("select * from file where id = #{id}")
+    Files getOne(String id);
+
+    /**
+     * 查询同款md5
+     *
+     * @param md5 按md5值查询
+     * @return 查询结果
+     */
+    @Select("select count(*) from file where md5 = #{md5}")
+    int getCount(String md5);
 
     /**
      * 真实删除

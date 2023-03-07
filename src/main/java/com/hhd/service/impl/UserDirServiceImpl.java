@@ -1,12 +1,10 @@
 package com.hhd.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.hhd.pojo.entity.Files;
-import com.hhd.pojo.entity.UserDir;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hhd.mapper.UserDirMapper;
+import com.hhd.pojo.entity.UserDir;
 import com.hhd.service.IFileService;
 import com.hhd.service.IUserDirService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +34,6 @@ public class UserDirServiceImpl extends ServiceImpl<UserDirMapper, UserDir> impl
 
     @Override
     public boolean deleteStruct(String userid, String url) {
-        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
-        return service.remove(lqw.like(Files::getFileDir, url).eq(Files::getUserId, userid));
+        return service.logicDirFile(userid,url);
     }
 }

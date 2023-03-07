@@ -40,7 +40,7 @@ public class UserDirController {
     private int result = 1;
 
     @Operation(summary = "获取当前文件夹")
-    @Cacheable(cacheNames = "getFile", unless = "#result==null")
+//    @Cacheable(cacheNames = "getFile", unless = "#result==null")
     @GetMapping("/{id}")
     public R getFile(@PathVariable String id) {
         System.out.println(id);
@@ -71,18 +71,21 @@ public class UserDirController {
     @Operation(summary = "根据传入的userId、目录路径url、和父文件夹id的删除文件夹")
     @DeleteMapping("/{userid}/{id}")
     public R delDir(@PathVariable String userid, @PathVariable long id, @RequestBody String url) {
+        System.out.println(url);
         UserDir userDir = uService.getUserDir(userid);
         TreeNode treeNode = JSON.parseObject(userDir.getUserDir(), new TypeReference<TreeNode>() {
         });
-        if (uService.deleteStruct(userid, url)) {
+        try {
+            uService.deleteStruct(userid, url);
             System.out.println("ok");
             StringBuilder stringBuilder = new StringBuilder();
             delete(treeNode, id, stringBuilder);
             userDir.setUserDir(JSON.toJSONString(treeNode));
             uService.setUserDir(userDir);
             return R.ok();
+        } catch (Exception e) {
+            return R.error();
         }
-        return R.error();
     }
 
     @Operation(summary = "根据传入的名字，userId，目录路径url，父文件id修改文件夹")
@@ -117,7 +120,7 @@ public class UserDirController {
         sList.add(newNode.getName());
         System.out.println(sList);
         HashSet<String> hashSet = new HashSet<>(sList);
-        if (hashSet.size() == sList.size()) {
+        if (!(hashSet.size() == sList.size())) {
             throw new CloudException(R.ERROR, R.NAME_REPEAT);
         }
         if (id == treeNode.getId()) {

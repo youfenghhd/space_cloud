@@ -24,7 +24,7 @@ public class CheckCodeUtils {
 
     public static String generateJpg() throws Exception {
 //        OutputStream fos = Files.newOutputStream(Paths.get("src/main/resources/static/a.jpg"));
-        OutputStream fos = Files.newOutputStream(Paths.get("D:\\Desktop\\s_cloud\\src\\assets\\a.jpg"));
+        OutputStream fos = Files.newOutputStream(Paths.get("D:\\Desktop\\s_cloud\\src\\assets\\img\\checkCode.jpg"));
         return CheckCodeUtils.outputVerifyImage(100, 40, fos, 4);
     }
 

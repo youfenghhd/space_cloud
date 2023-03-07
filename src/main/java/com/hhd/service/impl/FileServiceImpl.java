@@ -1,18 +1,27 @@
 package com.hhd.service.impl;
 
 import cn.hutool.core.date.DateTime;
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.vod.model.v20170321.DeleteVideoRequest;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hhd.exceptionhandler.CloudException;
 import com.hhd.mapper.FileMapper;
 import com.hhd.pojo.entity.Files;
 import com.hhd.service.IFileService;
+import com.hhd.utils.InitOssClient;
+import com.hhd.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import wiremock.org.apache.commons.lang3.time.DateUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+
+import static com.hhd.utils.InitVodClient.initVodClient;
 
 /**
  * <p>
@@ -61,9 +70,9 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
     }
 
     @Override
-    public List<Files> getList(String userid, String url, int result, String name) {
+    public List<Files> getList(String userId, String url, int result, String name) {
         LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
-        List<Files> files = baseMapper.selectList(lqw.eq(Files::getUserId, userid).like(Files::getFileDir, url));
+        List<Files> files = baseMapper.selectList(lqw.eq(Files::getUserId, userId).like(Files::getFileDir, url));
         for (Files file : files) {
             String fileDir = file.getFileDir();
             String[] split = fileDir.split("/", -1);
@@ -90,6 +99,13 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
     }
 
     @Override
+    public boolean logicDirFile(String userId, String url) {
+        LambdaUpdateWrapper<Files> lqw = new LambdaUpdateWrapper<>();
+        return baseMapper.update(new Files(), lqw.set(Files::getLogicDelTime, simpleDateFormat.format(DateUtils.addDays(new DateTime(), 30)))
+                .eq(Files::getUserId, userId).eq(Files::getFileDir, url)) > 0;
+    }
+
+    @Override
     public void logicNormalFile(String id) {
         fMapper.logicNormalFile(id);
     }
@@ -107,8 +123,44 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
     }
 
     @Override
-    public void delById(String id) {
+    public R delById(String id) {
+        R r = R.ok();
+        Files files = fMapper.getOne(id);
         fMapper.delById(id);
+        System.out.println(fMapper.getCount(files.getMd5()));
+        if (fMapper.getCount(files.getMd5()) != 0L) {
+            return R.ok();
+        }
+        String videoId = files.getVideoId();
+        String createTime = new DateTime(files.getCreateTime()).toDateStr();
+        String fileName = files.getFileName();
+        String type = files.getType();
+        if ("video".equals(files.getFileType()) || "audio".equals(files.getFileType())) {
+            try {
+                //初始化对象
+                DefaultAcsClient client = initVodClient();
+                //创建删除视频request对象
+                DeleteVideoRequest request = new DeleteVideoRequest();
+                //向request设置视频id
+                request.setVideoIds(videoId);
+                //调用初始化对象的方法实现删除
+                client.getAcsResponse(request);
+            } catch (Exception e) {
+                throw new CloudException(R.ERROR, R.DELETE_VA_ERR);
+            }
+        } else {
+            OSS ossClient = new OSSClientBuilder().build(InitOssClient.END_POINT,
+                    InitOssClient.ACCESS_KEY_ID, InitOssClient.ACCESS_KEY_SECRET);
+            try {
+                String fileKey = createTime.substring(0, 10) + "/" + fileName + "." + type;
+                ossClient.deleteObject(InitOssClient.BUCKET_NAME, fileKey);
+            } catch (Exception e) {
+                return R.error();
+            } finally {
+                ossClient.shutdown();
+            }
+        }
+        return r;
     }
 
     @Override

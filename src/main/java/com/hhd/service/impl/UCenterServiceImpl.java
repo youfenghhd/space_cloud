@@ -33,7 +33,10 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
     private UcenterMapper uMapper;
 
     @Override
-    public R register(Register register) {
+    public R
+
+
+    register(Register register) {
         String mobile = register.getMobile();
         String password = register.getPassword();
         String nickname = register.getNickname();

@@ -131,7 +131,10 @@ public class OssServiceImpl implements IOssService {
 
     @Override
     public Files uploadVideo(MultipartFile file, Files files) {
-        upload(file, files);
+        files.setType(file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")).substring(1));
+        files.setFileName(file.getOriginalFilename().substring(0, file.getOriginalFilename().indexOf(".")));
+        files.setMd5(md5.getFileMd5String(file));
+//        upload(file, files);
 
         LambdaQueryWrapper<UCenter> lqw = new LambdaQueryWrapper<>();
         UCenter one = uService.getOne(lqw.eq(UCenter::getId, files.getUserId()));
@@ -168,57 +171,6 @@ public class OssServiceImpl implements IOssService {
         }
         f.delete();
         return files;
-    }
-
-
-    @Override
-    public R delete(String id) {
-        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
-        Files exist = fService.getOne(lqw.eq(Files::getId, id));
-        String createTime = new DateTime(exist.getCreateTime()).toDateStr();
-        String fileName = exist.getFileName();
-        String type = exist.getType();
-        fService.delById(id);
-        LambdaQueryWrapper<Files> lqw1 = new LambdaQueryWrapper<>();
-        if (fService.count(lqw1.eq(Files::getMd5, exist.getMd5())) != 0L) {
-            return R.ok();
-        }
-        OSS ossClient = new OSSClientBuilder().build(InitOssClient.END_POINT,
-                InitOssClient.ACCESS_KEY_ID, InitOssClient.ACCESS_KEY_SECRET);
-        try {
-            String fileKey = createTime.substring(0, 10) + "/" + fileName + "." + type;
-            ossClient.deleteObject(InitOssClient.BUCKET_NAME, fileKey);
-        } catch (Exception e) {
-            return R.error();
-        } finally {
-            ossClient.shutdown();
-        }
-        return R.ok();
-    }
-
-    @Override
-    public R deleteVa(String id) {
-        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
-        Files one = fService.getOne(lqw.eq(Files::getId, id));
-        String videoId = one.getVideoId();
-        delete(id);
-        LambdaQueryWrapper<Files> lqw1 = new LambdaQueryWrapper<>();
-        if (fService.count(lqw1.eq(Files::getMd5, one.getMd5())) != 0L) {
-            return R.ok();
-        }
-        try {
-            //初始化对象
-            DefaultAcsClient client = initVodClient();
-            //创建删除视频request对象
-            DeleteVideoRequest request = new DeleteVideoRequest();
-            //向request设置视频id
-            request.setVideoIds(videoId);
-            //调用初始化对象的方法实现删除
-            client.getAcsResponse(request);
-        } catch (Exception e) {
-            throw new CloudException(R.ERROR, R.DELETE_VA_ERR);
-        }
-        return R.ok();
     }
 
     @Async

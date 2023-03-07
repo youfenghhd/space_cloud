@@ -4,10 +4,12 @@ package com.hhd.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.hhd.pojo.domain.UCenter;
 import com.hhd.pojo.entity.Files;
 import com.hhd.pojo.entity.UserDir;
 import com.hhd.pojo.vo.TreeNode;
 import com.hhd.service.IFileService;
+import com.hhd.service.IUCenterService;
 import com.hhd.service.IUserDirService;
 import com.hhd.utils.R;
 import com.hhd.utils.UserLoginToken;
@@ -40,14 +42,15 @@ public class FileController {
     private IFileService fService;
     @Autowired
     private IUserDirService uService;
+    @Autowired
+    private IUCenterService userService;
 
     @Operation(summary = "模糊查询文件")
     //    @UserLoginToken
     @Cacheable(cacheNames = "fuzzy", unless = "#result==null")
-    @GetMapping("/fuzzy")
+    @PostMapping("/fuzzy")
     public R findFuzzy(@RequestBody Files file) {
         List<Files> files = fService.getFindFile(file.getUserId(), file.getFileName());
-        System.out.println(files);
         UserDir userDir = uService.getUserDir(file.getUserId());
         TreeNode treeNode = JSON.parseObject(userDir.getUserDir(), new TypeReference<TreeNode>() {
         });
@@ -102,7 +105,7 @@ public class FileController {
     //    @UserLoginToken
     @CachePut("userFiles")
     @PutMapping("/collection")
-    public R CollectionFile(@RequestBody String[] id) {
+    public R CollectionFile(@RequestParam("id") String[] id) {
         boolean flag = false;
         for (String s : id) {
             System.out.println(s);
@@ -118,7 +121,7 @@ public class FileController {
     //    @UserLoginToken
     @CachePut("userFiles")
     @PutMapping("/noncollecton")
-    public R nonCollectionFile(@RequestBody String[] id) {
+    public R nonCollectionFile(@RequestParam("id") String[] id) {
         boolean flag = false;
         for (String s : id) {
             System.out.println(s);
@@ -132,23 +135,24 @@ public class FileController {
 
     @Operation(summary = "查询当前目录下文件")
     //    @UserLoginToken
-    @Cacheable(cacheNames = "dirFile")
-    @PostMapping("/current")
-    public R getDirFile(@RequestBody String id, @RequestParam String userDir) {
-        return R.ok().data("filesOfDir", fService.getCurFiles(userDir, id));
+//    @Cacheable(cacheNames = "dirFile")
+    @PostMapping("/current/{id}")
+    public R getDirFile(@PathVariable String id, @RequestBody UserDir userDir) {
+        return R.ok().data("files", fService.getCurFiles(userDir.getUserDir(), id));
     }
 
     @Operation(summary = "移动文件夹")
     //    @UserLoginToken
     @CachePut("dirFile")
     @PostMapping("/moveFile")
-    public R moveFile(@RequestParam String movingPath, @RequestBody String[] id) {
+    public R moveFile(@RequestBody UserDir userDir, @RequestParam("id") String[] id) {
         boolean flag = false;
         for (String s : id) {
             System.out.println(s);
+            System.out.println(userDir.getUserDir());
             Files files = new Files();
             files.setId(s);
-            files.setFileDir(movingPath);
+            files.setFileDir(userDir.getUserDir());
             flag = fService.updateById(files);
         }
         return flag ? R.ok() : R.error();
@@ -157,9 +161,15 @@ public class FileController {
     @Operation(summary = "文件加入回收站")
     //    @UserLoginToken
     @CachePut("recoveryFile")
-    @PutMapping("/del")
-    public R logicDelFile(@RequestBody List<String> id) {
-        for (String s : id) {
+    @PutMapping("/del/{userId}")
+    public R logicDelFile(@RequestBody String[] idList, @PathVariable String userId) {
+        LambdaQueryWrapper<UCenter> lqw = new LambdaQueryWrapper<>();
+        UCenter user = userService.getOne(lqw.eq(UCenter::getId, userId));
+        for (String s : idList) {
+            Files files = fService.selectOne(s);
+            user.setMemory(user.getMemory() - files.getSize());
+            user.setId(userId);
+            userService.updateById(user);
             fService.logicDelFile(s);
         }
         return R.ok();
@@ -174,6 +184,16 @@ public class FileController {
             fService.logicNormalFile(s);
         }
         return R.ok();
+    }
+    @Operation(summary = "文件真实删除")
+    @CachePut("recoveryFile")
+    @DeleteMapping("/delete")
+    public R Delete(@RequestBody List<String> id){
+        R r = R.error();
+        for (String s : id) {
+            r = fService.delById(s);
+        }
+        return r;
     }
 
     @Operation(summary = "音频文件分类")

@@ -2,6 +2,7 @@ package com.hhd.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hhd.pojo.entity.Files;
+import com.hhd.utils.R;
 
 import java.util.List;
 
@@ -50,13 +51,13 @@ public interface IFileService extends IService<Files> {
     List<Files> getFindFile(String userid, String name);
 
     /**
-     * @param userid
+     * @param userId
      * @param url
      * @param result
      * @param name
      * @return
      */
-    List<Files> getList(String userid, String url, int result, String name);
+    List<Files> getList(String userId, String url, int result, String name);
 
     /**
      * 逻辑删除
@@ -65,6 +66,13 @@ public interface IFileService extends IService<Files> {
      */
     void logicDelFile(String id);
 
+    /**
+     * 逻辑删除文件夹附带的文件
+     * @param userId 根据用户
+     * @param url 文件夹路径
+     * @return 删除成功
+     */
+    boolean logicDirFile(String userId, String url);
     /**
      * 逻辑删除恢复正常
      *
@@ -92,8 +100,9 @@ public interface IFileService extends IService<Files> {
      * 真删除
      *
      * @param id 删除文件的id
+     * @return 成功与否
      */
-    void delById(String id);
+    R delById(String id);
 
     /**
      * 查询用户id下的video文件

@@ -7,7 +7,6 @@ import com.aliyuncs.exceptions.ServerException;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.vod.model.v20170321.GetPlayInfoRequest;
 import com.aliyuncs.vod.model.v20170321.GetPlayInfoResponse;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hhd.exceptionhandler.CloudException;
 import com.hhd.pojo.domain.UCenter;
 import com.hhd.pojo.entity.Files;
@@ -39,7 +38,7 @@ import java.util.Map;
 @RequestMapping("/oss")
 public class OssController {
 
-//    private final MD5 md5 = new MD5();
+    //    private final MD5 md5 = new MD5();
     @Autowired
     private IOssService oService;
     @Autowired
@@ -53,12 +52,13 @@ public class OssController {
     @PostMapping("/portrait")
     public R setPortrait(MultipartFile file) {
         Map.Entry<String, Files> entry = oService.upload(file, new Files()).entrySet().iterator().next();
+        System.out.println(entry.getKey());
         return R.ok().data("url", entry.getKey());
     }
 
     @Operation(summary = "分片式断点续传上传文件")
-    @PostMapping("/upload")
-    public R upload(MultipartFile file, String dir, String userId) {
+    @PostMapping("/upload/{userId}")
+    public R upload(MultipartFile file, @RequestParam String dir, @PathVariable String userId) {
         UCenter user = uService.selectOne(userId);
         long memory = user.getMemory() + file.getSize();
         if (memory < TWO_G) {
@@ -72,7 +72,7 @@ public class OssController {
                     exist.setFileDir(dir);
                     exist.setId(null);
                     return fService.save(exist) ?
-                            R.ok().data("url", exist.getUrl()).data("files", exist).message("文件已实现秒传") : R.error();
+                            R.ok().data("url", exist.getUrl()).data("file", exist).message("文件已实现秒传") : R.error();
                 }
             }
             Files files = new Files();
@@ -95,13 +95,13 @@ public class OssController {
                     Map.Entry<String, Files> upload = oService.upload(file, files).entrySet().iterator().next();
                     Files files3 = upload.getValue();
                     fService.save(files3);
-                    return R.ok().data("url", upload.getKey()).data("files", files3);
+                    return R.ok().data("url", upload.getKey()).data("file", files3);
                 default:
                     files.setFileType("file");
                     Map.Entry<String, Files> upload1 = oService.upload(file, files).entrySet().iterator().next();
                     Files files4 = upload1.getValue();
                     fService.save(files4);
-                    return R.ok().data("url", upload1.getKey()).data("files", files4);
+                    return R.ok().data("url", upload1.getKey()).data("file", files4);
             }
         } else {
             throw new CloudException(R.ERROR, "内存溢出");
@@ -109,30 +109,31 @@ public class OssController {
     }
 
 
-    @Operation(summary = "删除oss云端文件")
-    @DeleteMapping("/remove/{userId}")
-    public R remove(@RequestBody String[] idList, @PathVariable String userId) {
-        R r = R.error();
-        LambdaQueryWrapper<UCenter> lqw = new LambdaQueryWrapper<>();
-        UCenter user = uService.getOne(lqw.eq(UCenter::getId, userId));
-        for (String s : idList) {
-            Files files = fService.selectOne(s);
-            user.setMemory(user.getMemory() - files.getSize());
-            user.setId(userId);
-            uService.updateById(user);
-            if ("video".equals(files.getFileType()) || "audio".equals(files.getFileType())) {
-                r = oService.deleteVa(s);
-                break;
-            }
-            r = oService.delete(s);
-        }
-        return r;
-    }
+//    @Operation(summary = "删除oss云端文件")
+//    @DeleteMapping("/remove/{userId}")
+//    public R remove(@RequestBody String[] idList, @PathVariable String userId) {
+//        R r = R.error();
+//        LambdaQueryWrapper<UCenter> lqw = new LambdaQueryWrapper<>();
+//        UCenter user = uService.getOne(lqw.eq(UCenter::getId, userId));
+//        for (String s : idList) {
+//            Files files = fService.selectOne(s);
+//            user.setMemory(user.getMemory() - files.getSize());
+//            user.setId(userId);
+//            uService.updateById(user);
+//            oService.delete()
+//            if ("video".equals(files.getFileType()) || "audio".equals(files.getFileType())) {
+//                r = oService.deleteVa(s);
+//                break;
+//            }
+//            r = oService.delete(s);
+//        }
+//        return r;
+//    }
 
 
     @Operation(summary = "根据FileId获取播放地址")
     @PostMapping("/getPlay")
-    public R getPlay(@RequestBody List<Files> list) {
+    public R getPlay(@RequestParam("isList") List<String> isList) {
         ArrayList<Map<String, Object>> urlList = new ArrayList<>();
         Files file = new Files();
         // 创建SubmitMediaInfoJob实例并初始化
@@ -142,10 +143,8 @@ public class OssController {
         IAcsClient client = new DefaultAcsClient(profile);
         GetPlayInfoRequest request = new GetPlayInfoRequest();
         // 视频ID。
-        for (Files files : list) {
-            Files one = fService.selectOne(files.getId());
+        for (String s : isList) {
             Map<String, Object> map = new HashMap<>(8);
-            String s = one.getVideoId();
             file.setVideoId(s);
             map.put("videoId", s);
             request.setVideoId(s);
