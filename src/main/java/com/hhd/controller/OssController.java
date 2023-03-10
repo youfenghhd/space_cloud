@@ -108,29 +108,6 @@ public class OssController {
         }
     }
 
-
-//    @Operation(summary = "删除oss云端文件")
-//    @DeleteMapping("/remove/{userId}")
-//    public R remove(@RequestBody String[] idList, @PathVariable String userId) {
-//        R r = R.error();
-//        LambdaQueryWrapper<UCenter> lqw = new LambdaQueryWrapper<>();
-//        UCenter user = uService.getOne(lqw.eq(UCenter::getId, userId));
-//        for (String s : idList) {
-//            Files files = fService.selectOne(s);
-//            user.setMemory(user.getMemory() - files.getSize());
-//            user.setId(userId);
-//            uService.updateById(user);
-//            oService.delete()
-//            if ("video".equals(files.getFileType()) || "audio".equals(files.getFileType())) {
-//                r = oService.deleteVa(s);
-//                break;
-//            }
-//            r = oService.delete(s);
-//        }
-//        return r;
-//    }
-
-
     @Operation(summary = "根据FileId获取播放地址")
     @PostMapping("/getPlay")
     public R getPlay(@RequestParam("isList") List<String> isList) {
@@ -144,6 +121,7 @@ public class OssController {
         GetPlayInfoRequest request = new GetPlayInfoRequest();
         // 视频ID。
         for (String s : isList) {
+            System.out.println(s);
             Map<String, Object> map = new HashMap<>(8);
             file.setVideoId(s);
             map.put("videoId", s);

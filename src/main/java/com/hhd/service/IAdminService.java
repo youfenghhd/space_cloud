@@ -33,6 +33,13 @@ public interface IAdminService extends IService<Admin> {
      */
     int insert(Admin admin);
 
+    /**
+     * 请求用户信息
+     * @param id 根据id请求
+     * @return 返回信息
+     */
+    Admin selectOne(String id);
+
 
     /**
      * 管理员查询所有用户

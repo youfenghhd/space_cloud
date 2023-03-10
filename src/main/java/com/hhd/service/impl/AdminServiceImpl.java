@@ -75,6 +75,12 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     }
 
     @Override
+    public Admin selectOne(String id) {
+        LambdaUpdateWrapper<Admin> lqw = new LambdaUpdateWrapper<>();
+        return aMapper.selectOne(lqw.eq(Admin::getAid,id));
+    }
+
+    @Override
     public List<UCenter> showNormalAll() {
         return uMapper.selectList(null);
     }

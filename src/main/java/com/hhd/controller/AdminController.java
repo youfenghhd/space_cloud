@@ -4,6 +4,7 @@ package com.hhd.controller;
 import com.hhd.pojo.domain.Admin;
 import com.hhd.pojo.domain.UCenter;
 import com.hhd.service.IAdminService;
+import com.hhd.utils.MD5;
 import com.hhd.utils.R;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,6 +39,21 @@ public class AdminController {
         String token = entry.getKey();
         Admin admins = entry.getValue();
         return R.ok().data("token", token).data("admin", admins);
+    }
+
+    @Operation(summary = "根据id查询管理员信息")
+//    @Cacheable(cacheNames = "info", unless = "#result==null")
+    @GetMapping("getInfo/{id}")
+    public R getInfo(@PathVariable String id) {
+        return R.ok().data("admin", service.selectOne(id));
+    }
+
+    @Operation(summary = "管理员更改信息")
+//    @CachePut(value = "info")
+    @PostMapping("update")
+    public R updateInfo(@RequestBody Admin admin) {
+        admin.setPassword(MD5.encrypt(admin.getPassword()));
+        return service.updateById(admin) ? R.ok() : R.error();
     }
     @Cacheable(cacheNames = "normalUser", unless = "#result==null")
     @Operation(summary = "查找所有正常的用户")

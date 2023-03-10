@@ -9,8 +9,6 @@ import com.aliyun.oss.model.*;
 import com.aliyun.vod.upload.impl.UploadVideoImpl;
 import com.aliyun.vod.upload.req.UploadVideoRequest;
 import com.aliyun.vod.upload.resp.UploadVideoResponse;
-import com.aliyuncs.DefaultAcsClient;
-import com.aliyuncs.vod.model.v20170321.DeleteVideoRequest;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hhd.exceptionhandler.CloudException;
 import com.hhd.pojo.domain.UCenter;
@@ -35,8 +33,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.hhd.utils.InitVodClient.initVodClient;
 
 /**
  * @author -无心
@@ -183,8 +179,7 @@ public class OssServiceImpl implements IOssService {
         Files one = fService.getOne(lqw.eq(Files::getId, id));
         LambdaQueryWrapper<UCenter> lqw1 = new LambdaQueryWrapper<>();
         UCenter user = uService.getOne(lqw1.eq(UCenter::getId, one.getUserId()));
-        String objectName = one.getUrl().substring(47);
-
+        String objectName = one.getUrl().substring(50);
         //创建用户自定义的下载目录文件夹
         try {
             java.nio.file.Files.createDirectories(Paths.get(user.getDownLoadAdd()));
@@ -200,7 +195,6 @@ public class OssServiceImpl implements IOssService {
             downloadFileRequest.setEnableCheckpoint(true);
             // 设置断点记录文件的完整路径
             downloadFileRequest.setCheckpointFile(user.getDownLoadAdd() + "\\" + one.getFileName() + ".dcp");
-
 
             DownloadFileResult downloadRes = ossClient.downloadFile(downloadFileRequest);
 

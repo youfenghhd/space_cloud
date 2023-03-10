@@ -77,7 +77,7 @@ public class FileController {
 
     @Operation(summary = "查询回收站文件")
     //    @UserLoginToken
-    @Cacheable(cacheNames = "recoveryFile", unless = "#result==null")
+//    @Cacheable(cacheNames = "recoveryFile", unless = "#result==null")
     @GetMapping("/recovery/{userid}")
     public R findRecovery(@PathVariable String userid) {
         return R.ok().data("recovery", fService.showRecoveryAll(userid));
@@ -160,7 +160,7 @@ public class FileController {
 
     @Operation(summary = "文件加入回收站")
     //    @UserLoginToken
-    @CachePut("recoveryFile")
+//    @CachePut("recoveryFile")
     @PutMapping("/del/{userId}")
     public R logicDelFile(@RequestBody String[] idList, @PathVariable String userId) {
         LambdaQueryWrapper<UCenter> lqw = new LambdaQueryWrapper<>();
@@ -177,7 +177,7 @@ public class FileController {
 
     @Operation(summary = "文件移出回收站")
     //    @UserLoginToken
-    @CachePut("normalFile")
+//    @CachePut("normalFile")
     @PutMapping("/normal")
     public R logicNormalFile(@RequestBody List<String> id) {
         for (String s : id) {
