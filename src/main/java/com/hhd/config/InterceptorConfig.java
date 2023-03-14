@@ -14,7 +14,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class InterceptorConfig implements WebMvcConfigurer {
 
     /**
-     *     拦截所有请求，通过判断是否有 @LoginRequired 注解 决定是否需要登录
+     * 拦截所有请求，通过判断是否有 @LoginRequired 注解 决定是否需要登录
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -23,7 +23,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
     }
 
     /**
-     *  自己写的拦截器
+     * 自己写的拦截器
+     *
      * @return 拦截器
      */
     @Bean

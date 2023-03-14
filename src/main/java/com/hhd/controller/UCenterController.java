@@ -65,7 +65,7 @@ public class UCenterController {
     @Operation(summary = "查询手机有无被注册")
     @Cacheable("mobile")
     @GetMapping("mobile/{mobile}")
-    public R selectMobileUser(@PathVariable String mobile){
+    public R selectMobileUser(@PathVariable String mobile) {
         return uService.selectOneByMobile(mobile);
     }
 

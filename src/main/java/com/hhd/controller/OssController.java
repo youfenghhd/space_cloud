@@ -66,7 +66,7 @@ public class OssController {
             user.setId(userId);
             uService.updateById(user);
             String md5 = MD5.getFileMd5String(file);
-            if(fService.selectMd5OfUser(md5, userId)){
+            if (fService.selectMd5OfUser(md5, userId)) {
                 return R.error().message("您的文件已存在，不可重复上传");
             }
             List<Files> filesList = fService.selectMd5File(md5);
