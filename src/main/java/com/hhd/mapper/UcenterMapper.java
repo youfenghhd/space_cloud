@@ -22,7 +22,7 @@ import java.util.List;
 public interface UcenterMapper extends BaseMapper<UCenter> {
 
     /**
-     * 修改逻辑删除
+     * 修改逻辑删除为正常
      *
      * @param id 根据传入id修改
      * @return 修改结果

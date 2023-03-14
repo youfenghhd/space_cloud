@@ -24,7 +24,7 @@ public interface FileMapper extends BaseMapper<Files> {
      */
 
     @Update("update file set logic_del_time = null , file_dir = '/root' where id = #{id}")
-    int logicNormalFile(@Param("id") String id);
+    int logicNormalFile(String id);
 
     /**
      * 查询文件回收站所有（逻辑删除所有）
@@ -32,8 +32,9 @@ public interface FileMapper extends BaseMapper<Files> {
      * @param nowTime 当前时间
      * @return 查询结果
      */
-    @Select("select * from file where logic_del_time is not null and logic_del_time > #{nowTime}")
-    List<Files> showRecoveryAllFiles(String nowTime);
+//    @Select("select * from file where logic_del_time is not null and logic_del_time > #{nowTime}")
+    @Select("select * from file")
+    List<Files> showRecoveryAllFiles();
 
     /**
      * 查询回收站所有（逻辑删除所有）
@@ -47,6 +48,7 @@ public interface FileMapper extends BaseMapper<Files> {
 
     /**
      * 找存在
+     *
      * @param id 按id
      * @return 结果
      */
@@ -79,8 +81,6 @@ public interface FileMapper extends BaseMapper<Files> {
      * @return 结果
      */
     List<Files> searchFuzzyFiles(Files files);
-
-
 
 
 }

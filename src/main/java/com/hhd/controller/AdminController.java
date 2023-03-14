@@ -69,11 +69,11 @@ public class AdminController {
         return R.ok().data("recovery", service.showRecoveryAll());
     }
 
-    @Operation(summary = "查找文件回收站")
+    @Operation(summary = "查找全部文件")
 //    @Cacheable(cacheNames = "recoveryUser", unless = "#result==null")
-    @GetMapping("/recovery/files")
-    public R filesRecovery() {
-        return R.ok().data("recovery", service.showRecoveryAllFiles());
+    @GetMapping("/files")
+    public R allFiles() {
+        return R.ok().data("files", service.showAllFiles());
     }
 
     @Operation(summary = "禁用/启用状态")
@@ -94,6 +94,7 @@ public class AdminController {
     @Operation(summary = "模糊匹配文件名或者类型")
     @PostMapping("/searchFiles")
     public R searchFiles(@RequestBody Files files) {
+        System.out.println(files);
         return R.ok().data("search", service.searchFiles(files));
     }
 
@@ -112,10 +113,16 @@ public class AdminController {
         return service.logicNormalUser(uCenter.getId()) > 0 ? R.ok() : R.error();
     }
 
-    @Operation(summary = "从回收站彻底删除")
+    @Operation(summary = "用户真实删除")
     @DeleteMapping("/delUser")
-    public R delUserById(@RequestBody String id) {
-        return service.delById(id) > 0 ? R.ok() : R.error();
+    public R delUser(@RequestBody String id) {
+        return service.delUserById(id) > 0 ? R.ok() : R.error();
+    }
+
+    @Operation(summary = "文件真实删除")
+    @DeleteMapping("/delFile")
+    public R delFiler(@RequestBody Files files) {
+        return service.delFileByMd5(files);
     }
 
     @Operation(summary = "获取密码的md5值")

@@ -112,36 +112,4 @@ public interface IFileService extends IService<Files> {
      */
     R delById(String id);
 
-    /**
-     * 查询用户id下的video文件
-     *
-     * @param userId 根据用户id查询
-     * @return 查询结果
-     */
-    List<Files> findVideo(String userId);
-
-    /**
-     * 查询用户id下的audio文件
-     *
-     * @param userId 根据用户id查询
-     * @return 查询结果
-     */
-    List<Files> findAudio(String userId);
-
-    /**
-     * 查询用户id下的image文件
-     *
-     * @param userId 根据用户id查询
-     * @return 查询结果
-     */
-    List<Files> findImage(String userId);
-
-    /**
-     * 查询用户id下的其他分类文件
-     *
-     * @param userId 根据用户id查询
-     * @return 查询结果
-     */
-    List<Files> findOther(String userId);
-
 }

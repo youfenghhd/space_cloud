@@ -186,43 +186,16 @@ public class FileController {
         }
         return r;
     }
+
     @Operation(summary = "文件真实删除")
     @CachePut("recoveryFile")
     @DeleteMapping("/delete")
-    public R Delete(@RequestBody List<String> id){
+    public R Delete(@RequestBody List<String> id) {
         R r = R.error();
         for (String s : id) {
             r = fService.delById(s);
         }
         return r;
-    }
-
-    @Operation(summary = "音频文件分类")
-    //    @UserLoginToken
-    @GetMapping("/findaudio/{userId}")
-    public R findAudio(@PathVariable String userId) {
-        return R.ok().data("audio", fService.findAudio(userId));
-    }
-
-    @Operation(summary = "视频文件分类")
-    //    @UserLoginToken
-    @GetMapping("/findvideo/{userId}")
-    public R findVideo(@PathVariable String userId) {
-        return R.ok().data("audio", fService.findVideo(userId));
-    }
-
-    @Operation(summary = "图片文件分类")
-    //    @UserLoginToken
-    @GetMapping("/findimage/{userId}")
-    public R findImage(@PathVariable String userId) {
-        return R.ok().data("audio", fService.findImage(userId));
-    }
-
-    @Operation(summary = "其他文件分类")
-    //    @UserLoginToken
-    @GetMapping("/findOther/{userId}")
-    public R findOther(@PathVariable String userId) {
-        return R.ok().data("audio", fService.findOther(userId));
     }
 
     public void findTreeNode(TreeNode treeNode, String name, List<TreeNode> lists) {

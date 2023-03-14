@@ -133,7 +133,6 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
         R r = R.ok();
         Files files = fMapper.getOne(id);
         fMapper.delById(id);
-        System.out.println(fMapper.getCount(files.getMd5()));
         if (fMapper.getCount(files.getMd5()) != 0L) {
             return R.ok();
         }
@@ -167,33 +166,5 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
             }
         }
         return r;
-    }
-
-    @Override
-    public List<Files> findVideo(String userId) {
-        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
-        return fMapper.selectList(lqw.eq(Files::getFileType, VIDEO)
-                .eq(Files::getUserId, userId));
-    }
-
-    @Override
-    public List<Files> findAudio(String userId) {
-        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
-        return fMapper.selectList(lqw.eq(Files::getFileType, AUDIO)
-                .eq(Files::getUserId, userId));
-    }
-
-    @Override
-    public List<Files> findImage(String userId) {
-        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
-        return fMapper.selectList(lqw.eq(Files::getFileType, IMAGE)
-                .eq(Files::getUserId, userId));
-    }
-
-    @Override
-    public List<Files> findOther(String userId) {
-        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
-        return fMapper.selectList(lqw.eq(Files::getFileType, OTHER)
-                .eq(Files::getUserId, userId));
     }
 }

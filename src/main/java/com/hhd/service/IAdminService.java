@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.hhd.pojo.domain.Admin;
 import com.hhd.pojo.domain.UCenter;
 import com.hhd.pojo.entity.Files;
+import com.hhd.utils.R;
 
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ public interface IAdminService extends IService<Admin> {
 
     /**
      * 请求用户信息
+     *
      * @param id 根据id请求
      * @return 返回信息
      */
@@ -57,11 +59,11 @@ public interface IAdminService extends IService<Admin> {
     List<UCenter> showRecoveryAll();
 
     /**
-     * 查询回收站
+     * 管理员查询所有文件
      *
      * @return 查询结果
      */
-    List<Files> showRecoveryAllFiles();
+    List<Files> showAllFiles();
 
     /**
      * 管理员修改用户状态
@@ -72,9 +74,9 @@ public interface IAdminService extends IService<Admin> {
     boolean changeStatus(UCenter uCenter);
 
     /**
-     * 根据id讲用户逻辑删除
+     * 根据id将用户逻辑删除
      *
-     * @param id ：传入的id
+     * @param id ：传入的用户id
      * @return 成功/失败
      */
     int logicDelUser(String id);
@@ -82,21 +84,30 @@ public interface IAdminService extends IService<Admin> {
     /**
      * 根据传入id将用户从逻辑删除恢复正常状态
      *
-     * @param id 传入的id
+     * @param id 传入的用户id
      * @return 成功/失败
      */
     int logicNormalUser(String id);
 
     /**
-     * 真实删除
+     * 真实删除用户
      *
      * @param id 传入的id
      * @return 成功/失败
      */
-    int delById(String id);
+    int delUserById(String id);
+
+    /**
+     * 真实删除文件
+     *
+     * @param files 传入的文件md5值
+     * @return 成功/失败
+     */
+    R delFileByMd5(Files files);
 
     /**
      * 模糊匹配用户
+     *
      * @param uCenter 匹配项
      * @return 结果
      */
@@ -104,6 +115,7 @@ public interface IAdminService extends IService<Admin> {
 
     /**
      * 模糊匹配文件
+     *
      * @param files 匹配项
      * @return 结果
      */
