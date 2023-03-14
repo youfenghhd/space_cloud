@@ -77,8 +77,9 @@ public interface IFileService extends IService<Files> {
      * 逻辑删除恢复正常
      *
      * @param id 根据id
+     * @return 结果
      */
-    void logicNormalFile(String id);
+    R logicNormalFile(String id);
 
     /**
      * 查找相同的md5值的文件
@@ -88,6 +89,13 @@ public interface IFileService extends IService<Files> {
      */
     List<Files> selectMd5File(String md5);
 
+    /**
+     *  查找用户是否重复上传
+     * @param md5 字面意思
+     * @param userId 字面意思
+     * @return 结果
+     */
+    boolean selectMd5OfUser(String md5,String userId);
     /**
      * 根据文件id查询文件详情或是否存在
      *

@@ -46,7 +46,7 @@ public class OssController {
     @Autowired
     private IUCenterService uService;
 
-    private static final long TWO_G = 2147483648L;
+    private static final long ONE_G = 1073741824L;
 
     @Operation(summary = "上传头像")
     @PostMapping("/portrait")
@@ -61,11 +61,15 @@ public class OssController {
     public R upload(MultipartFile file, @RequestParam String dir, @PathVariable String userId) {
         UCenter user = uService.selectOne(userId);
         long memory = user.getMemory() + file.getSize();
-        if (memory < TWO_G) {
+        if (memory < ONE_G) {
             user.setMemory(memory);
             user.setId(userId);
             uService.updateById(user);
-            List<Files> filesList = fService.selectMd5File(MD5.getFileMd5String(file));
+            String md5 = MD5.getFileMd5String(file);
+            if(fService.selectMd5OfUser(md5, userId)){
+                return R.error().message("您的文件已存在，不可重复上传");
+            }
+            List<Files> filesList = fService.selectMd5File(md5);
             for (Files exist : filesList) {
                 if (exist != null) {
                     exist.setUserId(userId);

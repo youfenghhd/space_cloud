@@ -2,4 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hhd.mapper.FileMapper">
 
+    <select id="searchFuzzyFiles" resultType="com.hhd.pojo.entity.Files">
+        select *from file
+        <where>
+            <if test="fileName !=null and fileName !=''">and filename like concat("%",#{fileName}."%")</if>
+            <if test="file_type != null  and file_type !=''">and fileType =#{fileType}</if>
+        </where>
+    </select>
 </mapper>

@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hhd.exceptionhandler.CloudException;
 import com.hhd.mapper.AdminMapper;
+import com.hhd.mapper.FileMapper;
 import com.hhd.mapper.UcenterMapper;
 import com.hhd.pojo.domain.Admin;
 import com.hhd.pojo.domain.UCenter;
+import com.hhd.pojo.entity.Files;
 import com.hhd.service.IAdminService;
 import com.hhd.utils.JwtUtils;
 import com.hhd.utils.MD5;
@@ -37,6 +39,8 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     private AdminMapper aMapper;
     @Autowired
     private UcenterMapper uMapper;
+    @Autowired
+    private FileMapper fMapper;
 
     @Autowired
     private RedisTemplate<String, String> template;
@@ -60,7 +64,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
             throw new CloudException(R.ERROR, R.PASSWORD_ERR);
         }
         String code1 = template.opsForValue().get("checkCode");
-        if (!code.equals(code1)) {
+        if (!code.equalsIgnoreCase(code1)) {
             throw new CloudException(R.ERROR, R.CHECK_ERROR);
         }
         String token = JwtUtils.getJwtToken(exist);
@@ -77,7 +81,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     @Override
     public Admin selectOne(String id) {
         LambdaUpdateWrapper<Admin> lqw = new LambdaUpdateWrapper<>();
-        return aMapper.selectOne(lqw.eq(Admin::getAid,id));
+        return aMapper.selectOne(lqw.eq(Admin::getAid, id));
     }
 
     @Override
@@ -92,10 +96,14 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     }
 
     @Override
-    public int changeStatus(UCenter uCenter) {
-        LambdaUpdateWrapper<UCenter> lqw = new LambdaUpdateWrapper<>();
-        lqw.set(UCenter::getStatus, uCenter.getStatus()).eq(UCenter::getId, uCenter.getId());
-        return uMapper.update(new UCenter(), lqw);
+    public List<Files> showRecoveryAllFiles() {
+        DateTime nowTime = new DateTime();
+        return fMapper.showRecoveryAllFiles(simpleDateFormat.format(nowTime));
+    }
+
+    @Override
+    public boolean changeStatus(UCenter uCenter) {
+        return uMapper.changeStatus(uCenter.getId(), uCenter.getStatus());
     }
 
     @Override
@@ -112,8 +120,18 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     }
 
     @Override
-    public int delById(List<String> id) {
-        return uMapper.delById(id);
+    public int delById(String id) {
+        return aMapper.delById(id);
+    }
+
+    @Override
+    public List<UCenter> searchUsers(UCenter uCenter) {
+        return uMapper.searchByFuzzyUsers(uCenter);
+    }
+
+    @Override
+    public List<Files> searchFiles(Files files) {
+        return fMapper.searchFuzzyFiles(files);
     }
 
 

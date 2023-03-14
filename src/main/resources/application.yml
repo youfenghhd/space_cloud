@@ -4,6 +4,7 @@ mybatis-plus:
     db-config:
       logic-not-delete-value: "null"
       logic-delete-field: logicDelTime
+    banner: false
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true
@@ -51,6 +52,8 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
+  main:
+    banner-mode: off
 
 aliyun:
   oss:
@@ -67,4 +70,3 @@ server:
 logging:
   level:
     root: error
-

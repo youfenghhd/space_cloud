@@ -57,14 +57,6 @@ public class UCenterController {
 //    @CachePut(value = "info")
     @PostMapping("update")
     public R updateInfo(@RequestBody UCenter uCenter) {
-//        UCenter original = uService.selectOne(uCenter.getId());
-//        UCenter end = new UCenter();
-//        end.setId(uCenter.getId());
-//        end.setMemory(original.getMemory());
-//        end.setPortrait(uCenter.getPortrait());
-//        end.setDownLoadAdd(uCenter.getDownLoadAdd());
-//        end.setNickname(uCenter.getNickname());
-//        end.setPassword(MD5.encrypt(uCenter.getPassword()));
         uCenter.setPassword(MD5.encrypt(uCenter.getPassword()));
         return uService.updateById(uCenter) ? R.ok() : R.error();
     }

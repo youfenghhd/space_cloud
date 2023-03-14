@@ -27,6 +27,15 @@ public interface FileMapper extends BaseMapper<Files> {
     int logicNormalFile(@Param("id") String id);
 
     /**
+     * 查询文件回收站所有（逻辑删除所有）
+     *
+     * @param nowTime 当前时间
+     * @return 查询结果
+     */
+    @Select("select * from file where logic_del_time is not null and logic_del_time > #{nowTime}")
+    List<Files> showRecoveryAllFiles(String nowTime);
+
+    /**
      * 查询回收站所有（逻辑删除所有）
      *
      * @param userId  给出用户的回收站
@@ -61,5 +70,17 @@ public interface FileMapper extends BaseMapper<Files> {
      */
     @Delete("delete from file where id = #{id}")
     int delById(String id);
+
+
+    /**
+     * 模糊查询
+     *
+     * @param files 文件
+     * @return 结果
+     */
+    List<Files> searchFuzzyFiles(Files files);
+
+
+
 
 }

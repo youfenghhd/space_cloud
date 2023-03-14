@@ -1,8 +1,9 @@
 package com.hhd.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.hhd.pojo.domain.UCenter;
 import com.hhd.pojo.domain.Admin;
+import com.hhd.pojo.domain.UCenter;
+import com.hhd.pojo.entity.Files;
 
 import java.util.List;
 import java.util.Map;
@@ -56,12 +57,19 @@ public interface IAdminService extends IService<Admin> {
     List<UCenter> showRecoveryAll();
 
     /**
+     * 查询回收站
+     *
+     * @return 查询结果
+     */
+    List<Files> showRecoveryAllFiles();
+
+    /**
      * 管理员修改用户状态
      *
      * @param uCenter:根据id修改状态
      * @return 成功/失败
      */
-    int changeStatus(UCenter uCenter);
+    boolean changeStatus(UCenter uCenter);
 
     /**
      * 根据id讲用户逻辑删除
@@ -85,5 +93,19 @@ public interface IAdminService extends IService<Admin> {
      * @param id 传入的id
      * @return 成功/失败
      */
-    int delById(List<String> id);
+    int delById(String id);
+
+    /**
+     * 模糊匹配用户
+     * @param uCenter 匹配项
+     * @return 结果
+     */
+    List<UCenter> searchUsers(UCenter uCenter);
+
+    /**
+     * 模糊匹配文件
+     * @param files 匹配项
+     * @return 结果
+     */
+    List<Files> searchFiles(Files files);
 }

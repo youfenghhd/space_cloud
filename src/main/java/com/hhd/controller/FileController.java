@@ -180,10 +180,11 @@ public class FileController {
 //    @CachePut("normalFile")
     @PutMapping("/normal")
     public R logicNormalFile(@RequestBody List<String> id) {
+        R r = R.error();
         for (String s : id) {
-            fService.logicNormalFile(s);
+            r = fService.logicNormalFile(s);
         }
-        return R.ok();
+        return r;
     }
     @Operation(summary = "文件真实删除")
     @CachePut("recoveryFile")

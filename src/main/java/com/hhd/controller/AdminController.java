@@ -3,17 +3,16 @@ package com.hhd.controller;
 
 import com.hhd.pojo.domain.Admin;
 import com.hhd.pojo.domain.UCenter;
+import com.hhd.pojo.entity.Files;
 import com.hhd.service.IAdminService;
 import com.hhd.utils.MD5;
 import com.hhd.utils.R;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -55,46 +54,77 @@ public class AdminController {
         admin.setPassword(MD5.encrypt(admin.getPassword()));
         return service.updateById(admin) ? R.ok() : R.error();
     }
-    @Cacheable(cacheNames = "normalUser", unless = "#result==null")
+
+    //    @Cacheable(cacheNames = "normalUser", unless = "#result==null")
     @Operation(summary = "查找所有正常的用户")
     @GetMapping
     public R findNormal() {
         return R.ok().data("normal", service.showNormalAll());
     }
 
-    @Operation(summary = "查找回收站")
-    @Cacheable(cacheNames = "recoveryUser", unless = "#result==null")
+    @Operation(summary = "查找用户回收站")
+//    @Cacheable(cacheNames = "recoveryUser", unless = "#result==null")
     @GetMapping("/recovery")
     public R findRecovery() {
         return R.ok().data("recovery", service.showRecoveryAll());
     }
 
+    @Operation(summary = "查找文件回收站")
+//    @Cacheable(cacheNames = "recoveryUser", unless = "#result==null")
+    @GetMapping("/recovery/files")
+    public R filesRecovery() {
+        return R.ok().data("recovery", service.showRecoveryAllFiles());
+    }
+
     @Operation(summary = "禁用/启用状态")
-    @CachePut("normalUser")
+//    @CachePut("normalUser")
     @PutMapping("/status")
     public R changeStatus(@RequestBody UCenter user) {
-        return service.changeStatus(user) > 0 ?
+        return service.changeStatus(user) ?
                 R.ok() : R.error();
     }
 
+    @Operation(summary = "模糊匹配登录名或者昵称")
+    @PostMapping("/searchUsers")
+    public R searchUsers(@RequestBody UCenter uCenter) {
+        System.out.println(uCenter);
+        return R.ok().data("search", service.searchUsers(uCenter));
+    }
+
+    @Operation(summary = "模糊匹配文件名或者类型")
+    @PostMapping("/searchFiles")
+    public R searchFiles(@RequestBody Files files) {
+        return R.ok().data("search", service.searchFiles(files));
+    }
+
     @Operation(summary = "用户加入回收站")
-    @CachePut("recoveryUser")
+//    @CachePut("recoveryUser")
     @PutMapping("/del")
-    public R logicDelUser(@RequestBody String id) {
-        return service.logicDelUser(id) > 0 ? R.ok() : R.error();
+    public R logicDelUser(@RequestBody UCenter uCenter) {
+        return service.logicDelUser(uCenter.getId()) > 0 ? R.ok() : R.error();
+
     }
 
     @Operation(summary = "用户移出回收站")
-    @CachePut("normalUser")
+//    @CachePut("normalUser")
     @PutMapping("/normal")
-    public R logicNormalUser(@RequestBody String id) {
-        return service.logicNormalUser(id) > 0 ? R.ok() : R.error();
+    public R logicNormalUser(@RequestBody UCenter uCenter) {
+        return service.logicNormalUser(uCenter.getId()) > 0 ? R.ok() : R.error();
     }
 
     @Operation(summary = "从回收站彻底删除")
     @DeleteMapping("/delUser")
-    public R delUserById(@RequestBody List<String> id) {
+    public R delUserById(@RequestBody String id) {
         return service.delById(id) > 0 ? R.ok() : R.error();
     }
+
+    @Operation(summary = "获取密码的md5值")
+    @Cacheable("md5")
+    @GetMapping("/md5/{password}")
+    public R getMd5(@PathVariable String password) {
+        return R.ok().data("md5", MD5.encrypt(password));
+    }
+
+
 }
 

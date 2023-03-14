@@ -106,14 +106,20 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
     }
 
     @Override
-    public void logicNormalFile(String id) {
-        fMapper.logicNormalFile(id);
+    public R logicNormalFile(String id) {
+        return fMapper.logicNormalFile(id)>0?R.ok():R.error();
     }
 
     @Override
     public List<Files> selectMd5File(String md5) {
         LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
         return fMapper.selectList(lqw.eq(Files::getMd5, md5));
+    }
+
+    @Override
+    public boolean selectMd5OfUser(String md5, String userId) {
+        LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
+        return fMapper.selectCount(lqw.eq(Files::getUserId,userId).eq(Files::getMd5,md5))>0;
     }
 
     @Override

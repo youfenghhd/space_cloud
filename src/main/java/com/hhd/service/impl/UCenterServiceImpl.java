@@ -89,13 +89,11 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
         }
 
         LambdaQueryWrapper<UCenter> lqw = new LambdaQueryWrapper<>();
-        lqw.eq(UCenter::getMobile, mobile)
-                .eq(UCenter::getStatus, true);
+        lqw.eq(UCenter::getMobile, mobile);
         UCenter exist = uMapper.selectOne(lqw);
         if (exist == null) {
             throw new CloudException(R.ERROR, R.NON_REGISTER);
         }
-
         if (!exist.getStatus()) {
             throw new CloudException(R.ERROR, R.DISABLE_ERR);
         }
