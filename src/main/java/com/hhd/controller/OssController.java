@@ -20,6 +20,8 @@ import com.hhd.utils.MimeTypeUtils;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,6 +59,7 @@ public class OssController {
     }
 
     @Operation(summary = "分片式断点续传上传文件")
+    @CacheEvict(value = {"normalFiles", "fuzzy"}, allEntries = true)
     @PostMapping("/upload/{userId}")
     public R upload(MultipartFile file, @RequestParam String dir, @PathVariable String userId) {
         UCenter user = uService.selectOne(userId);
@@ -113,6 +116,7 @@ public class OssController {
     }
 
     @Operation(summary = "根据FileId获取播放地址")
+    @Cacheable(cacheNames = "getPlay", unless = "#result==null")
     @PostMapping("/getPlay")
     public R getPlay(@RequestParam("isList") List<String> isList) {
         ArrayList<Map<String, Object>> urlList = new ArrayList<>();

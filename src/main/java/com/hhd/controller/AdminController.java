@@ -10,6 +10,8 @@ import com.hhd.utils.R;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +33,8 @@ public class AdminController {
     @Autowired
     private IAdminService service;
 
+    private static final int MD5LENGTH = 32;
+
     @Operation(summary = "用户登录")
     @PostMapping("/login")
     public R login(@RequestBody Admin admin) {
@@ -41,43 +45,44 @@ public class AdminController {
     }
 
     @Operation(summary = "根据id查询管理员信息")
-//    @Cacheable(cacheNames = "info", unless = "#result==null")
-    @GetMapping("getInfo/{id}")
-    public R getInfo(@PathVariable String id) {
-        return R.ok().data("admin", service.selectOne(id));
+    @Cacheable(cacheNames = "info", unless = "#result==null", key = "#aid")
+    @GetMapping("getInfo/{aid}")
+    public R getInfo(@PathVariable String aid) {
+        return R.ok().data("admin", service.selectOne(aid));
     }
 
     @Operation(summary = "管理员更改信息")
-//    @CachePut(value = "info")
+    @CachePut(value = "info", key = "#admin.aid")
     @PostMapping("update")
     public R updateInfo(@RequestBody Admin admin) {
-        admin.setPassword(MD5.encrypt(admin.getPassword()));
-        return service.updateById(admin) ? R.ok() : R.error();
+        if (admin.getPassword().length() != MD5LENGTH) {
+            admin.setPassword(MD5.encrypt(admin.getPassword()));
+        }
+        return service.updateById(admin) ? R.ok().data("admin", admin) : R.error();
     }
 
-    //    @Cacheable(cacheNames = "normalUser", unless = "#result==null")
     @Operation(summary = "查找所有正常的用户")
+    @Cacheable(value = "normalUsers", unless = "#result==null")
     @GetMapping
     public R findNormal() {
         return R.ok().data("normal", service.showNormalAll());
     }
 
     @Operation(summary = "查找用户回收站")
-//    @Cacheable(cacheNames = "recoveryUser", unless = "#result==null")
+    @Cacheable(value = "recoveryUsers", unless = "#result==null")
     @GetMapping("/recovery")
     public R findRecovery() {
         return R.ok().data("recovery", service.showRecoveryAll());
     }
 
     @Operation(summary = "查找全部文件")
-//    @Cacheable(cacheNames = "recoveryUser", unless = "#result==null")
+    @Cacheable(value = "normalFiles", unless = "#result==null")
     @GetMapping("/files")
     public R allFiles() {
         return R.ok().data("files", service.showAllFiles());
     }
 
     @Operation(summary = "禁用/启用状态")
-//    @CachePut("normalUser")
     @PutMapping("/status")
     public R changeStatus(@RequestBody UCenter user) {
         return service.changeStatus(user) ?
@@ -85,6 +90,7 @@ public class AdminController {
     }
 
     @Operation(summary = "模糊匹配登录名或者昵称")
+    @Cacheable(cacheNames = "searchUsers",unless = "#result==null",key = "#uCenter")
     @PostMapping("/searchUsers")
     public R searchUsers(@RequestBody UCenter uCenter) {
         System.out.println(uCenter);
@@ -92,6 +98,7 @@ public class AdminController {
     }
 
     @Operation(summary = "模糊匹配文件名或者类型")
+    @Cacheable(cacheNames = "searchFiles",unless = "#result==null",key = "#files")
     @PostMapping("/searchFiles")
     public R searchFiles(@RequestBody Files files) {
         System.out.println(files);
@@ -99,7 +106,7 @@ public class AdminController {
     }
 
     @Operation(summary = "用户加入回收站")
-//    @CachePut("recoveryUser")
+    @CacheEvict(value = {"searchUsers", "recoveryUsers", "normalUsers"}, allEntries = true)
     @PutMapping("/del")
     public R logicDelUser(@RequestBody UCenter uCenter) {
         return service.logicDelUser(uCenter.getId()) > 0 ? R.ok() : R.error();
@@ -107,19 +114,21 @@ public class AdminController {
     }
 
     @Operation(summary = "用户移出回收站")
-//    @CachePut("normalUser")
+    @CacheEvict(value = {"searchUsers", "recoveryUsers", "normalUsers"},allEntries = true)
     @PutMapping("/normal")
     public R logicNormalUser(@RequestBody UCenter uCenter) {
         return service.logicNormalUser(uCenter.getId()) > 0 ? R.ok() : R.error();
     }
 
     @Operation(summary = "用户真实删除")
+    @CacheEvict(value = {"searchUsers", "recoveryUsers", "normalUsers"},allEntries = true)
     @DeleteMapping("/delUser")
     public R delUser(@RequestBody String id) {
         return service.delUserById(id) > 0 ? R.ok() : R.error();
     }
 
     @Operation(summary = "文件真实删除")
+    @CacheEvict(value = {"searchFiles", "normalFiles"},allEntries = true)
     @DeleteMapping("/delFile")
     public R delFiler(@RequestBody Files files) {
         return service.delFileByMd5(files);

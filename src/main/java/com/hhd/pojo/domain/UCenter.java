@@ -65,7 +65,13 @@ public class UCenter implements Serializable {
     private String downLoadAdd;
 
     /**
-     * 逻辑删除	null表示正常	有date_time表示逻辑删除	noew_tiame-date_time>30day表示真实删除，设置数据库事件定时清理date_time>30day的记录
+     * vip	null表示普通用户	有date_time表示vip用户	noew_time>=date_time表示
+     */
+    @ApiModelProperty(value = "vip用户")
+    @TableField(value = "vip_time", fill = FieldFill.DEFAULT)
+    private String vipTime;
+    /**
+     * 逻辑删除	null表示正常	有date_time表示逻辑删除	now_time-date_time>30day表示真实删除（可设置数据库事件定时清理date_time>30day的记录）
      */
     @ApiModelProperty(value = "逻辑删除")
     @TableLogic(value = "null")

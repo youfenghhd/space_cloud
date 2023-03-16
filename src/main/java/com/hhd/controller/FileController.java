@@ -16,6 +16,7 @@ import com.hhd.utils.UserLoginToken;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
@@ -61,7 +62,7 @@ public class FileController {
 
     @Operation(summary = "添加文件进数据库")
     //    @UserLoginToken
-    @CachePut("userFiles")
+    @CacheEvict(value = {"normalFiles", "fuzzy"}, allEntries = true)
     @PostMapping("/addFile")
     public R addFile(@RequestBody Files files) {
         return fService.save(files) ? R.ok().data("addFile", files) : R.error();
@@ -69,7 +70,7 @@ public class FileController {
 
     @Operation(summary = "查询所有正常状态文件")
 //    @UserLoginToken
-//    @Cacheable(cacheNames = "nomalFiles", unless = "#result==null")
+    @Cacheable(cacheNames = "normalFiles", unless = "#result==null")
     @GetMapping("/normal/{userid}")
     public R showNormalAll(@PathVariable String userid) {
         return R.ok().data("allFilesOfUser", fService.showNormalAll(userid));
@@ -77,7 +78,7 @@ public class FileController {
 
     @Operation(summary = "查询回收站文件")
     //    @UserLoginToken
-//    @Cacheable(cacheNames = "recoveryFile", unless = "#result==null")
+    @Cacheable(cacheNames = "recoveryFile", unless = "#result==null")
     @GetMapping("/recovery/{userid}")
     public R findRecovery(@PathVariable String userid) {
         return R.ok().data("recovery", fService.showRecoveryAll(userid));
@@ -93,7 +94,7 @@ public class FileController {
 
     @Operation(summary = "重命名文件")
     //    @UserLoginToken
-    @CachePut("userFiles")
+    @CacheEvict(value = {"normalFiles", "fuzzy"}, allEntries = true)
     @PutMapping("/rename")
     public R renameFile(@RequestBody Files files) {
         Files exist = fService.selectOne(files.getId());
@@ -103,7 +104,7 @@ public class FileController {
 
     @Operation(summary = "收藏文件")
     //    @UserLoginToken
-    @CachePut("userFiles")
+    @CacheEvict(value = {"normalFiles", "fuzzy"}, allEntries = true)
     @PutMapping("/collection")
     public R CollectionFile(@RequestParam("id") String[] id) {
         boolean flag = false;
@@ -119,7 +120,7 @@ public class FileController {
 
     @Operation(summary = "取消收藏文件")
     //    @UserLoginToken
-    @CachePut("userFiles")
+    @CacheEvict(value = {"normalFiles", "fuzzy"}, allEntries = true)
     @PutMapping("/noncollecton")
     public R nonCollectionFile(@RequestParam("id") String[] id) {
         boolean flag = false;
@@ -143,7 +144,6 @@ public class FileController {
 
     @Operation(summary = "移动文件夹")
     //    @UserLoginToken
-    @CachePut("dirFile")
     @PostMapping("/moveFile")
     public R moveFile(@RequestBody UserDir userDir, @RequestParam("id") String[] id) {
         boolean flag = false;
@@ -160,7 +160,7 @@ public class FileController {
 
     @Operation(summary = "文件加入回收站")
     //    @UserLoginToken
-//    @CachePut("recoveryFile")
+    @CacheEvict(value = {"normalFiles", "recoveryFile", "fuzzy"}, allEntries = true)
     @PutMapping("/del/{userId}")
     public R logicDelFile(@RequestBody String[] idList, @PathVariable String userId) {
         LambdaQueryWrapper<UCenter> lqw = new LambdaQueryWrapper<>();
@@ -177,7 +177,7 @@ public class FileController {
 
     @Operation(summary = "文件移出回收站")
     //    @UserLoginToken
-//    @CachePut("normalFile")
+    @CacheEvict(value = {"normalFiles", "recoveryFile", "fuzzy"}, allEntries = true)
     @PutMapping("/normal")
     public R logicNormalFile(@RequestBody List<String> id) {
         R r = R.error();
@@ -188,7 +188,7 @@ public class FileController {
     }
 
     @Operation(summary = "文件真实删除")
-    @CachePut("recoveryFile")
+    @CacheEvict(value = "recoveryFile", allEntries = true)
     @DeleteMapping("/delete")
     public R Delete(@RequestBody List<String> id) {
         R r = R.error();
