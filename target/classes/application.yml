@@ -1,0 +1,72 @@
+
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-not-delete-value: "null"
+      logic-delete-field: logicDelTime
+    banner: false
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+
+# 生产环境需设置为false
+springfox:
+  documentation:
+    swagger-ui:
+      enabled: true
+
+spring:
+  datasource:
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql:///hhd?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=Asia/Shanghai
+      username: "root"
+      password: "000000"
+      initial-size: 10
+      max-active: 20
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+    lettuce:
+      pool:
+        max-active: 20
+        max-wait: -1
+        max-idle: 5
+        min-idle: 0
+  cache:
+    redis:
+      time-to-live: 300000
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      max-request-size: 1024MB
+      max-file-size: 1024MB
+  profiles:
+    active: test
+
+
+
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  main:
+    banner-mode: off
+
+aliyun:
+  oss:
+    file:
+      endpoint: "oss-cn-shenzhen.aliyuncs.com"
+      accessKeyId: "LTAI5tS7CFT4mUV63oLtajid"
+      accessKeySecret: "3A86QFxrfEzSTfk2sNVwy7aP363i1f"
+      bucketName: "huanghuida01"
+      httpsPrefix: "https://"
+      regionId: "cn-Shanghai"
+
+server:
+  port: 80
+logging:
+  level:
+    root: error
