@@ -10,5 +10,5 @@ public interface ICkCodeService {
      *
      * @return 验证码字符串答案
      */
-    String generate();
+    byte[] generate();
 }

@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.Map;
+
 /**
  * @author -无心
  * @date 2023/2/19 0:38:22
@@ -19,15 +22,16 @@ public class CkCodeServiceImpl implements ICkCodeService {
     private RedisTemplate<String, String> redisTemplate;
 
     @Override
-    public String generate() {
-        String generate;
+    public byte[] generate() {
+        Map.Entry<String, byte[]> entry;
         try {
-            generate = CheckCodeUtils.generateJpg();
+            entry = CheckCodeUtils.generateJpg().entrySet().iterator().next();
         } catch (Exception e) {
             throw new CloudException(R.ERROR, R.CHECK_IO_ERR);
         }
-        System.out.println(generate);
-        redisTemplate.opsForValue().set("checkCode", generate);
-        return generate;
+        System.out.println(entry.getKey());
+        System.out.println(Arrays.toString(entry.getValue()));
+        redisTemplate.opsForValue().set("checkCode", entry.getKey());
+        return entry.getValue();
     }
 }

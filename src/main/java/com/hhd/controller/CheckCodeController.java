@@ -6,7 +6,7 @@ import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,8 +23,8 @@ public class CheckCodeController {
     private ICkCodeService service;
 
     @Operation(summary = "获取图片验证码")
-    @PostMapping
-    public String generate() {
+    @GetMapping
+    public byte[] generate() {
         return service.generate();
     }
 }
