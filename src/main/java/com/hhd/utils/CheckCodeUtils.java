@@ -24,12 +24,6 @@ public class CheckCodeUtils {
     private static final Random random = new Random();
     private static String[] patch = {"00000", "0000", "000", "00", "0", ""};
 
-//    public static String generateJpg() throws Exception {
-////        OutputStream fos = Files.newOutputStream(Paths.get("src/main/resources/static/a.jpg"));
-//        OutputStream fos = Files.newOutputStream(Paths.get("D:\\Desktop\\s_cloud\\src\\assets\\img\\checkCode.jpg"));
-//        return CheckCodeUtils.outputVerifyImage(100, 40, fos, 4);
-//    }
-
 //    public static Map<String, byte[]> generateJpg() throws Exception {
 //        String path = "../tmp/tmp.jpg";
 //        OutputStream fos = Files.newOutputStream(Paths.get(path));
