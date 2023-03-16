@@ -30,8 +30,18 @@ public class CheckCodeUtils {
 //        return CheckCodeUtils.outputVerifyImage(100, 40, fos, 4);
 //    }
 
+//    public static Map<String, byte[]> generateJpg() throws Exception {
+//        String path = "../tmp/tmp.jpg";
+//        OutputStream fos = Files.newOutputStream(Paths.get(path));
+//        Map<String,byte[]> map = new HashMap<>();
+//        String checkCode = outputVerifyImage(100, 40, fos, 4);
+//        byte[] byte64 = getByte64(path);
+//        map.put(checkCode,byte64);
+//        return map;
+//    }
+
     public static Map<String, byte[]> generateJpg() throws Exception {
-        String path = "../tmp/tmp.jpg";
+        String path = "D:\\Desktop\\space_cloud\\src\\main\\java\\com\\hhd\\tmp\\a.jpg";
         OutputStream fos = Files.newOutputStream(Paths.get(path));
         Map<String,byte[]> map = new HashMap<>();
         String checkCode = outputVerifyImage(100, 40, fos, 4);
@@ -39,7 +49,6 @@ public class CheckCodeUtils {
         map.put(checkCode,byte64);
         return map;
     }
-
 
     public static byte[] getByte64(String path){
         File file = new File(path);

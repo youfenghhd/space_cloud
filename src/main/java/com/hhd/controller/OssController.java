@@ -16,7 +16,7 @@ import com.hhd.service.IUCenterService;
 import com.hhd.utils.InitOssClient;
 import com.hhd.utils.MD5;
 import com.hhd.utils.R;
-import com.hhd.utils.mimeTypeUtils;
+import com.hhd.utils.MimeTypeUtils;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +83,7 @@ public class OssController {
             files.setSize(file.getSize());
             files.setUserId(userId);
             files.setFileDir(dir);
-            switch (mimeTypeUtils.getMimeType(file)) {
+            switch (MimeTypeUtils.getMimeType(file)) {
                 case 0:
                     files.setFileType("audio");
                     Files files1 = oService.uploadVideo(file, files);

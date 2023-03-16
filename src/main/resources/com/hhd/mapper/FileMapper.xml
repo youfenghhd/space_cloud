@@ -5,8 +5,8 @@
     <select id="searchFuzzyFiles" resultType="com.hhd.pojo.entity.Files">
         select *from file
         <where>
-            <if test="fileName !=null and fileName !=''">and filename like concat('%',#{fileName},'%')</if>
-            <if test="fileType != null  and fileType !=''">and file_type = #{fileType}</if>
+            <if test="fileName != null and fileName !=''">and filename like concat('%',#{fileName},'%')</if>
+            <if test="fileType != null and fileType !=''">and file_type = #{fileType}</if>
         </where>
     </select>
 </mapper>

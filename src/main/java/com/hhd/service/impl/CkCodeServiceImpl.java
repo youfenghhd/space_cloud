@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -29,8 +28,6 @@ public class CkCodeServiceImpl implements ICkCodeService {
         } catch (Exception e) {
             throw new CloudException(R.ERROR, R.CHECK_IO_ERR);
         }
-        System.out.println(entry.getKey());
-        System.out.println(Arrays.toString(entry.getValue()));
         redisTemplate.opsForValue().set("checkCode", entry.getKey());
         return entry.getValue();
     }

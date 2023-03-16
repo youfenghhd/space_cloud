@@ -16,7 +16,7 @@ import java.util.HashMap;
  * @author -无心
  * @date 2023/2/22 1:47:40
  */
-public class mimeTypeUtils {
+public class MimeTypeUtils {
     private static final String[] TYPE = {"audio", "video", "image"};
 
     public static int getMimeType(MultipartFile file) {

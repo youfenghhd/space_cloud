@@ -69,7 +69,7 @@ public class FileController {
 
     @Operation(summary = "查询所有正常状态文件")
 //    @UserLoginToken
-    @Cacheable(cacheNames = "nomalFiles", unless = "#result==null")
+//    @Cacheable(cacheNames = "nomalFiles", unless = "#result==null")
     @GetMapping("/normal/{userid}")
     public R showNormalAll(@PathVariable String userid) {
         return R.ok().data("allFilesOfUser", fService.showNormalAll(userid));
