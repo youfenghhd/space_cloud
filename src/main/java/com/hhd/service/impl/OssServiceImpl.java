@@ -179,6 +179,7 @@ public class OssServiceImpl implements IOssService {
         Files one = fService.getOne(lqw.eq(Files::getId, id));
         LambdaQueryWrapper<UCenter> lqw1 = new LambdaQueryWrapper<>();
         UCenter user = uService.getOne(lqw1.eq(UCenter::getId, one.getUserId()));
+        uService.removeExpirationVip(user);
         String objectName = one.getUrl().substring(50);
         //创建用户自定义的下载目录文件夹
         try {
@@ -190,8 +191,13 @@ public class OssServiceImpl implements IOssService {
             DownloadFileRequest downloadFileRequest = new DownloadFileRequest(InitOssClient.BUCKET_NAME, objectName);
             // 指定Object下载到本地文件的完整路径
             downloadFileRequest.setDownloadFile(user.getDownLoadAdd() + "\\" + one.getFileName() + "." + one.getType());
-            downloadFileRequest.setPartSize(1 * 1024 * 1024);
-            downloadFileRequest.setTaskNum(10);
+            if (user.getVipTime() == null) {
+                downloadFileRequest.setPartSize(1024 * 64);
+//                downloadFileRequest.setTaskNum(3);
+            } else {
+                downloadFileRequest.setPartSize(1 * 1024 * 1024);
+                downloadFileRequest.setTaskNum(10);
+            }
             downloadFileRequest.setEnableCheckpoint(true);
             // 设置断点记录文件的完整路径
             downloadFileRequest.setCheckpointFile(user.getDownLoadAdd() + "\\" + one.getFileName() + ".dcp");

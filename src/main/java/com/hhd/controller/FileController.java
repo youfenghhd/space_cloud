@@ -62,7 +62,7 @@ public class FileController {
 
     @Operation(summary = "添加文件进数据库")
     //    @UserLoginToken
-    @CacheEvict(value = {"normalFiles", "fuzzy"}, allEntries = true)
+    @CacheEvict(value = {"normalFiles", "fuzzy", "currentFile"}, allEntries = true)
     @PostMapping("/addFile")
     public R addFile(@RequestBody Files files) {
         return fService.save(files) ? R.ok().data("addFile", files) : R.error();
@@ -94,7 +94,7 @@ public class FileController {
 
     @Operation(summary = "重命名文件")
     //    @UserLoginToken
-    @CacheEvict(value = {"normalFiles", "fuzzy"}, allEntries = true)
+    @CacheEvict(value = {"normalFiles", "fuzzy", "currentFile"}, allEntries = true)
     @PutMapping("/rename")
     public R renameFile(@RequestBody Files files) {
         Files exist = fService.selectOne(files.getId());
@@ -104,7 +104,7 @@ public class FileController {
 
     @Operation(summary = "收藏文件")
     //    @UserLoginToken
-    @CacheEvict(value = {"normalFiles", "fuzzy"}, allEntries = true)
+    @CacheEvict(value = {"normalFiles", "fuzzy", "currentFile"}, allEntries = true)
     @PutMapping("/collection")
     public R CollectionFile(@RequestParam("id") String[] id) {
         boolean flag = false;
@@ -120,7 +120,7 @@ public class FileController {
 
     @Operation(summary = "取消收藏文件")
     //    @UserLoginToken
-    @CacheEvict(value = {"normalFiles", "fuzzy"}, allEntries = true)
+    @CacheEvict(value = {"normalFiles", "fuzzy", "currentFile"}, allEntries = true)
     @PutMapping("/noncollecton")
     public R nonCollectionFile(@RequestParam("id") String[] id) {
         boolean flag = false;
@@ -135,8 +135,8 @@ public class FileController {
     }
 
     @Operation(summary = "查询当前目录下文件")
+    @Cacheable(cacheNames = "currentFile", unless = "#result==null")
     //    @UserLoginToken
-//    @Cacheable(cacheNames = "dirFile")
     @PostMapping("/current/{id}")
     public R getDirFile(@PathVariable String id, @RequestBody UserDir userDir) {
         return R.ok().data("files", fService.getCurFiles(userDir.getUserDir(), id));
@@ -160,7 +160,7 @@ public class FileController {
 
     @Operation(summary = "文件加入回收站")
     //    @UserLoginToken
-    @CacheEvict(value = {"normalFiles", "recoveryFile", "fuzzy"}, allEntries = true)
+    @CacheEvict(value = {"normalFiles", "recoveryFile", "fuzzy", "currentFile"}, allEntries = true)
     @PutMapping("/del/{userId}")
     public R logicDelFile(@RequestBody String[] idList, @PathVariable String userId) {
         LambdaQueryWrapper<UCenter> lqw = new LambdaQueryWrapper<>();
@@ -177,7 +177,7 @@ public class FileController {
 
     @Operation(summary = "文件移出回收站")
     //    @UserLoginToken
-    @CacheEvict(value = {"normalFiles", "recoveryFile", "fuzzy"}, allEntries = true)
+    @CacheEvict(value = {"normalFiles", "recoveryFile", "fuzzy", "currentFile"}, allEntries = true)
     @PutMapping("/normal")
     public R logicNormalFile(@RequestBody List<String> id) {
         R r = R.error();

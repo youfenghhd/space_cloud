@@ -49,6 +49,7 @@ public class OssController {
     private IUCenterService uService;
 
     private static final long ONE_G = 1073741824L;
+    private static final long TWO_G = 2147483648L;
 
     @Operation(summary = "上传头像")
     @PostMapping("/portrait")
@@ -59,12 +60,18 @@ public class OssController {
     }
 
     @Operation(summary = "分片式断点续传上传文件")
-    @CacheEvict(value = {"normalFiles", "fuzzy"}, allEntries = true)
+    @CacheEvict(value = {"normalFiles", "fuzzy","currentFile"}, allEntries = true)
     @PostMapping("/upload/{userId}")
     public R upload(MultipartFile file, @RequestParam String dir, @PathVariable String userId) {
         UCenter user = uService.selectOne(userId);
         long memory = user.getMemory() + file.getSize();
-        if (memory < ONE_G) {
+        long spaceSize;
+        if (user.getVipTime() == null) {
+            spaceSize = ONE_G;
+        } else {
+            spaceSize = TWO_G;
+        }
+        if (memory < spaceSize) {
             user.setMemory(memory);
             user.setId(userId);
             uService.updateById(user);

@@ -60,6 +60,15 @@ public interface UcenterMapper extends BaseMapper<UCenter> {
     int delById(List<String> id);
 
     /**
+     * 改变用户状态
+     *
+     * @param id     根据id改
+     * @param status 状态
+     * @return 修改结果
+     */
+    @Update("update ucenter set vip_time = null where id = #{id}")
+    boolean removeVip(String id);
+    /**
      * 模糊查询
      *
      * @param uCenter 信息

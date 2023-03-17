@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import wiremock.org.apache.commons.lang3.time.DateUtils;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -34,13 +35,8 @@ import static com.hhd.utils.InitVodClient.initVodClient;
 @Service
 public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements IFileService {
 
-
-    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private final String VIDEO = "video";
-    private final String AUDIO = "audio";
-    private final String IMAGE = "image";
-    private final String OTHER = "file";
-
+    private static final ThreadLocal<DateFormat> THREAD_LOCAL = ThreadLocal.withInitial(() ->
+            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
     @Autowired
     private FileMapper fMapper;
 
@@ -53,7 +49,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
     @Override
     public List<Files> showRecoveryAll(String userid) {
         DateTime nowTime = new DateTime();
-        return fMapper.showRecoveryAll(simpleDateFormat.format(nowTime), userid);
+        return fMapper.showRecoveryAll(THREAD_LOCAL.get().format(nowTime), userid);
     }
 
     @Override
@@ -94,20 +90,20 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
     @Override
     public void logicDelFile(String id) {
         LambdaUpdateWrapper<Files> lqw = new LambdaUpdateWrapper<>();
-        baseMapper.update(new Files(), lqw.set(Files::getLogicDelTime, simpleDateFormat.format(DateUtils.addDays(new DateTime(), 30)))
+        baseMapper.update(new Files(), lqw.set(Files::getLogicDelTime, THREAD_LOCAL.get().format(DateUtils.addDays(new DateTime(), 30)))
                 .eq(Files::getId, id));
     }
 
     @Override
     public boolean logicDirFile(String userId, String url) {
         LambdaUpdateWrapper<Files> lqw = new LambdaUpdateWrapper<>();
-        return baseMapper.update(new Files(), lqw.set(Files::getLogicDelTime, simpleDateFormat.format(DateUtils.addDays(new DateTime(), 30)))
+        return baseMapper.update(new Files(), lqw.set(Files::getLogicDelTime, THREAD_LOCAL.get().format(DateUtils.addDays(new DateTime(), 30)))
                 .eq(Files::getUserId, userId).eq(Files::getFileDir, url)) > 0;
     }
 
     @Override
     public R logicNormalFile(String id) {
-        return fMapper.logicNormalFile(id)>0?R.ok():R.error();
+        return fMapper.logicNormalFile(id) > 0 ? R.ok() : R.error();
     }
 
     @Override
@@ -119,7 +115,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
     @Override
     public boolean selectMd5OfUser(String md5, String userId) {
         LambdaQueryWrapper<Files> lqw = new LambdaQueryWrapper<>();
-        return fMapper.selectCount(lqw.eq(Files::getUserId,userId).eq(Files::getMd5,md5))>0;
+        return fMapper.selectCount(lqw.eq(Files::getUserId, userId).eq(Files::getMd5, md5)) > 0;
     }
 
     @Override

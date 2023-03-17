@@ -24,6 +24,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import wiremock.org.apache.commons.lang3.time.DateUtils;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -51,8 +52,8 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
 
     @Autowired
     private RedisTemplate<String, String> template;
-
-    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final ThreadLocal<DateFormat> THREAD_LOCAL = ThreadLocal.withInitial(() ->
+            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
     @Override
     public Map<String, Admin> login(Admin admin) {
@@ -99,7 +100,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     @Override
     public List<UCenter> showRecoveryAll() {
         DateTime nowTime = new DateTime();
-        return uMapper.showRecoveryAll(simpleDateFormat.format(nowTime));
+        return uMapper.showRecoveryAll(THREAD_LOCAL.get().format(nowTime));
     }
 
     @Override
@@ -116,7 +117,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     public int logicDelUser(String id) {
         LambdaUpdateWrapper<UCenter> lqw = new LambdaUpdateWrapper<>();
         return uMapper.update(new UCenter(),
-                lqw.set(UCenter::getLogicDelTime, simpleDateFormat.format(DateUtils.addDays(new DateTime(), 30)))
+                lqw.set(UCenter::getLogicDelTime, THREAD_LOCAL.get().format(DateUtils.addDays(new DateTime(), 30)))
                         .eq(UCenter::getId, id));
     }
 

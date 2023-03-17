@@ -38,6 +38,7 @@ public class UCenterController {
         Map.Entry<String, UCenter> entry = uService.login(ucenter).entrySet().iterator().next();
         String token = entry.getKey();
         UCenter user = entry.getValue();
+        uService.removeExpirationVip(user);
         return R.ok().data("token", token).data("user", user);
     }
 
@@ -73,6 +74,11 @@ public class UCenterController {
         return uService.selectOneByMobile(mobile);
     }
 
-
+    @Operation(summary = "充值会员")
+    @CachePut(value = "info", key = "#uCenter.id")
+    @PostMapping("/vip/{month}")
+    public R recharge(@RequestBody UCenter uCenter,@PathVariable int month){
+        return uService.upToVip(uCenter,month);
+    }
 }
 

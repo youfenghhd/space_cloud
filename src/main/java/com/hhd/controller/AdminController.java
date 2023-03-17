@@ -83,6 +83,7 @@ public class AdminController {
     }
 
     @Operation(summary = "禁用/启用状态")
+    @CacheEvict(value = {"searchUsers", "recoveryUsers", "normalUsers"}, allEntries = true)
     @PutMapping("/status")
     public R changeStatus(@RequestBody UCenter user) {
         return service.changeStatus(user) ?

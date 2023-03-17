@@ -1,6 +1,8 @@
 package com.hhd.service.impl;
 
+import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hhd.exceptionhandler.CloudException;
 import com.hhd.mapper.UcenterMapper;
@@ -13,7 +15,10 @@ import com.hhd.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import wiremock.org.apache.commons.lang3.time.DateUtils;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,11 +37,11 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
     @Autowired
     private UcenterMapper uMapper;
 
+    private static final ThreadLocal<DateFormat> THREAD_LOCAL = ThreadLocal.withInitial(() ->
+            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+
     @Override
-    public R
-
-
-    register(Register register) {
+    public R register(Register register) {
         String mobile = register.getMobile();
         String password = register.getPassword();
         String nickname = register.getNickname();
@@ -119,8 +124,40 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
     @Override
     public R selectOneByMobile(String mobile) {
         LambdaQueryWrapper<UCenter> lqw = new LambdaQueryWrapper<>();
-        return uMapper.selectOne(lqw.eq(UCenter::getMobile,mobile))!=null?R.ok():R.error();
+        return uMapper.selectOne(lqw.eq(UCenter::getMobile, mobile)) != null ? R.ok() : R.error();
     }
 
+    @Override
+    public R upToVip(UCenter uCenter, int month) {
+        LambdaUpdateWrapper<UCenter> lqw = new LambdaUpdateWrapper<>();
+        DateTime newDate;
 
+        try {
+            if (uCenter.getVipTime() == null) {
+                newDate = new DateTime();
+            } else {
+                newDate = new DateTime(THREAD_LOCAL.get().parse(uCenter.getVipTime()));
+            }
+            String newVipTime = THREAD_LOCAL.get().format(DateUtils.addMonths(newDate, month));
+            uCenter.setVipTime(newVipTime);
+            return uMapper.update(new UCenter(), lqw.set(UCenter::getVipTime, newVipTime)
+                    .eq(UCenter::getId, uCenter.getId())) > 0 ? R.ok().data("user", uCenter) : R.error();
+        } catch (Exception e) {
+            throw new CloudException(R.ERROR, R.GLOBAL_ERR);
+        }
+    }
+
+    @Override
+    public void removeExpirationVip(UCenter isOrNonVipUser) {
+        if (isOrNonVipUser.getVipTime() == null ){
+            System.out.println("死穷逼，会员都不开");
+            return;
+        }
+        if (new DateTime(isOrNonVipUser.getVipTime()).isBeforeOrEquals(new DateTime())) {
+            System.out.println("你他妈的会员过期了 老子给你删了");
+            uMapper.removeVip(isOrNonVipUser.getId());
+            return;
+        }
+        System.out.println("没过期，找尼玛急");
+    }
 }

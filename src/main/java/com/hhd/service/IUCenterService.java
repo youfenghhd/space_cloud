@@ -48,4 +48,22 @@ public interface IUCenterService extends IService<UCenter> {
      */
     R selectOneByMobile(String mobile);
 
+
+    /**
+     * 用户升级会员
+     *
+     * @param uCenter 根据用户id修改会员信息
+     * @param month   升级会员月份
+     * @return 结果
+     */
+    R upToVip(UCenter uCenter, int month);
+
+
+    /**
+     * 删除过期会员
+     *
+     * @param nonVipUser 根据传入的用户信息判断是否会员过期修改
+     */
+    void removeExpirationVip(UCenter nonVipUser);
+
 }
