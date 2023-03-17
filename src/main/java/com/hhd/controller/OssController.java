@@ -48,8 +48,8 @@ public class OssController {
     @Autowired
     private IUCenterService uService;
 
-    private static final long ONE_G = 1073741824L;
-    private static final long TWO_G = 2147483648L;
+    private static final long NON_VIP_SIZE = 5368709120L;
+    private static final long VIP_SIZE = 21474836480L;
 
     @Operation(summary = "上传头像")
     @PostMapping("/portrait")
@@ -67,9 +67,9 @@ public class OssController {
         long memory = user.getMemory() + file.getSize();
         long spaceSize;
         if (user.getVipTime() == null) {
-            spaceSize = ONE_G;
+            spaceSize = NON_VIP_SIZE;
         } else {
-            spaceSize = TWO_G;
+            spaceSize = VIP_SIZE;
         }
         if (memory < spaceSize) {
             user.setMemory(memory);

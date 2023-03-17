@@ -181,6 +181,7 @@ public class OssServiceImpl implements IOssService {
         UCenter user = uService.getOne(lqw1.eq(UCenter::getId, one.getUserId()));
         uService.removeExpirationVip(user);
         String objectName = one.getUrl().substring(50);
+        long stime = System.currentTimeMillis();
         //创建用户自定义的下载目录文件夹
         try {
             java.nio.file.Files.createDirectories(Paths.get(user.getDownLoadAdd()));
@@ -220,9 +221,11 @@ public class OssServiceImpl implements IOssService {
             System.out.println("Error Message:" + ce.getMessage());
         } finally {
             if (ossClient != null) {
+                System.out.print(one.getVideoId()==null?"非会员用户":"会员用户");
+                System.out.println("下载" + (one.getSize() / 1024 / 1024) + "M大小文件所用时间:" +
+                        (System.currentTimeMillis() - stime)/1000+"秒");
                 ossClient.shutdown();
             }
         }
-        R.ok();
     }
 }
