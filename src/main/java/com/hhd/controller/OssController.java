@@ -39,8 +39,6 @@ import java.util.Map;
 @Api(tags = "上传下载处理")
 @RequestMapping("/oss")
 public class OssController {
-
-    //    private final MD5 md5 = new MD5();
     @Autowired
     private IOssService oService;
     @Autowired
