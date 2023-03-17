@@ -60,7 +60,7 @@ public class OssController {
     }
 
     @Operation(summary = "分片式断点续传上传文件")
-    @CacheEvict(value = {"normalFiles", "fuzzy","currentFile"}, allEntries = true)
+    @CacheEvict(value = {"normalFiles", "fuzzy", "currentFile"}, allEntries = true)
     @PostMapping("/upload/{userId}")
     public R upload(MultipartFile file, @RequestParam String dir, @PathVariable String userId) {
         UCenter user = uService.selectOne(userId);

@@ -68,11 +68,13 @@ public interface IFileService extends IService<Files> {
 
     /**
      * 逻辑删除文件夹附带的文件
+     *
      * @param userId 根据用户
-     * @param url 文件夹路径
+     * @param url    文件夹路径
      * @return 删除成功
      */
     boolean logicDirFile(String userId, String url);
+
     /**
      * 逻辑删除恢复正常
      *
@@ -90,12 +92,14 @@ public interface IFileService extends IService<Files> {
     List<Files> selectMd5File(String md5);
 
     /**
-     *  查找用户是否重复上传
-     * @param md5 字面意思
+     * 查找用户是否重复上传
+     *
+     * @param md5    字面意思
      * @param userId 字面意思
      * @return 结果
      */
-    boolean selectMd5OfUser(String md5,String userId);
+    boolean selectMd5OfUser(String md5, String userId);
+
     /**
      * 根据文件id查询文件详情或是否存在
      *

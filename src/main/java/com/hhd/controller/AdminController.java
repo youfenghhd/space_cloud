@@ -91,7 +91,7 @@ public class AdminController {
     }
 
     @Operation(summary = "模糊匹配登录名或者昵称")
-    @Cacheable(cacheNames = "searchUsers",unless = "#result==null",key = "#uCenter")
+    @Cacheable(cacheNames = "searchUsers", unless = "#result==null", key = "#uCenter")
     @PostMapping("/searchUsers")
     public R searchUsers(@RequestBody UCenter uCenter) {
         System.out.println(uCenter);
@@ -99,7 +99,7 @@ public class AdminController {
     }
 
     @Operation(summary = "模糊匹配文件名或者类型")
-    @Cacheable(cacheNames = "searchFiles",unless = "#result==null",key = "#files")
+    @Cacheable(cacheNames = "searchFiles", unless = "#result==null", key = "#files")
     @PostMapping("/searchFiles")
     public R searchFiles(@RequestBody Files files) {
         System.out.println(files);
@@ -115,21 +115,21 @@ public class AdminController {
     }
 
     @Operation(summary = "用户移出回收站")
-    @CacheEvict(value = {"searchUsers", "recoveryUsers", "normalUsers"},allEntries = true)
+    @CacheEvict(value = {"searchUsers", "recoveryUsers", "normalUsers"}, allEntries = true)
     @PutMapping("/normal")
     public R logicNormalUser(@RequestBody UCenter uCenter) {
         return service.logicNormalUser(uCenter.getId()) > 0 ? R.ok() : R.error();
     }
 
     @Operation(summary = "用户真实删除")
-    @CacheEvict(value = {"searchUsers", "recoveryUsers", "normalUsers"},allEntries = true)
+    @CacheEvict(value = {"searchUsers", "recoveryUsers", "normalUsers"}, allEntries = true)
     @DeleteMapping("/delUser")
     public R delUser(@RequestBody String id) {
         return service.delUserById(id) > 0 ? R.ok() : R.error();
     }
 
     @Operation(summary = "文件真实删除")
-    @CacheEvict(value = {"searchFiles", "normalFiles"},allEntries = true)
+    @CacheEvict(value = {"searchFiles", "normalFiles"}, allEntries = true)
     @DeleteMapping("/delFile")
     public R delFiler(@RequestBody Files files) {
         return service.delFileByMd5(files);

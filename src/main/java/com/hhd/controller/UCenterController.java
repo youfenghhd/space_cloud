@@ -77,8 +77,8 @@ public class UCenterController {
     @Operation(summary = "充值会员")
     @CachePut(value = "info", key = "#uCenter.id")
     @PostMapping("/vip/{month}")
-    public R recharge(@RequestBody UCenter uCenter,@PathVariable int month){
-        return uService.upToVip(uCenter,month);
+    public R recharge(@RequestBody UCenter uCenter, @PathVariable int month) {
+        return uService.upToVip(uCenter, month);
     }
 }
 

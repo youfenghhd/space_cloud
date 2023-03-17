@@ -149,15 +149,11 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
 
     @Override
     public void removeExpirationVip(UCenter isOrNonVipUser) {
-        if (isOrNonVipUser.getVipTime() == null ){
-            System.out.println("死穷逼，会员都不开");
+        if (isOrNonVipUser.getVipTime() == null) {
             return;
         }
         if (new DateTime(isOrNonVipUser.getVipTime()).isBeforeOrEquals(new DateTime())) {
-            System.out.println("你他妈的会员过期了 老子给你删了");
             uMapper.removeVip(isOrNonVipUser.getId());
-            return;
         }
-        System.out.println("没过期，找尼玛急");
     }
 }
