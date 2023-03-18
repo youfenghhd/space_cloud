@@ -131,7 +131,6 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
     public R upToVip(UCenter uCenter, int month) {
         LambdaUpdateWrapper<UCenter> lqw = new LambdaUpdateWrapper<>();
         DateTime newDate;
-
         try {
             if (uCenter.getVipTime() == null) {
                 newDate = new DateTime();
