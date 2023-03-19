@@ -63,8 +63,6 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
         }
         //redis获取短信验证码判断
         String code2 = redisTemplate.opsForValue().get(mobile);
-        System.out.println(smsCode);
-        System.out.println(code2);
         if (!smsCode.equals(code2)) {
             throw new CloudException(R.ERROR, R.SMS_ERR);
         }

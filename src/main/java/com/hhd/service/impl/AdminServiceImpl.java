@@ -50,6 +50,8 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     @Autowired
     private FileMapper fMapper;
 
+    private static final String VIDEO = "video";
+    private static final String AUDIO = "audio";
     @Autowired
     private RedisTemplate<String, String> template;
     private static final ThreadLocal<DateFormat> THREAD_LOCAL = ThreadLocal.withInitial(() ->
@@ -139,7 +141,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         String createTime = new DateTime(files.getCreateTime()).toDateStr();
         String fileName = files.getFileName();
         String type = files.getType();
-        if ("video".equals(files.getFileType()) || "audio".equals(files.getFileType())) {
+        if (VIDEO.equals(files.getFileType()) || AUDIO.equals(files.getFileType())) {
             try {
                 //初始化对象
                 DefaultAcsClient client = initVodClient();

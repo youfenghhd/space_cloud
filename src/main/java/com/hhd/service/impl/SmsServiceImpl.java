@@ -32,7 +32,6 @@ public class SmsServiceImpl implements ISmsService {
     @Override
     public boolean getSmsCode(String tel) {
         String code = CheckCodeUtils.generateTel(tel);
-        System.out.println(code);
         StaticCredentialProvider provider = StaticCredentialProvider.create(Credential.builder()
                 .accessKeyId(InitOssClient.ACCESS_KEY_ID)
                 .accessKeySecret(InitOssClient.ACCESS_KEY_SECRET)

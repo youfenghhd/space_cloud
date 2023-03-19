@@ -94,7 +94,6 @@ public class AdminController {
     @Cacheable(cacheNames = "searchUsers", unless = "#result==null", key = "#uCenter")
     @PostMapping("/searchUsers")
     public R searchUsers(@RequestBody UCenter uCenter) {
-        System.out.println(uCenter);
         return R.ok().data("search", service.searchUsers(uCenter));
     }
 
@@ -102,7 +101,6 @@ public class AdminController {
     @Cacheable(cacheNames = "searchFiles", unless = "#result==null", key = "#files")
     @PostMapping("/searchFiles")
     public R searchFiles(@RequestBody Files files) {
-        System.out.println(files);
         return R.ok().data("search", service.searchFiles(files));
     }
 
@@ -141,7 +139,6 @@ public class AdminController {
     public R getMd5(@PathVariable String password) {
         return R.ok().data("md5", MD5.encrypt(password));
     }
-
 
 }
 

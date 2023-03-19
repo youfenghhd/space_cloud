@@ -53,7 +53,6 @@ public class OssController {
     @PostMapping("/portrait")
     public R setPortrait(MultipartFile file) {
         Map.Entry<String, Files> entry = oService.upload(file, new Files()).entrySet().iterator().next();
-        System.out.println(entry.getKey());
         return R.ok().data("url", entry.getKey());
     }
 
@@ -134,7 +133,6 @@ public class OssController {
         GetPlayInfoRequest request = new GetPlayInfoRequest();
         // 视频ID。
         for (String s : isList) {
-            System.out.println(s);
             Map<String, Object> map = new HashMap<>(8);
             file.setVideoId(s);
             map.put("videoId", s);
@@ -143,11 +141,9 @@ public class OssController {
                 GetPlayInfoResponse response = client.getAcsResponse(request);
                 for (GetPlayInfoResponse.PlayInfo playInfo : response.getPlayInfoList()) {
                     // 播放地址
-                    System.out.println("PlayInfo.PlayURL = " + playInfo.getPlayURL());
                     file.setUrl(playInfo.getPlayURL());
                     map.put("url", playInfo.getPlayURL());
                     urlList.add(map);
-                    System.out.println(urlList);
                     request.setVideoId(null);
                 }
             } catch (ServerException e) {

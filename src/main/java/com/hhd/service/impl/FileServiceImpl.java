@@ -37,6 +37,8 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
 
     private static final ThreadLocal<DateFormat> THREAD_LOCAL = ThreadLocal.withInitial(() ->
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+    private static final String VIDEO = "video";
+    private static final String AUDIO = "audio";
     @Autowired
     private FileMapper fMapper;
 
@@ -79,11 +81,8 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
             for (int i = 1; i < split.length; i++) {
                 builder.append("/").append(split[i]);
             }
-            System.out.println(builder);
             file.setFileDir(builder.toString());
         }
-        System.out.println(files);
-
         return files;
     }
 
@@ -136,7 +135,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
         String createTime = new DateTime(files.getCreateTime()).toDateStr();
         String fileName = files.getFileName();
         String type = files.getType();
-        if ("video".equals(files.getFileType()) || "audio".equals(files.getFileType())) {
+        if (VIDEO.equals(files.getFileType()) || AUDIO.equals(files.getFileType())) {
             try {
                 //初始化对象
                 DefaultAcsClient client = initVodClient();

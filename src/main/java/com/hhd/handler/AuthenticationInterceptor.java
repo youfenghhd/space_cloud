@@ -11,6 +11,7 @@ import com.hhd.service.IUCenterService;
 import com.hhd.utils.PassToken;
 import com.hhd.utils.R;
 import com.hhd.utils.UserLoginToken;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -28,12 +29,13 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
     @Autowired
     private IUCenterService uService;
+    private static final String OPTIONS = "OPTIONS";
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse httpServletResponse, Object object) throws Exception {
+    public boolean preHandle(HttpServletRequest request, @NotNull HttpServletResponse httpServletResponse, @NotNull Object object) {
         //浏览器在发送正式的请求时会先发送options类型的请求试探
         //放行该请求
-        if (request.getMethod().equalsIgnoreCase("OPTIONS")) {
+        if (OPTIONS.equalsIgnoreCase(request.getMethod())) {
             return true;
         }
         //设置允许跨域访问
@@ -94,12 +96,12 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
+    public void postHandle(@NotNull HttpServletRequest httpServletRequest, @NotNull HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
 
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) throws Exception {
+    public void afterCompletion(@NotNull HttpServletRequest httpServletRequest, @NotNull HttpServletResponse httpServletResponse, Object o, Exception e) throws Exception {
 
     }
 }

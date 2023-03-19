@@ -38,11 +38,8 @@ public class CheckCodeUtils {
         File file = new File(path);
         FileInputStream fileInputStream = null;
         byte[] imgData = null;
-
         try {
-
             imgData = new byte[(int) file.length()];
-
             //read file into bytes[]
             fileInputStream = new FileInputStream(file);
             fileInputStream.read(imgData);
@@ -83,7 +80,6 @@ public class CheckCodeUtils {
      * @param os         输出流
      * @param verifySize 数据长度
      * @return 验证码数据
-     * @throws IOException
      */
     public static String outputVerifyImage(int width, int height, OutputStream os, int verifySize) throws IOException {
         String verifyCode = generateVerifyCode(verifySize);
@@ -95,7 +91,6 @@ public class CheckCodeUtils {
      * 使用系统默认字符源生成验证码
      *
      * @param verifySize 验证码长度
-     * @return
      */
     public static String generateVerifyCode(int verifySize) {
         return generateVerifyCode(verifySize, VERIFY_CODES);
@@ -106,7 +101,6 @@ public class CheckCodeUtils {
      *
      * @param verifySize 验证码长度
      * @param sources    验证码字符源
-     * @return
      */
     public static String generateVerifyCode(int verifySize, String sources) {
         // 未设定展示源的字码，赋默认值大写字母+数字
@@ -124,13 +118,6 @@ public class CheckCodeUtils {
 
     /**
      * 生成随机验证码文件,并返回验证码值 (生成图片形式，用的较少)
-     *
-     * @param w
-     * @param h
-     * @param outputFile
-     * @param verifySize
-     * @return
-     * @throws IOException
      */
     public static String outputVerifyImage(int w, int h, File outputFile, int verifySize) throws IOException {
         String verifyCode = generateVerifyCode(verifySize);
@@ -141,12 +128,6 @@ public class CheckCodeUtils {
 
     /**
      * 生成指定验证码图像文件
-     *
-     * @param w
-     * @param h
-     * @param outputFile
-     * @param code
-     * @throws IOException
      */
     public static void outputImage(int w, int h, File outputFile, String code) throws IOException {
         if (outputFile == null) {
@@ -170,12 +151,6 @@ public class CheckCodeUtils {
 
     /**
      * 输出指定验证码图片流
-     *
-     * @param w
-     * @param h
-     * @param os
-     * @param code
-     * @throws IOException
      */
     public static void outputImage(int w, int h, OutputStream os, String code) throws IOException {
         int verifySize = code.length();
@@ -248,10 +223,6 @@ public class CheckCodeUtils {
 
     /**
      * 随机颜色
-     *
-     * @param fc
-     * @param bc
-     * @return
      */
     private static Color getRandColor(int fc, int bc) {
         if (fc > 255) {

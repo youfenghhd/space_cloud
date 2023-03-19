@@ -109,7 +109,6 @@ public class FileController {
     public R CollectionFile(@RequestParam("id") String[] id) {
         boolean flag = false;
         for (String s : id) {
-            System.out.println(s);
             Files files = new Files();
             files.setId(s);
             files.setCollection(1);
@@ -125,7 +124,6 @@ public class FileController {
     public R nonCollectionFile(@RequestParam("id") String[] id) {
         boolean flag = false;
         for (String s : id) {
-            System.out.println(s);
             Files files = new Files();
             files.setId(s);
             files.setCollection(0);
@@ -144,12 +142,11 @@ public class FileController {
 
     @Operation(summary = "移动文件夹")
     //    @UserLoginToken
+    @CacheEvict(value = {"currentFile"}, allEntries = true)
     @PostMapping("/moveFile")
     public R moveFile(@RequestBody UserDir userDir, @RequestParam("id") String[] id) {
         boolean flag = false;
         for (String s : id) {
-            System.out.println(s);
-            System.out.println(userDir.getUserDir());
             Files files = new Files();
             files.setId(s);
             files.setFileDir(userDir.getUserDir());
@@ -207,7 +204,6 @@ public class FileController {
             if (node.getName().contains(name)) {
                 lists.add(node);
                 List<TreeNode> list1 = node.getChildrenList();
-                System.out.println(list1);
                 if (list1.size() >= 1) {
                     findTreeNode(node, name, lists);
                 }

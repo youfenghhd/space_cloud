@@ -26,7 +26,6 @@ public class SmsController {
     @PostMapping("/{tel}")
     public R send(@PathVariable String tel) {
         if (redisTemplate.opsForValue().get(tel) != null) {
-            System.out.println("短信已发送成功，请稍后再试");
             return R.ok();
         }
         return service.getSmsCode(tel) ? R.ok() : R.error().message(R.SEND_SMS_ERR);

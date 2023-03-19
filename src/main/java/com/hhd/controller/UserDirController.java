@@ -44,10 +44,7 @@ public class UserDirController {
     @Cacheable(cacheNames = "getFile", unless = "#result==null")
     @GetMapping("/{id}")
     public R getFile(@PathVariable String id) {
-        System.out.println(id);
-        UserDir userDir = uService.getUserDir(id);
-        System.out.println(userDir);
-        return R.ok().data("dir", userDir);
+        return R.ok().data("dir", uService.getUserDir(id));
     }
 
     @Operation(summary = "根据传入的路径，名字，和父文件id新建文件夹")
@@ -62,9 +59,7 @@ public class UserDirController {
         tNode1.setParentId(id);
         tNode1.setChildrenList(new ArrayList<>());
         insert(tNode, id, tNode1);
-        System.out.println(tNode);
         String string = JSON.toJSONString(tNode);
-        System.out.println(string);
         userDir.setUserDir(string);
         return uService.setUserDir(userDir) > 0 ? R.ok().data("dir", userDir) : R.error();
 
@@ -74,13 +69,11 @@ public class UserDirController {
     @CacheEvict(value = "getFile", allEntries = true)
     @DeleteMapping("/{userid}/{id}")
     public R delDir(@PathVariable String userid, @PathVariable long id, @RequestBody String url) {
-        System.out.println(url);
         UserDir userDir = uService.getUserDir(userid);
         TreeNode treeNode = JSON.parseObject(userDir.getUserDir(), new TypeReference<TreeNode>() {
         });
         try {
             uService.deleteStruct(userid, url);
-            System.out.println("ok");
             StringBuilder stringBuilder = new StringBuilder();
             delete(treeNode, id, stringBuilder);
             userDir.setUserDir(JSON.toJSONString(treeNode));
@@ -99,7 +92,6 @@ public class UserDirController {
         TreeNode treeNode = JSON.parseObject(userDir.getUserDir(), new TypeReference<TreeNode>() {
         });
         update(treeNode, id, name, 1);
-        System.out.println(result);
         String string = JSON.toJSONString(treeNode);
         userDir.setUserDir(string);
         List<Files> list = fService.getList(userid, url, result, name);
@@ -122,7 +114,6 @@ public class UserDirController {
             sList.add(node.getName());
         }
         sList.add(newNode.getName());
-        System.out.println(sList);
         HashSet<String> hashSet = new HashSet<>(sList);
         if (!(hashSet.size() == sList.size())) {
             throw new CloudException(R.ERROR, R.NAME_REPEAT);

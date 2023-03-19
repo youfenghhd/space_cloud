@@ -34,6 +34,6 @@ public class UserDirServiceImpl extends ServiceImpl<UserDirMapper, UserDir> impl
 
     @Override
     public boolean deleteStruct(String userid, String url) {
-        return service.logicDirFile(userid,url);
+        return service.logicDirFile(userid, url);
     }
 }

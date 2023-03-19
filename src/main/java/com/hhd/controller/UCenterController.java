@@ -60,7 +60,6 @@ public class UCenterController {
     @CachePut(value = "info", key = "#uCenter.id")
     @PostMapping("update")
     public R updateInfo(@RequestBody UCenter uCenter) {
-        System.out.println(uCenter.getPassword());
         if (uCenter.getPassword().length() != MD5LENGTH) {
             uCenter.setPassword(MD5.encrypt(uCenter.getPassword()));
         }
