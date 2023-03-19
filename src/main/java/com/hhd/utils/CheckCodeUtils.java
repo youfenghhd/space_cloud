@@ -21,30 +21,20 @@ import java.util.Random;
 public class CheckCodeUtils {
 
     private static final String VERIFY_CODES = "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private static final Random random = new Random();
-    private static String[] patch = {"00000", "0000", "000", "00", "0", ""};
-
-//    public static Map<String, byte[]> generateJpg() throws Exception {
-//        String path = "../tmp/tmp.jpg";
-//        OutputStream fos = Files.newOutputStream(Paths.get(path));
-//        Map<String,byte[]> map = new HashMap<>();
-//        String checkCode = outputVerifyImage(100, 40, fos, 4);
-//        byte[] byte64 = getByte64(path);
-//        map.put(checkCode,byte64);
-//        return map;
-//    }
+    private static final Random RANDOM = new Random();
+    private static final String[] patch = {"00000", "0000", "000", "00", "0", ""};
 
     public static Map<String, byte[]> generateJpg() throws Exception {
-        String path = "D:\\Desktop\\space_cloud\\src\\main\\java\\com\\hhd\\tmp\\a.jpg";
+        String path = "../tmp/tmp.jpg";
         OutputStream fos = Files.newOutputStream(Paths.get(path));
-        Map<String,byte[]> map = new HashMap<>();
+        Map<String, byte[]> map = new HashMap<>();
         String checkCode = outputVerifyImage(100, 40, fos, 4);
         byte[] byte64 = getByte64(path);
-        map.put(checkCode,byte64);
+        map.put(checkCode, byte64);
         return map;
     }
 
-    public static byte[] getByte64(String path){
+    public static byte[] getByte64(String path) {
         File file = new File(path);
         FileInputStream fileInputStream = null;
         byte[] imgData = null;
@@ -270,9 +260,9 @@ public class CheckCodeUtils {
         if (bc > 255) {
             bc = 255;
         }
-        int r = fc + random.nextInt(bc - fc);
-        int g = fc + random.nextInt(bc - fc);
-        int b = fc + random.nextInt(bc - fc);
+        int r = fc + RANDOM.nextInt(bc - fc);
+        int g = fc + RANDOM.nextInt(bc - fc);
+        int b = fc + RANDOM.nextInt(bc - fc);
         return new Color(r, g, b);
     }
 
@@ -289,7 +279,7 @@ public class CheckCodeUtils {
     private static int[] getRandomRgb() {
         int[] rgb = new int[3];
         for (int i = 0; i < 3; i++) {
-            rgb[i] = random.nextInt(255);
+            rgb[i] = RANDOM.nextInt(255);
         }
         return rgb;
     }
@@ -301,11 +291,11 @@ public class CheckCodeUtils {
 
     private static void shearX(Graphics g, int w1, int h1, Color color) {
 
-        int period = random.nextInt(2);
+        int period = RANDOM.nextInt(2);
 
         boolean borderGap = true;
         int frames = 1;
-        int phase = random.nextInt(2);
+        int phase = RANDOM.nextInt(2);
 
         for (int i = 0; i < h1; i++) {
             double d = (double) (period >> 1)
@@ -313,18 +303,16 @@ public class CheckCodeUtils {
                     + (6.2831853071795862D * (double) phase)
                     / (double) frames);
             g.copyArea(0, i, w1, 1, (int) d, 0);
-            if (borderGap) {
-                g.setColor(color);
-                g.drawLine((int) d, i, 0, i);
-                g.drawLine((int) d + w1, i, w1, i);
-            }
+            g.setColor(color);
+            g.drawLine((int) d, i, 0, i);
+            g.drawLine((int) d + w1, i, w1, i);
         }
 
     }
 
     private static void shearY(Graphics g, int w1, int h1, Color color) {
 
-        int period = random.nextInt(40) + 10; // 50;
+        int period = RANDOM.nextInt(40) + 10; // 50;
 
         boolean borderGap = true;
         int frames = 20;
