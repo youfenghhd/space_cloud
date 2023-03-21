@@ -9,6 +9,7 @@ import com.hhd.pojo.entity.UserDir;
 import com.hhd.pojo.vo.TreeNode;
 import com.hhd.service.IFileService;
 import com.hhd.service.IUserDirService;
+import com.hhd.utils.ConfirmToken;
 import com.hhd.utils.R;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,6 +41,7 @@ public class UserDirController {
     private IFileService fService;
     private int result = 1;
 
+    @ConfirmToken
     @Operation(summary = "获取当前文件夹")
     @Cacheable(cacheNames = "getFile", unless = "#result==null")
     @GetMapping("/{id}")
@@ -47,6 +49,7 @@ public class UserDirController {
         return R.ok().data("dir", uService.getUserDir(id));
     }
 
+    @ConfirmToken
     @Operation(summary = "根据传入的路径，名字，和父文件id新建文件夹")
     @CacheEvict(value = "getFile", allEntries = true)
     @PostMapping("/{userid}/{name}/{id}")
@@ -65,6 +68,7 @@ public class UserDirController {
 
     }
 
+    @ConfirmToken
     @Operation(summary = "根据传入的userId、目录路径url、和父文件夹id的删除文件夹")
     @CacheEvict(value = "getFile", allEntries = true)
     @DeleteMapping("/{userid}/{id}")
@@ -84,6 +88,7 @@ public class UserDirController {
         }
     }
 
+    @ConfirmToken
     @Operation(summary = "根据传入的名字，userId，目录路径url，父文件id修改文件夹")
     @CacheEvict(value = "getFile", allEntries = true)
     @PutMapping("/{userid}/{name}/{id}")

@@ -4,7 +4,9 @@ package com.hhd.controller;
 import com.hhd.pojo.domain.UCenter;
 import com.hhd.pojo.vo.Register;
 import com.hhd.service.IUCenterService;
+import com.hhd.utils.ConfirmToken;
 import com.hhd.utils.MD5;
+import com.hhd.utils.PassToken;
 import com.hhd.utils.R;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +34,7 @@ public class UCenterController {
     private IUCenterService uService;
     private static final int MD5LENGTH = 32;
 
+    @PassToken
     @Operation(summary = "用户登录")
     @PostMapping("/login")
     public R login(@RequestBody UCenter ucenter) {
@@ -42,13 +45,14 @@ public class UCenterController {
         return R.ok().data("token", token).data("user", user);
     }
 
+    @PassToken
     @Operation(summary = "用户注册")
     @PostMapping("/register")
     public R register(@RequestBody Register register) {
         return uService.register(register);
     }
 
-
+    @ConfirmToken
     @Operation(summary = "根据id查询用户信息")
     @Cacheable(cacheNames = "info", unless = "#result==null", key = "#id")
     @GetMapping("getInfo/{id}")
@@ -56,6 +60,7 @@ public class UCenterController {
         return R.ok().data("user", uService.selectOne(id));
     }
 
+    @ConfirmToken
     @Operation(summary = "用户更改信息")
     @CachePut(value = "info", key = "#uCenter.id")
     @PostMapping("update")
@@ -66,6 +71,7 @@ public class UCenterController {
         return uService.updateById(uCenter) ? R.ok().data("user", uCenter) : R.error();
     }
 
+    @PassToken
     @Operation(summary = "查询手机有无被注册")
     @Cacheable("mobile")
     @GetMapping("mobile/{mobile}")
@@ -73,6 +79,7 @@ public class UCenterController {
         return uService.selectOneByMobile(mobile);
     }
 
+    @ConfirmToken
     @Operation(summary = "充值会员")
     @CachePut(value = "info", key = "#uCenter.id")
     @PostMapping("/vip/{month}")

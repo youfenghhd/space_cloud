@@ -6,11 +6,13 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.hhd.exceptionhandler.CloudException;
+import com.hhd.pojo.domain.Admin;
 import com.hhd.pojo.domain.UCenter;
+import com.hhd.service.IAdminService;
 import com.hhd.service.IUCenterService;
 import com.hhd.utils.PassToken;
 import com.hhd.utils.R;
-import com.hhd.utils.UserLoginToken;
+import com.hhd.utils.ConfirmToken;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
@@ -29,8 +31,11 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
     @Autowired
     private IUCenterService uService;
+    @Autowired
+    private IAdminService aService;
     private static final String OPTIONS = "OPTIONS";
 
+//    @Cacheable(value = "token", unless = "#result==null", key = "#request.getHeader(\"Authorization\")")
     @Override
     public boolean preHandle(HttpServletRequest request, @NotNull HttpServletResponse httpServletResponse, @NotNull Object object) {
         //浏览器在发送正式的请求时会先发送options类型的请求试探
@@ -45,10 +50,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         httpServletResponse.setHeader("Access-Control-Max-Age", "3600");
         httpServletResponse.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Authorization,"
                 + " Content-Type, Accept, Connection, User-Agent, Cookie,token");
-
         // 从 http 请求头中取出 token
         String token = request.getHeader("Authorization");
-
         // 如果不是映射到方法直接通过
         if (!(object instanceof HandlerMethod)) {
             return true;
@@ -63,33 +66,40 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             }
         }
         //检查有没有需要用户权限的注解
-        if (method.isAnnotationPresent(UserLoginToken.class)) {
-            UserLoginToken userLoginToken = method.getAnnotation(UserLoginToken.class);
-            if (userLoginToken.required()) {
+        if (method.isAnnotationPresent(ConfirmToken.class)) {
+            ConfirmToken confirmToken = method.getAnnotation(ConfirmToken.class);
+            if (confirmToken.required()) {
                 // 执行认证
                 if (token == null) {
                     throw new CloudException(R.ERROR, R.NOT_LOGGED);
                 }
                 // 获取 token 中的 user id
-                String userId;
+                String Id;
                 try {
-                    userId = JWT.decode(token.substring(7)).getAudience().get(0);
-                    System.out.println(userId);
+                    Id = JWT.decode(token).getAudience().get(0);
                 } catch (JWTDecodeException j) {
                     throw new CloudException(R.ERROR, R.USER_WRONGFUL);
                 }
-                UCenter user = uService.getById(userId);
-                if (user == null) {
+                UCenter user = uService.getById(Id);
+                Admin admin = aService.getById(Id);
+                if (user == null && admin == null) {
+
                     throw new CloudException(R.ERROR, R.USER_NON_EXISTENT);
                 }
                 // 验证 token
                 try {
-                    JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(user.getPassword())).build();
-                    jwtVerifier.verify(token.substring(7));
+                    JWTVerifier jwtVerifier;
+                    if (user != null) {
+                        jwtVerifier = JWT.require(Algorithm.HMAC256(user.getPassword())).build();
+                    } else {
+                        jwtVerifier = JWT.require(Algorithm.HMAC256(admin.getPassword())).build();
+                    }
+                    jwtVerifier.verify(token);
+                    System.out.println("token验证完毕");
                 } catch (JWTVerificationException e) {
+                    e.printStackTrace();
                     throw new CloudException(R.ERROR, R.LOGIN_WRONGFUL);
                 }
-                return true;
             }
         }
         return true;

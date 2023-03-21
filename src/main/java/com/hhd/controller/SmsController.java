@@ -1,6 +1,7 @@
 package com.hhd.controller;
 
 import com.hhd.service.ISmsService;
+import com.hhd.utils.PassToken;
 import com.hhd.utils.R;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,6 +24,7 @@ public class SmsController {
     private RedisTemplate<String, String> redisTemplate;
 
     @Operation(summary = "获取短信验证码")
+    @PassToken
     @PostMapping("/{tel}")
     public R send(@PathVariable String tel) {
         if (redisTemplate.opsForValue().get(tel) != null) {

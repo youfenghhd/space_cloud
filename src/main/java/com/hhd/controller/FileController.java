@@ -11,13 +11,13 @@ import com.hhd.pojo.vo.TreeNode;
 import com.hhd.service.IFileService;
 import com.hhd.service.IUCenterService;
 import com.hhd.service.IUserDirService;
+import com.hhd.utils.ConfirmToken;
+import com.hhd.utils.PassToken;
 import com.hhd.utils.R;
-import com.hhd.utils.UserLoginToken;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,7 +47,7 @@ public class FileController {
     private IUCenterService userService;
 
     @Operation(summary = "模糊查询文件")
-    //    @UserLoginToken
+    @ConfirmToken
     @Cacheable(cacheNames = "fuzzy", unless = "#result==null")
     @PostMapping("/fuzzy")
     public R findFuzzy(@RequestBody Files file) {
@@ -61,7 +61,7 @@ public class FileController {
     }
 
     @Operation(summary = "添加文件进数据库")
-    //    @UserLoginToken
+    @ConfirmToken
     @CacheEvict(value = {"normalFiles", "fuzzy", "currentFile"}, allEntries = true)
     @PostMapping("/addFile")
     public R addFile(@RequestBody Files files) {
@@ -69,7 +69,7 @@ public class FileController {
     }
 
     @Operation(summary = "查询所有正常状态文件")
-//    @UserLoginToken
+    @ConfirmToken
     @Cacheable(cacheNames = "normalFiles", unless = "#result==null")
     @GetMapping("/normal/{userid}")
     public R showNormalAll(@PathVariable String userid) {
@@ -77,7 +77,7 @@ public class FileController {
     }
 
     @Operation(summary = "查询回收站文件")
-    //    @UserLoginToken
+    @ConfirmToken
     @Cacheable(cacheNames = "recoveryFile", unless = "#result==null")
     @GetMapping("/recovery/{userid}")
     public R findRecovery(@PathVariable String userid) {
@@ -85,7 +85,7 @@ public class FileController {
     }
 
     @Operation(summary = "查询文件详情")
-    //    @UserLoginToken
+    @ConfirmToken
     @Cacheable(cacheNames = "fileInfo", unless = "#result==null")
     @GetMapping("/info/{id}")
     public R getFileInfo(@PathVariable String id) {
@@ -93,7 +93,7 @@ public class FileController {
     }
 
     @Operation(summary = "重命名文件")
-    //    @UserLoginToken
+    @ConfirmToken
     @CacheEvict(value = {"normalFiles", "fuzzy", "currentFile"}, allEntries = true)
     @PutMapping("/rename")
     public R renameFile(@RequestBody Files files) {
@@ -103,7 +103,7 @@ public class FileController {
     }
 
     @Operation(summary = "收藏文件")
-    //    @UserLoginToken
+    @ConfirmToken
     @CacheEvict(value = {"normalFiles", "fuzzy", "currentFile"}, allEntries = true)
     @PutMapping("/collection")
     public R CollectionFile(@RequestParam("id") String[] id) {
@@ -118,7 +118,7 @@ public class FileController {
     }
 
     @Operation(summary = "取消收藏文件")
-    //    @UserLoginToken
+    @ConfirmToken
     @CacheEvict(value = {"normalFiles", "fuzzy", "currentFile"}, allEntries = true)
     @PutMapping("/noncollecton")
     public R nonCollectionFile(@RequestParam("id") String[] id) {
@@ -134,14 +134,14 @@ public class FileController {
 
     @Operation(summary = "查询当前目录下文件")
     @Cacheable(cacheNames = "currentFile", unless = "#result==null")
-    //    @UserLoginToken
+    @ConfirmToken
     @PostMapping("/current/{id}")
     public R getDirFile(@PathVariable String id, @RequestBody UserDir userDir) {
         return R.ok().data("files", fService.getCurFiles(userDir.getUserDir(), id));
     }
 
     @Operation(summary = "移动文件夹")
-    //    @UserLoginToken
+    @ConfirmToken
     @CacheEvict(value = {"currentFile"}, allEntries = true)
     @PostMapping("/moveFile")
     public R moveFile(@RequestBody UserDir userDir, @RequestParam("id") String[] id) {
@@ -156,7 +156,7 @@ public class FileController {
     }
 
     @Operation(summary = "文件加入回收站")
-    //    @UserLoginToken
+    @ConfirmToken
     @CacheEvict(value = {"normalFiles", "recoveryFile", "fuzzy", "currentFile"}, allEntries = true)
     @PutMapping("/del/{userId}")
     public R logicDelFile(@RequestBody String[] idList, @PathVariable String userId) {
@@ -173,7 +173,7 @@ public class FileController {
     }
 
     @Operation(summary = "文件移出回收站")
-    //    @UserLoginToken
+    @ConfirmToken
     @CacheEvict(value = {"normalFiles", "recoveryFile", "fuzzy", "currentFile"}, allEntries = true)
     @PutMapping("/normal")
     public R logicNormalFile(@RequestBody List<String> id) {
@@ -185,6 +185,7 @@ public class FileController {
     }
 
     @Operation(summary = "文件真实删除")
+    @ConfirmToken
     @CacheEvict(value = "recoveryFile", allEntries = true)
     @DeleteMapping("/delete")
     public R Delete(@RequestBody List<String> id) {

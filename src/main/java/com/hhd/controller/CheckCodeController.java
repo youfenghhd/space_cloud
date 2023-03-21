@@ -2,6 +2,7 @@ package com.hhd.controller;
 
 
 import com.hhd.service.ICkCodeService;
+import com.hhd.utils.PassToken;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/checks")
+@PassToken
 @CrossOrigin
 @Api(tags = "图片验证码处理")
 public class CheckCodeController {
     @Autowired
     private ICkCodeService service;
 
+    @PassToken
     @Operation(summary = "获取图片验证码")
     @GetMapping
     public byte[] generate() {

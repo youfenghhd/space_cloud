@@ -19,13 +19,12 @@ import java.util.Random;
  */
 
 public class CheckCodeUtils {
-
     private static final String VERIFY_CODES = "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final Random RANDOM = new Random();
     private static final String[] patch = {"00000", "0000", "000", "00", "0", ""};
-
     public static Map<String, byte[]> generateJpg() throws Exception {
-        String path = "../tmp/tmp.jpg";
+//        String path = "../tmp/tmp.jpg";
+        String path="src/main/resources/static/checkCode.jpg";
         OutputStream fos = Files.newOutputStream(Paths.get(path));
         Map<String, byte[]> map = new HashMap<>();
         String checkCode = outputVerifyImage(100, 40, fos, 4);
@@ -33,7 +32,6 @@ public class CheckCodeUtils {
         map.put(checkCode, byte64);
         return map;
     }
-
     public static byte[] getByte64(String path) {
         File file = new File(path);
         FileInputStream fileInputStream = null;
@@ -54,11 +52,9 @@ public class CheckCodeUtils {
                     e.printStackTrace();
                 }
             }
-
         }
         return imgData;
     }
-
     public static String generateTel(String tel) {
         //随机密钥
         int encryption = 44311688;
@@ -70,8 +66,6 @@ public class CheckCodeUtils {
         String code = result < 0 ? (-result % 1000000) + "" : result % 1000000 + "";
         return code + patch[code.length() - 1];
     }
-
-
     /**
      * 输出随机验证码图片流,并返回验证码值（一般传入输出流，响应response页面端，Web项目用的较多）
      *
@@ -125,7 +119,6 @@ public class CheckCodeUtils {
         return verifyCode;
     }
 
-
     /**
      * 生成指定验证码图像文件
      */
@@ -158,7 +151,6 @@ public class CheckCodeUtils {
         Random rand = new Random();
         Graphics2D g2 = image.createGraphics();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
         // 创建颜色集合，使用java.awt包下的类
         Color[] colors = new Color[5];
         Color[] colorSpaces = new Color[]{Color.WHITE, Color.CYAN,
@@ -216,7 +208,6 @@ public class CheckCodeUtils {
             g2.setTransform(affine);
             g2.drawChars(chars, i, 1, ((w - 10) / verifySize) * i + 5, h / 2 + fontSize / 2 - 10);
         }
-
         g2.dispose();
         ImageIO.write(image, "jpg", os);
     }

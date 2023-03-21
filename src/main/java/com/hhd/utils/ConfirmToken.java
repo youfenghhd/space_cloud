@@ -12,6 +12,6 @@ import java.lang.annotation.Target;
 //需要登录才可以操作的注解
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UserLoginToken {
+public @interface ConfirmToken {
     boolean required() default true;
 }

@@ -6,7 +6,9 @@ import com.hhd.pojo.domain.UCenter;
 import com.hhd.pojo.entity.Files;
 import com.hhd.service.IAdminService;
 import com.hhd.utils.MD5;
+import com.hhd.utils.PassToken;
 import com.hhd.utils.R;
+import com.hhd.utils.ConfirmToken;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,7 @@ public class AdminController {
 
     @Operation(summary = "用户登录")
     @PostMapping("/login")
+    @PassToken
     public R login(@RequestBody Admin admin) {
         Map.Entry<String, Admin> entry = service.login(admin).entrySet().iterator().next();
         String token = entry.getKey();
@@ -44,6 +47,7 @@ public class AdminController {
         return R.ok().data("token", token).data("admin", admins);
     }
 
+    @PassToken
     @Operation(summary = "根据id查询管理员信息")
     @Cacheable(cacheNames = "info", unless = "#result==null", key = "#aid")
     @GetMapping("getInfo/{aid}")
@@ -51,6 +55,15 @@ public class AdminController {
         return R.ok().data("admin", service.selectOne(aid));
     }
 
+    @PassToken
+    @Operation(summary = "查找所有正常的用户")
+    @Cacheable(value = "normalUsers", unless = "#result==null")
+    @GetMapping
+    public R findNormal() {
+        return R.ok().data("normal", service.showNormalAll());
+    }
+
+    @ConfirmToken
     @Operation(summary = "管理员更改信息")
     @CachePut(value = "info", key = "#admin.aid")
     @PostMapping("update")
@@ -61,13 +74,7 @@ public class AdminController {
         return service.updateById(admin) ? R.ok().data("admin", admin) : R.error();
     }
 
-    @Operation(summary = "查找所有正常的用户")
-    @Cacheable(value = "normalUsers", unless = "#result==null")
-    @GetMapping
-    public R findNormal() {
-        return R.ok().data("normal", service.showNormalAll());
-    }
-
+    @PassToken
     @Operation(summary = "查找用户回收站")
     @Cacheable(value = "recoveryUsers", unless = "#result==null")
     @GetMapping("/recovery")
@@ -75,6 +82,7 @@ public class AdminController {
         return R.ok().data("recovery", service.showRecoveryAll());
     }
 
+    @PassToken
     @Operation(summary = "查找全部文件")
     @Cacheable(value = "normalFiles", unless = "#result==null")
     @GetMapping("/files")
@@ -82,6 +90,7 @@ public class AdminController {
         return R.ok().data("files", service.showAllFiles());
     }
 
+    @ConfirmToken
     @Operation(summary = "禁用/启用状态")
     @CacheEvict(value = {"searchUsers", "recoveryUsers", "normalUsers"}, allEntries = true)
     @PutMapping("/status")
@@ -90,6 +99,7 @@ public class AdminController {
                 R.ok() : R.error();
     }
 
+    @ConfirmToken
     @Operation(summary = "模糊匹配登录名或者昵称")
     @Cacheable(cacheNames = "searchUsers", unless = "#result==null", key = "#uCenter")
     @PostMapping("/searchUsers")
@@ -97,6 +107,7 @@ public class AdminController {
         return R.ok().data("search", service.searchUsers(uCenter));
     }
 
+    @ConfirmToken
     @Operation(summary = "模糊匹配文件名或者类型")
     @Cacheable(cacheNames = "searchFiles", unless = "#result==null", key = "#files")
     @PostMapping("/searchFiles")
@@ -104,6 +115,7 @@ public class AdminController {
         return R.ok().data("search", service.searchFiles(files));
     }
 
+    @ConfirmToken
     @Operation(summary = "用户加入回收站")
     @CacheEvict(value = {"searchUsers", "recoveryUsers", "normalUsers"}, allEntries = true)
     @PutMapping("/del")
@@ -112,6 +124,7 @@ public class AdminController {
 
     }
 
+    @ConfirmToken
     @Operation(summary = "用户移出回收站")
     @CacheEvict(value = {"searchUsers", "recoveryUsers", "normalUsers"}, allEntries = true)
     @PutMapping("/normal")
@@ -119,6 +132,7 @@ public class AdminController {
         return service.logicNormalUser(uCenter.getId()) > 0 ? R.ok() : R.error();
     }
 
+    @ConfirmToken
     @Operation(summary = "用户真实删除")
     @CacheEvict(value = {"searchUsers", "recoveryUsers", "normalUsers"}, allEntries = true)
     @DeleteMapping("/delUser")
@@ -126,6 +140,7 @@ public class AdminController {
         return service.delUserById(id) > 0 ? R.ok() : R.error();
     }
 
+    @ConfirmToken
     @Operation(summary = "文件真实删除")
     @CacheEvict(value = {"searchFiles", "normalFiles"}, allEntries = true)
     @DeleteMapping("/delFile")
@@ -133,6 +148,7 @@ public class AdminController {
         return service.delFileByMd5(files);
     }
 
+    @ConfirmToken
     @Operation(summary = "获取密码的md5值")
     @Cacheable("md5")
     @GetMapping("/md5/{password}")
