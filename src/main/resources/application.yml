@@ -64,7 +64,7 @@ aliyun:
       regionId: "cn-Shanghai"
 
 server:
-  port: 80
+  port: 599
 logging:
   level:
     root: error
