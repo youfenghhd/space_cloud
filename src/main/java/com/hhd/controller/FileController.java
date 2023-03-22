@@ -46,8 +46,8 @@ public class FileController {
     @Autowired
     private IUCenterService userService;
 
-    @Operation(summary = "模糊查询文件")
     @ConfirmToken
+    @Operation(summary = "模糊查询文件")
     @Cacheable(cacheNames = "fuzzy", unless = "#result==null")
     @PostMapping("/fuzzy")
     public R findFuzzy(@RequestBody Files file) {
@@ -60,40 +60,40 @@ public class FileController {
         return R.ok().data("files", files).data("list", list);
     }
 
-    @Operation(summary = "添加文件进数据库")
     @ConfirmToken
+    @Operation(summary = "添加文件进数据库")
     @CacheEvict(value = {"normalFiles", "fuzzy", "currentFile"}, allEntries = true)
     @PostMapping("/addFile")
     public R addFile(@RequestBody Files files) {
         return fService.save(files) ? R.ok().data("addFile", files) : R.error();
     }
 
-    @Operation(summary = "查询所有正常状态文件")
     @PassToken
+    @Operation(summary = "查询所有正常状态文件")
     @Cacheable(cacheNames = "normalFiles", unless = "#result==null")
     @GetMapping("/normal/{userid}")
     public R showNormalAll(@PathVariable String userid) {
         return R.ok().data("allFilesOfUser", fService.showNormalAll(userid));
     }
 
-    @Operation(summary = "查询回收站文件")
     @PassToken
+    @Operation(summary = "查询回收站文件")
     @Cacheable(cacheNames = "recoveryFile", unless = "#result==null")
     @GetMapping("/recovery/{userid}")
     public R findRecovery(@PathVariable String userid) {
         return R.ok().data("recovery", fService.showRecoveryAll(userid));
     }
 
-    @Operation(summary = "查询文件详情")
     @PassToken
+    @Operation(summary = "查询文件详情")
     @Cacheable(cacheNames = "fileInfo", unless = "#result==null")
     @GetMapping("/info/{id}")
     public R getFileInfo(@PathVariable String id) {
         return R.ok().data("fileinfo", fService.selectOne(id));
     }
 
-    @Operation(summary = "重命名文件")
     @ConfirmToken
+    @Operation(summary = "重命名文件")
     @CacheEvict(value = {"normalFiles", "fuzzy", "currentFile"}, allEntries = true)
     @PutMapping("/rename")
     public R renameFile(@RequestBody Files files) {
@@ -102,8 +102,8 @@ public class FileController {
         return fService.updateById(exist) ? R.ok() : R.error();
     }
 
-    @Operation(summary = "收藏文件")
     @ConfirmToken
+    @Operation(summary = "收藏文件")
     @CacheEvict(value = {"normalFiles", "fuzzy", "currentFile"}, allEntries = true)
     @PutMapping("/collection")
     public R CollectionFile(@RequestParam("id") String[] id) {
@@ -117,8 +117,8 @@ public class FileController {
         return flag ? R.ok() : R.error();
     }
 
-    @Operation(summary = "取消收藏文件")
     @ConfirmToken
+    @Operation(summary = "取消收藏文件")
     @CacheEvict(value = {"normalFiles", "fuzzy", "currentFile"}, allEntries = true)
     @PutMapping("/noncollecton")
     public R nonCollectionFile(@RequestParam("id") String[] id) {

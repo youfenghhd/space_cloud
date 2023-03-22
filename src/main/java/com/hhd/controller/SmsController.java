@@ -23,8 +23,8 @@ public class SmsController {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
-    @Operation(summary = "获取短信验证码")
     @PassToken
+    @Operation(summary = "获取短信验证码")
     @PostMapping("/{tel}")
     public R send(@PathVariable String tel) {
         if (redisTemplate.opsForValue().get(tel) != null) {
