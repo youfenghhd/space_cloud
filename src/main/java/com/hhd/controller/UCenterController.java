@@ -52,7 +52,7 @@ public class UCenterController {
         return uService.register(register);
     }
 
-    @ConfirmToken
+    @PassToken
     @Operation(summary = "根据id查询用户信息")
     @Cacheable(cacheNames = "info", unless = "#result==null", key = "#id")
     @GetMapping("getInfo/{id}")
