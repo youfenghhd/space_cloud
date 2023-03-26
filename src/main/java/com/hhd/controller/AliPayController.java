@@ -10,7 +10,6 @@ import com.hhd.config.AlipayConfig;
 import com.hhd.pojo.domain.UCenter;
 import com.hhd.pojo.vo.AliPay;
 import com.hhd.service.IUCenterService;
-import com.hhd.utils.ConfirmToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,7 +44,6 @@ public class AliPayController {
     @Resource
     private AlipayConfig alipayConfig;
 
-    @ConfirmToken
     @GetMapping("/pay")
     public void pay(AliPay aliPay, HttpServletResponse response) throws
             IOException {
@@ -81,7 +79,6 @@ public class AliPayController {
     /**
      * 支付宝异步回调【必须是POST】
      */
-    @ConfirmToken
     @CacheEvict(value = "info", allEntries = true)
     @PostMapping("/notify")
     public String payNotify(HttpServletRequest request) throws
