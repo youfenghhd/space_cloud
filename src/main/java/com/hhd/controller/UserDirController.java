@@ -10,6 +10,7 @@ import com.hhd.pojo.vo.TreeNode;
 import com.hhd.service.IFileService;
 import com.hhd.service.IUserDirService;
 import com.hhd.utils.ConfirmToken;
+import com.hhd.utils.PassToken;
 import com.hhd.utils.R;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,7 +42,7 @@ public class UserDirController {
     private IFileService fService;
     private int result = 1;
 
-    @ConfirmToken
+    @PassToken
     @Operation(summary = "获取当前文件夹")
     @Cacheable(cacheNames = "getFile", unless = "#result==null")
     @GetMapping("/{id}")
