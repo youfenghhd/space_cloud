@@ -17,7 +17,7 @@ import com.hhd.service.IFileService;
 import com.hhd.service.IOssService;
 import com.hhd.service.IUCenterService;
 import com.hhd.utils.InitOssClient;
-import com.hhd.utils.MD5;
+import com.hhd.utils.Md5OfFile;
 import com.hhd.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -40,7 +40,7 @@ import java.util.Map;
  */
 @Service
 public class OssServiceImpl implements IOssService {
-    private final MD5 md5 = new MD5();
+    private final Md5OfFile md5 = new Md5OfFile();
     @Autowired
     private IFileService fService;
     @Autowired

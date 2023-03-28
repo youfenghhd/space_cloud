@@ -4,10 +4,7 @@ package com.hhd.controller;
 import com.hhd.pojo.domain.UCenter;
 import com.hhd.pojo.vo.Register;
 import com.hhd.service.IUCenterService;
-import com.hhd.utils.ConfirmToken;
-import com.hhd.utils.MD5;
-import com.hhd.utils.PassToken;
-import com.hhd.utils.R;
+import com.hhd.utils.*;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +63,7 @@ public class UCenterController {
     @PostMapping("update")
     public R updateInfo(@RequestBody UCenter uCenter) {
         if (uCenter.getPassword().length() != MD5LENGTH) {
-            uCenter.setPassword(MD5.encrypt(uCenter.getPassword()));
+            uCenter.setPassword(ShaThree.encrypt(uCenter.getPassword()));
         }
         return uService.updateById(uCenter) ? R.ok().data("user", uCenter) : R.error();
     }

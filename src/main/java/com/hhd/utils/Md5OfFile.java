@@ -4,36 +4,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * @author -无心
  * @date 2023/2/16 0:58:16
  */
-public class MD5 {
-
-    public static String encrypt(String strSrc) {
-        try {
-            char[] hexChars = {'0', '1', '2', '3', '4', '5', '6', '7', '8',
-                    '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-            byte[] bytes = strSrc.getBytes();
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(bytes);
-            bytes = md.digest();
-            int j = bytes.length;
-            char[] chars = new char[j * 2];
-            int k = 0;
-            for (int i = 0; i < bytes.length; i++) {
-                byte b = bytes[i];
-                chars[k++] = hexChars[b >>> 4 & 0xf];
-                chars[k++] = hexChars[b & 0xf];
-            }
-            return new String(chars);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            throw new RuntimeException("MD5加密出错！！+" + e);
-        }
-    }
+public class Md5OfFile {
 
 //    public static String getFileMd5String(File file) {
 //        String md5Result = StringUtil.EMPTY_STRING;
@@ -51,7 +27,6 @@ public class MD5 {
 //        return md5Result;
 //    }
 
-
     public static String getFileMd5String(MultipartFile file) {
         try {
             //获取文件的byte信息
@@ -66,10 +41,4 @@ public class MD5 {
             throw new RuntimeException("" + e);
         }
     }
-
-
-    public static void main(String[] args) {
-        System.out.println(MD5.encrypt("123456"));
-    }
-
 }

@@ -10,8 +10,8 @@ import com.hhd.pojo.domain.UCenter;
 import com.hhd.pojo.vo.Register;
 import com.hhd.service.IUCenterService;
 import com.hhd.utils.JwtUtils;
-import com.hhd.utils.MD5;
 import com.hhd.utils.R;
+import com.hhd.utils.ShaThree;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -75,7 +75,7 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
 
         UCenter ucenter = new UCenter();
         ucenter.setMobile(mobile);
-        ucenter.setPassword(MD5.encrypt(password));
+        ucenter.setPassword(ShaThree.encrypt(password));
         ucenter.setNickname(nickname);
         ucenter.setPortrait(portrait);
         ucenter.setMemory(0L);
@@ -100,7 +100,7 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
         if (!exist.getStatus()) {
             throw new CloudException(R.ERROR, R.DISABLE_ERR);
         }
-        if (!MD5.encrypt(password).equals(exist.getPassword())) {
+        if (!ShaThree.encrypt(password).equals(exist.getPassword())) {
             throw new CloudException(R.ERROR, R.PASSWORD_ERR);
         }
         String code1 = redisTemplate.opsForValue().get("checkCode");

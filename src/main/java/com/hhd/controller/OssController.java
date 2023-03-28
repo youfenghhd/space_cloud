@@ -14,7 +14,7 @@ import com.hhd.service.IFileService;
 import com.hhd.service.IOssService;
 import com.hhd.service.IUCenterService;
 import com.hhd.utils.InitOssClient;
-import com.hhd.utils.MD5;
+import com.hhd.utils.Md5OfFile;
 import com.hhd.utils.R;
 import com.hhd.utils.MimeTypeUtils;
 import io.swagger.annotations.Api;
@@ -72,7 +72,7 @@ public class OssController {
             user.setMemory(memory);
             user.setId(userId);
             uService.updateById(user);
-            String md5 = MD5.getFileMd5String(file);
+            String md5 = Md5OfFile.getFileMd5String(file);
             if (fService.selectMd5OfUser(md5, userId)) {
                 return R.error().message("您的文件已存在，不可重复上传");
             }

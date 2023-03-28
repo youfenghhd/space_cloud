@@ -216,7 +216,11 @@
             <artifactId>alipay-sdk-java</artifactId>
             <version>4.9.13.ALL</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk16</artifactId>
+            <version>1.46</version>
+        </dependency>
     </dependencies>
 
     <build>

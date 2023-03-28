@@ -5,10 +5,7 @@ import com.hhd.pojo.domain.Admin;
 import com.hhd.pojo.domain.UCenter;
 import com.hhd.pojo.entity.Files;
 import com.hhd.service.IAdminService;
-import com.hhd.utils.MD5;
-import com.hhd.utils.PassToken;
-import com.hhd.utils.R;
-import com.hhd.utils.ConfirmToken;
+import com.hhd.utils.*;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +66,7 @@ public class AdminController {
     @PostMapping("update")
     public R updateInfo(@RequestBody Admin admin) {
         if (admin.getPassword().length() != MD5LENGTH) {
-            admin.setPassword(MD5.encrypt(admin.getPassword()));
+            admin.setPassword(ShaThree.encrypt(admin.getPassword()));
         }
         return service.updateById(admin) ? R.ok().data("admin", admin) : R.error();
     }
@@ -121,7 +118,6 @@ public class AdminController {
     @PutMapping("/del")
     public R logicDelUser(@RequestBody UCenter uCenter) {
         return service.logicDelUser(uCenter.getId()) > 0 ? R.ok() : R.error();
-
     }
 
     @ConfirmToken
@@ -153,7 +149,7 @@ public class AdminController {
     @Cacheable("md5")
     @GetMapping("/md5/{password}")
     public R getMd5(@PathVariable String password) {
-        return R.ok().data("md5", MD5.encrypt(password));
+        return R.ok().data("md5", ShaThree.encrypt(password));
     }
 
 }

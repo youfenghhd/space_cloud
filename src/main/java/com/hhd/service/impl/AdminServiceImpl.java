@@ -17,8 +17,8 @@ import com.hhd.pojo.entity.Files;
 import com.hhd.service.IAdminService;
 import com.hhd.utils.InitOssClient;
 import com.hhd.utils.JwtUtils;
-import com.hhd.utils.MD5;
 import com.hhd.utils.R;
+import com.hhd.utils.ShaThree;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -70,7 +70,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         if (exist == null) {
             throw new CloudException(R.ERROR, R.NON_REGISTER);
         }
-        if (!MD5.encrypt(password).equals(exist.getPassword())) {
+        if (!ShaThree.encrypt(password).equals(exist.getPassword())) {
             throw new CloudException(R.ERROR, R.PASSWORD_ERR);
         }
         String code1 = template.opsForValue().get("checkCode");
