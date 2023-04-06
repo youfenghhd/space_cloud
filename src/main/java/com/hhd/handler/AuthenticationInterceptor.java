@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
 
 /**
  * @author -无心
- * @date 2023/2/24 13:47:52
+ * @date 2023/2/20 13:47:52
  */
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
@@ -35,7 +35,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     private IAdminService aService;
     private static final String OPTIONS = "OPTIONS";
 
-//    @Cacheable(value = "token", unless = "#result==null", key = "#request.getHeader(\"Authorization\")")
     @Override
     public boolean preHandle(HttpServletRequest request, @NotNull HttpServletResponse httpServletResponse, @NotNull Object object) {
         //浏览器在发送正式的请求时会先发送options类型的请求试探

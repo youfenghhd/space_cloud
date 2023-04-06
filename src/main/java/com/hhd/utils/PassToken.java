@@ -8,8 +8,9 @@ import java.lang.annotation.Target;
 /**
  * @author -无心
  * @date 2023/2/20 13:14:21
+ * 跳过验证注解
  */
-//依赖跳过验证注解
+
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PassToken {

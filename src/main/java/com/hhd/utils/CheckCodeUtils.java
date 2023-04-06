@@ -23,7 +23,7 @@ public class CheckCodeUtils {
     private static final Random RANDOM = new Random();
     private static final String[] patch = {"00000", "0000", "000", "00", "0", ""};
     public static Map<String, byte[]> generateJpg() throws Exception {
-//        String path = "../tmp/tmp.jpg";
+       // String path = "../tmp/tmp.jpg";
         String path="src/main/resources/static/checkCode.jpg";
         OutputStream fos = Files.newOutputStream(Paths.get(path));
         Map<String, byte[]> map = new HashMap<>();
