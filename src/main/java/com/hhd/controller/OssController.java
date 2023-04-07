@@ -62,12 +62,7 @@ public class OssController {
     public Results upload(MultipartFile file, @RequestParam String dir, @PathVariable String userId) {
         UCenter user = uService.selectOne(userId);
         long memory = user.getMemory() + file.getSize();
-        long spaceSize;
-        if (user.getVipTime() == null) {
-            spaceSize = NON_VIP_SIZE;
-        } else {
-            spaceSize = VIP_SIZE;
-        }
+        long spaceSize = user.getVipTime() == null ? NON_VIP_SIZE : VIP_SIZE;
         if (memory < spaceSize) {
             user.setMemory(memory);
             user.setId(userId);

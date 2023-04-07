@@ -32,7 +32,7 @@ public class AdminController {
     @Autowired
     private IAdminService service;
 
-    private static final int MD5LENGTH = 32;
+    private static final int SHA3_LENGTH = 64;
 
     @Operation(summary = "用户登录")
     @PostMapping("/login")
@@ -65,7 +65,7 @@ public class AdminController {
     @CachePut(value = "info", key = "#admin.aid")
     @PostMapping("update")
     public Results updateInfo(@RequestBody Admin admin) {
-        if (admin.getPassword().length() != MD5LENGTH) {
+        if (admin.getPassword().length() != SHA3_LENGTH) {
             admin.setPassword(ShaThree.encrypt(admin.getPassword()));
         }
         return service.updateById(admin) ? Results.ok().data("admin", admin) : Results.error();

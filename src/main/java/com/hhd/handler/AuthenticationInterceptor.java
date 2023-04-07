@@ -82,7 +82,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 UCenter user = uService.getById(Id);
                 Admin admin = aService.getById(Id);
                 if (user == null && admin == null) {
-
                     throw new CloudException(Results.ERROR, Results.USER_NON_EXISTENT);
                 }
                 // 验证 token
@@ -90,11 +89,15 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     JWTVerifier jwtVerifier;
                     if (user != null) {
                         jwtVerifier = JWT.require(Algorithm.HMAC256(user.getPassword())).build();
-                    } else {
-                        jwtVerifier = JWT.require(Algorithm.HMAC256(admin.getPassword())).build();
+                        jwtVerifier.verify(token);
+                        System.out.println("用户JWT验证完毕");
                     }
-                    jwtVerifier.verify(token);
-                    System.out.println("token验证完毕");
+                    if (admin != null) {
+                        jwtVerifier = JWT.require(Algorithm.HMAC256(admin.getPassword())).build();
+                        jwtVerifier.verify(token);
+                        System.out.println("管理员JWT验证完毕");
+                    }
+
                 } catch (JWTVerificationException e) {
                     e.printStackTrace();
                     throw new CloudException(Results.ERROR, Results.LOGIN_WRONGFUL);

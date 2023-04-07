@@ -29,7 +29,7 @@ import java.util.Map;
 public class UCenterController {
     @Autowired
     private IUCenterService uService;
-    private static final int MD5LENGTH = 32;
+    private static final int SHA3_LENGTH = 64;
 
     @PassToken
     @Operation(summary = "用户登录")
@@ -62,7 +62,7 @@ public class UCenterController {
     @CachePut(value = "info", key = "#uCenter.id")
     @PostMapping("update")
     public Results updateInfo(@RequestBody UCenter uCenter) {
-        if (uCenter.getPassword().length() != MD5LENGTH) {
+        if (uCenter.getPassword().length() != SHA3_LENGTH) {
             uCenter.setPassword(ShaThree.encrypt(uCenter.getPassword()));
         }
         return uService.updateById(uCenter) ? Results.ok().data("user", uCenter) : Results.error();
