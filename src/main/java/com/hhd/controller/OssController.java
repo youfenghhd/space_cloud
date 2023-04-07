@@ -83,7 +83,8 @@ public class OssController {
                     exist.setFileDir(dir);
                     exist.setId(null);
                     return fService.save(exist) ?
-                            Results.ok().data("url", exist.getUrl()).data("file", exist).message("文件已实现秒传") : Results.error();
+                            Results.ok().data("url", exist.getUrl()).data("file", exist)
+                                    .message("文件已实现秒传") : Results.error();
                 }
             }
             Files files = new Files();
