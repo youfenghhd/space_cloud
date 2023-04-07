@@ -156,7 +156,6 @@ public class OssController {
                 System.out.println("RequestId:" + e.getRequestId());
                 return Results.error();
             }
-
         }
         return Results.ok().data("urlList", urlList);
     }
