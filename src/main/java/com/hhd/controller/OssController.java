@@ -115,7 +115,7 @@ public class OssController {
                     return Results.ok().data("url", upload1.getKey()).data("file", files4);
             }
         } else {
-            throw new CloudException(Results.ERROR, "内存溢出");
+            throw new CloudException(Results.ERROR, Results.OVERFLOW_MEMORY);
         }
     }
 
