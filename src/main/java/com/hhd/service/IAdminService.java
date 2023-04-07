@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.hhd.pojo.domain.Admin;
 import com.hhd.pojo.domain.UCenter;
 import com.hhd.pojo.entity.Files;
-import com.hhd.utils.R;
+import com.hhd.utils.Results;
 
 import java.util.List;
 import java.util.Map;
@@ -103,7 +103,7 @@ public interface IAdminService extends IService<Admin> {
      * @param files 传入的文件md5值
      * @return 成功/失败
      */
-    R delFileByMd5(Files files);
+    Results delFileByMd5(Files files);
 
     /**
      * 模糊匹配用户

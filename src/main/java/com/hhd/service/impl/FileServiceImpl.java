@@ -13,7 +13,7 @@ import com.hhd.mapper.FileMapper;
 import com.hhd.pojo.entity.Files;
 import com.hhd.service.IFileService;
 import com.hhd.utils.InitOssClient;
-import com.hhd.utils.R;
+import com.hhd.utils.Results;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import wiremock.org.apache.commons.lang3.time.DateUtils;
@@ -101,8 +101,8 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
     }
 
     @Override
-    public R logicNormalFile(String id) {
-        return fMapper.logicNormalFile(id) > 0 ? R.ok() : R.error();
+    public Results logicNormalFile(String id) {
+        return fMapper.logicNormalFile(id) > 0 ? Results.ok() : Results.error();
     }
 
     @Override
@@ -124,12 +124,12 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
     }
 
     @Override
-    public R delById(String id) {
-        R r = R.ok();
+    public Results delById(String id) {
+        Results results = Results.ok();
         Files files = fMapper.getOne(id);
         fMapper.delById(id);
         if (fMapper.getCount(files.getMd5()) != 0L) {
-            return R.ok();
+            return Results.ok();
         }
         String videoId = files.getVideoId();
         String createTime = new DateTime(files.getCreateTime()).toDateStr();
@@ -146,7 +146,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
                 //调用初始化对象的方法实现删除
                 client.getAcsResponse(request);
             } catch (Exception e) {
-                throw new CloudException(R.ERROR, R.DELETE_VA_ERR);
+                throw new CloudException(Results.ERROR, Results.DELETE_VA_ERR);
             }
         } else {
             OSS ossClient = new OSSClientBuilder().build(InitOssClient.END_POINT,
@@ -155,11 +155,11 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
                 String fileKey = createTime.substring(0, 10) + "/" + fileName + "." + type;
                 ossClient.deleteObject(InitOssClient.BUCKET_NAME, fileKey);
             } catch (Exception e) {
-                return R.error();
+                return Results.error();
             } finally {
                 ossClient.shutdown();
             }
         }
-        return r;
+        return results;
     }
 }

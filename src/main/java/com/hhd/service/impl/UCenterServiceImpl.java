@@ -10,7 +10,7 @@ import com.hhd.pojo.domain.UCenter;
 import com.hhd.pojo.vo.Register;
 import com.hhd.service.IUCenterService;
 import com.hhd.utils.JwtUtils;
-import com.hhd.utils.R;
+import com.hhd.utils.Results;
 import com.hhd.utils.ShaThree;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -41,7 +41,7 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
     @Override
-    public R register(Register register) {
+    public Results register(Register register) {
         String mobile = register.getMobile();
         String password = register.getPassword();
         String nickname = register.getNickname();
@@ -53,24 +53,24 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
         if (mobile.isEmpty() || password.isEmpty()
                 || nickname.isEmpty() || ckCode.isEmpty()
                 || smsCode.isEmpty()) {
-            throw new CloudException(R.ERROR, R.EMPTY_ERROR);
+            throw new CloudException(Results.ERROR, Results.EMPTY_ERROR);
         }
 
         //redis获取图片验证码判断
         String code = redisTemplate.opsForValue().get("checkCode");
         if (!ckCode.equalsIgnoreCase(code)) {
-            throw new CloudException(R.ERROR, R.CHECK_ERROR);
+            throw new CloudException(Results.ERROR, Results.CHECK_ERROR);
         }
         //redis获取短信验证码判断
         String code2 = redisTemplate.opsForValue().get(mobile);
         if (!smsCode.equals(code2)) {
-            throw new CloudException(R.ERROR, R.SMS_ERR);
+            throw new CloudException(Results.ERROR, Results.SMS_ERR);
         }
 
         LambdaQueryWrapper<UCenter> lqw = new LambdaQueryWrapper<>();
         lqw.eq(UCenter::getMobile, register.getMobile());
         if (uMapper.selectCount(lqw) > 0) {
-            throw new CloudException(R.ERROR, R.PHONE_EXIST);
+            throw new CloudException(Results.ERROR, Results.PHONE_EXIST);
         }
 
         UCenter ucenter = new UCenter();
@@ -79,7 +79,7 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
         ucenter.setNickname(nickname);
         ucenter.setPortrait(portrait);
         ucenter.setMemory(0L);
-        return uMapper.insert(ucenter) > 0 ? R.ok() : R.error();
+        return uMapper.insert(ucenter) > 0 ? Results.ok() : Results.error();
     }
 
     @Override
@@ -88,24 +88,24 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
         String password = ucenter.getPassword();
         String code = ucenter.getCode();
         if (mobile.isEmpty() || password.isEmpty()) {
-            throw new CloudException(R.ERROR, R.EMPTY_ERROR);
+            throw new CloudException(Results.ERROR, Results.EMPTY_ERROR);
         }
 
         LambdaQueryWrapper<UCenter> lqw = new LambdaQueryWrapper<>();
         lqw.eq(UCenter::getMobile, mobile);
         UCenter exist = uMapper.selectOne(lqw);
         if (exist == null) {
-            throw new CloudException(R.ERROR, R.NON_REGISTER);
+            throw new CloudException(Results.ERROR, Results.NON_REGISTER);
         }
         if (!exist.getStatus()) {
-            throw new CloudException(R.ERROR, R.DISABLE_ERR);
+            throw new CloudException(Results.ERROR, Results.DISABLE_ERR);
         }
         if (!ShaThree.encrypt(password).equals(exist.getPassword())) {
-            throw new CloudException(R.ERROR, R.PASSWORD_ERR);
+            throw new CloudException(Results.ERROR, Results.PASSWORD_ERR);
         }
         String code1 = redisTemplate.opsForValue().get("checkCode");
         if (!code.equalsIgnoreCase(code1)) {
-            throw new CloudException(R.ERROR, R.CHECK_ERROR);
+            throw new CloudException(Results.ERROR, Results.CHECK_ERROR);
         }
         String token = JwtUtils.getJwtToken(exist);
         Map<String, UCenter> map = new HashMap<>(1);
@@ -120,13 +120,13 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
     }
 
     @Override
-    public R selectOneByMobile(String mobile) {
+    public Results selectOneByMobile(String mobile) {
         LambdaQueryWrapper<UCenter> lqw = new LambdaQueryWrapper<>();
-        return uMapper.selectOne(lqw.eq(UCenter::getMobile, mobile)) != null ? R.ok() : R.error();
+        return uMapper.selectOne(lqw.eq(UCenter::getMobile, mobile)) != null ? Results.ok() : Results.error();
     }
 
     @Override
-    public R upToVip(UCenter uCenter, int month) {
+    public Results upToVip(UCenter uCenter, int month) {
         LambdaUpdateWrapper<UCenter> lqw = new LambdaUpdateWrapper<>();
         DateTime newDate;
         try {
@@ -138,9 +138,9 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
             String newVipTime = THREAD_LOCAL.get().format(DateUtils.addMonths(newDate, month));
             uCenter.setVipTime(newVipTime);
             return uMapper.update(new UCenter(), lqw.set(UCenter::getVipTime, newVipTime)
-                    .eq(UCenter::getId, uCenter.getId())) > 0 ? R.ok().data("user", uCenter) : R.error();
+                    .eq(UCenter::getId, uCenter.getId())) > 0 ? Results.ok().data("user", uCenter) : Results.error();
         } catch (Exception e) {
-            throw new CloudException(R.ERROR, R.GLOBAL_ERR);
+            throw new CloudException(Results.ERROR, Results.GLOBAL_ERR);
         }
     }
 

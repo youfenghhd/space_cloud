@@ -18,7 +18,7 @@ import com.hhd.service.IOssService;
 import com.hhd.service.IUCenterService;
 import com.hhd.utils.InitOssClient;
 import com.hhd.utils.Md5OfFile;
-import com.hhd.utils.R;
+import com.hhd.utils.Results;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -136,7 +136,7 @@ public class OssServiceImpl implements IOssService {
         try {
             pathCreate = java.nio.file.Files.createDirectories(Paths.get(one.getDownLoadAdd() + "\\temp"));
         } catch (Exception e) {
-            throw new CloudException(R.ERROR, R.EXECUTION_ERR);
+            throw new CloudException(Results.ERROR, Results.EXECUTION_ERR);
         }
         String name = file.getOriginalFilename();
         String fileName = pathCreate.toString() + file.getOriginalFilename();
@@ -145,7 +145,7 @@ public class OssServiceImpl implements IOssService {
         try {
             file.transferTo(f);
         } catch (Exception e) {
-            throw new CloudException(R.ERROR, R.EXECUTION_ERR);
+            throw new CloudException(Results.ERROR, Results.EXECUTION_ERR);
         }
         UploadVideoRequest request = new UploadVideoRequest(InitOssClient.ACCESS_KEY_ID,
                 InitOssClient.ACCESS_KEY_SECRET, files.getFileName(), fileName);
@@ -184,7 +184,7 @@ public class OssServiceImpl implements IOssService {
         try {
             java.nio.file.Files.createDirectories(Paths.get(user.getDownLoadAdd()));
         } catch (Exception e) {
-            throw new CloudException(R.ERROR, R.EXECUTION_ERR);
+            throw new CloudException(Results.ERROR, Results.EXECUTION_ERR);
         }
         try {
             DownloadFileRequest downloadFileRequest = new DownloadFileRequest(InitOssClient.BUCKET_NAME, objectName);

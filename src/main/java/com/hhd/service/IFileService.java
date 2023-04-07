@@ -2,7 +2,7 @@ package com.hhd.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hhd.pojo.entity.Files;
-import com.hhd.utils.R;
+import com.hhd.utils.Results;
 
 import java.util.List;
 
@@ -81,7 +81,7 @@ public interface IFileService extends IService<Files> {
      * @param id 根据id
      * @return 结果
      */
-    R logicNormalFile(String id);
+    Results logicNormalFile(String id);
 
     /**
      * 查找相同的md5值的文件
@@ -114,6 +114,6 @@ public interface IFileService extends IService<Files> {
      * @param id 删除文件的id
      * @return 成功与否
      */
-    R delById(String id);
+    Results delById(String id);
 
 }

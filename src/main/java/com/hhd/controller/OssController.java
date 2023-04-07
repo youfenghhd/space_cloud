@@ -15,7 +15,7 @@ import com.hhd.service.IOssService;
 import com.hhd.service.IUCenterService;
 import com.hhd.utils.InitOssClient;
 import com.hhd.utils.Md5OfFile;
-import com.hhd.utils.R;
+import com.hhd.utils.Results;
 import com.hhd.utils.MimeTypeUtils;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,15 +51,15 @@ public class OssController {
 
     @Operation(summary = "上传头像")
     @PostMapping("/portrait")
-    public R setPortrait(MultipartFile file) {
+    public Results setPortrait(MultipartFile file) {
         Map.Entry<String, Files> entry = oService.upload(file, new Files()).entrySet().iterator().next();
-        return R.ok().data("url", entry.getKey());
+        return Results.ok().data("url", entry.getKey());
     }
 
     @Operation(summary = "分片式断点续传上传文件")
     @CacheEvict(value = {"normalFiles", "fuzzy", "currentFile"}, allEntries = true)
     @PostMapping("/upload/{userId}")
-    public R upload(MultipartFile file, @RequestParam String dir, @PathVariable String userId) {
+    public Results upload(MultipartFile file, @RequestParam String dir, @PathVariable String userId) {
         UCenter user = uService.selectOne(userId);
         long memory = user.getMemory() + file.getSize();
         long spaceSize;
@@ -74,7 +74,7 @@ public class OssController {
             uService.updateById(user);
             String md5 = Md5OfFile.getFileMd5String(file);
             if (fService.selectMd5OfUser(md5, userId)) {
-                return R.error().message("您的文件已存在，不可重复上传");
+                return Results.error().message("您的文件已存在，不可重复上传");
             }
             List<Files> filesList = fService.selectMd5File(md5);
             for (Files exist : filesList) {
@@ -83,7 +83,7 @@ public class OssController {
                     exist.setFileDir(dir);
                     exist.setId(null);
                     return fService.save(exist) ?
-                            R.ok().data("url", exist.getUrl()).data("file", exist).message("文件已实现秒传") : R.error();
+                            Results.ok().data("url", exist.getUrl()).data("file", exist).message("文件已实现秒传") : Results.error();
                 }
             }
             Files files = new Files();
@@ -95,34 +95,34 @@ public class OssController {
                     files.setFileType("audio");
                     Files files1 = oService.uploadVideo(file, files);
                     fService.save(files1);
-                    return R.ok().data("file", files1);
+                    return Results.ok().data("file", files1);
                 case 1:
                     files.setFileType("video");
                     Files files2 = oService.uploadVideo(file, files);
                     fService.save(files2);
-                    return R.ok().data("file", files2);
+                    return Results.ok().data("file", files2);
                 case 2:
                     files.setFileType("image");
                     Map.Entry<String, Files> upload = oService.upload(file, files).entrySet().iterator().next();
                     Files files3 = upload.getValue();
                     fService.save(files3);
-                    return R.ok().data("url", upload.getKey()).data("file", files3);
+                    return Results.ok().data("url", upload.getKey()).data("file", files3);
                 default:
                     files.setFileType("file");
                     Map.Entry<String, Files> upload1 = oService.upload(file, files).entrySet().iterator().next();
                     Files files4 = upload1.getValue();
                     fService.save(files4);
-                    return R.ok().data("url", upload1.getKey()).data("file", files4);
+                    return Results.ok().data("url", upload1.getKey()).data("file", files4);
             }
         } else {
-            throw new CloudException(R.ERROR, "内存溢出");
+            throw new CloudException(Results.ERROR, "内存溢出");
         }
     }
 
     @Operation(summary = "根据FileId获取播放地址")
     @Cacheable(cacheNames = "getPlay", unless = "#result==null")
     @PostMapping("/getPlay")
-    public R getPlay(@RequestParam("isList") List<String> isList) {
+    public Results getPlay(@RequestParam("isList") List<String> isList) {
         ArrayList<Map<String, Object>> urlList = new ArrayList<>();
         Files file = new Files();
         // 创建SubmitMediaInfoJob实例并初始化
@@ -148,25 +148,25 @@ public class OssController {
                 }
             } catch (ServerException e) {
                 e.printStackTrace();
-                return R.error();
+                return Results.error();
             } catch (ClientException e) {
                 System.out.println("ErrCode:" + e.getErrCode());
                 System.out.println("ErrMsg:" + e.getErrMsg());
                 System.out.println("RequestId:" + e.getRequestId());
-                return R.error();
+                return Results.error();
             }
 
         }
-        return R.ok().data("urlList", urlList);
+        return Results.ok().data("urlList", urlList);
     }
 
     @Operation(summary = "多线程分片式断点续传下载文件")
     @PostMapping("/downLoad")
-    public R downLoad(@RequestBody List<String> id) {
+    public Results downLoad(@RequestBody List<String> id) {
         for (String thread : id) {
             oService.downLoad(thread);
         }
-        return R.ok();
+        return Results.ok();
     }
 }
 

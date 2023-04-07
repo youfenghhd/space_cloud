@@ -13,7 +13,7 @@ import java.util.Map;
  * 统一返回结果的类
  */
 @Data
-public class R implements Serializable {
+public class Results implements Serializable {
     private static final long serialVersionUID = 1L;
     public static final String GLOBAL_ERR = "全局异常";
     public static final String EMPTY_ERROR = "不能为空";
@@ -53,44 +53,44 @@ public class R implements Serializable {
     private Integer status;
     private String message;
 
-    private R() {
+    private Results() {
 
     }
 
     private Map<String, Object> data = new HashMap<String, Object>();
 
-    public R data(String key, Object value) {
+    public Results data(String key, Object value) {
         this.data.put(key, value);
         return this;
     }
 
-    public R data(Map<String, Object> map) {
+    public Results data(Map<String, Object> map) {
         this.setData(map);
         return this;
     }
 
-    public static R ok() {
-        R r = new R();
-        r.setStatus(SUCCESS);
-        r.setSuccess(true);
-        r.setMessage("成功");
-        return r;
+    public static Results ok() {
+        Results results = new Results();
+        results.setStatus(SUCCESS);
+        results.setSuccess(true);
+        results.setMessage("成功");
+        return results;
     }
 
-    public static R error() {
-        R r = new R();
-        r.setSuccess(false);
-        r.setStatus(ERROR);
-        r.setMessage("失败");
-        return r;
+    public static Results error() {
+        Results results = new Results();
+        results.setSuccess(false);
+        results.setStatus(ERROR);
+        results.setMessage("失败");
+        return results;
     }
 
-    public R message(String message) {
+    public Results message(String message) {
         this.setMessage(message);
         return this;
     }
 
-    public R code(Integer code) {
+    public Results code(Integer code) {
         this.setStatus(code);
         return this;
     }

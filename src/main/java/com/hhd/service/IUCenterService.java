@@ -3,7 +3,7 @@ package com.hhd.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hhd.pojo.domain.UCenter;
 import com.hhd.pojo.vo.Register;
-import com.hhd.utils.R;
+import com.hhd.utils.Results;
 
 import java.util.Map;
 
@@ -22,7 +22,7 @@ public interface IUCenterService extends IService<UCenter> {
      * @param register 注册VO
      * @return 返回注册是否成功
      */
-    R register(Register register);
+    Results register(Register register);
 
     /**
      * 登陆方法
@@ -46,7 +46,7 @@ public interface IUCenterService extends IService<UCenter> {
      * @param mobile 手机号
      * @return R
      */
-    R selectOneByMobile(String mobile);
+    Results selectOneByMobile(String mobile);
 
 
     /**
@@ -56,7 +56,7 @@ public interface IUCenterService extends IService<UCenter> {
      * @param month   升级会员月份
      * @return 结果
      */
-    R upToVip(UCenter uCenter, int month);
+    Results upToVip(UCenter uCenter, int month);
 
 
     /**

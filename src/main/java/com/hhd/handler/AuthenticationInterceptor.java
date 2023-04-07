@@ -11,7 +11,7 @@ import com.hhd.pojo.domain.UCenter;
 import com.hhd.service.IAdminService;
 import com.hhd.service.IUCenterService;
 import com.hhd.utils.PassToken;
-import com.hhd.utils.R;
+import com.hhd.utils.Results;
 import com.hhd.utils.ConfirmToken;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,20 +70,20 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             if (confirmToken.required()) {
                 // 执行认证
                 if (token == null) {
-                    throw new CloudException(R.ERROR, R.NOT_LOGGED);
+                    throw new CloudException(Results.ERROR, Results.NOT_LOGGED);
                 }
                 // 获取 token 中的 user id
                 String Id;
                 try {
                     Id = JWT.decode(token).getAudience().get(0);
                 } catch (JWTDecodeException j) {
-                    throw new CloudException(R.ERROR, R.USER_WRONGFUL);
+                    throw new CloudException(Results.ERROR, Results.USER_WRONGFUL);
                 }
                 UCenter user = uService.getById(Id);
                 Admin admin = aService.getById(Id);
                 if (user == null && admin == null) {
 
-                    throw new CloudException(R.ERROR, R.USER_NON_EXISTENT);
+                    throw new CloudException(Results.ERROR, Results.USER_NON_EXISTENT);
                 }
                 // 验证 token
                 try {
@@ -97,7 +97,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     System.out.println("token验证完毕");
                 } catch (JWTVerificationException e) {
                     e.printStackTrace();
-                    throw new CloudException(R.ERROR, R.LOGIN_WRONGFUL);
+                    throw new CloudException(Results.ERROR, Results.LOGIN_WRONGFUL);
                 }
             }
         }

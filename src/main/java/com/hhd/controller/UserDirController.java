@@ -11,7 +11,7 @@ import com.hhd.service.IFileService;
 import com.hhd.service.IUserDirService;
 import com.hhd.utils.ConfirmToken;
 import com.hhd.utils.PassToken;
-import com.hhd.utils.R;
+import com.hhd.utils.Results;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,15 +46,15 @@ public class UserDirController {
     @Operation(summary = "获取当前文件夹")
     @Cacheable(cacheNames = "getFile", unless = "#result==null")
     @GetMapping("/{id}")
-    public R getFile(@PathVariable String id) {
-        return R.ok().data("dir", uService.getUserDir(id));
+    public Results getFile(@PathVariable String id) {
+        return Results.ok().data("dir", uService.getUserDir(id));
     }
 
     @ConfirmToken
     @Operation(summary = "根据传入的路径，名字，和父文件id新建文件夹")
     @CacheEvict(value = "getFile", allEntries = true)
     @PostMapping("/{userid}/{name}/{id}")
-    public R setDir(@PathVariable long id, @PathVariable String name, @PathVariable String userid) {
+    public Results setDir(@PathVariable long id, @PathVariable String name, @PathVariable String userid) {
         UserDir userDir = uService.getUserDir(userid);
         TreeNode tNode = JSON.parseObject(userDir.getUserDir(), new TypeReference<TreeNode>() {
         });
@@ -65,7 +65,7 @@ public class UserDirController {
         insert(tNode, id, tNode1);
         String string = JSON.toJSONString(tNode);
         userDir.setUserDir(string);
-        return uService.setUserDir(userDir) > 0 ? R.ok().data("dir", userDir) : R.error();
+        return uService.setUserDir(userDir) > 0 ? Results.ok().data("dir", userDir) : Results.error();
 
     }
 
@@ -73,7 +73,7 @@ public class UserDirController {
     @Operation(summary = "根据传入的userId、目录路径url、和父文件夹id的删除文件夹")
     @CacheEvict(value = "getFile", allEntries = true)
     @DeleteMapping("/{userid}/{id}")
-    public R delDir(@PathVariable String userid, @PathVariable long id, @RequestBody String url) {
+    public Results delDir(@PathVariable String userid, @PathVariable long id, @RequestBody String url) {
         UserDir userDir = uService.getUserDir(userid);
         TreeNode treeNode = JSON.parseObject(userDir.getUserDir(), new TypeReference<TreeNode>() {
         });
@@ -83,9 +83,9 @@ public class UserDirController {
             delete(treeNode, id, stringBuilder);
             userDir.setUserDir(JSON.toJSONString(treeNode));
             uService.setUserDir(userDir);
-            return R.ok();
+            return Results.ok();
         } catch (Exception e) {
-            return R.error();
+            return Results.error();
         }
     }
 
@@ -93,7 +93,7 @@ public class UserDirController {
     @Operation(summary = "根据传入的名字，userId，目录路径url，父文件id修改文件夹")
     @CacheEvict(value = "getFile", allEntries = true)
     @PutMapping("/{userid}/{name}/{id}")
-    public R updateDir(@PathVariable long id, @PathVariable String name, @PathVariable String userid, @RequestBody String url) {
+    public Results updateDir(@PathVariable long id, @PathVariable String name, @PathVariable String userid, @RequestBody String url) {
         UserDir userDir = uService.getUserDir(userid);
         TreeNode treeNode = JSON.parseObject(userDir.getUserDir(), new TypeReference<TreeNode>() {
         });
@@ -109,7 +109,7 @@ public class UserDirController {
             files.setFileDir(file.getFileDir());
             fService.updateById(files);
         }
-        return uService.setUserDir(userDir) > 0 ? R.ok().data("updateOk", treeNode) : R.error();
+        return uService.setUserDir(userDir) > 0 ? Results.ok().data("updateOk", treeNode) : Results.error();
     }
 
 
@@ -122,7 +122,7 @@ public class UserDirController {
         sList.add(newNode.getName());
         HashSet<String> hashSet = new HashSet<>(sList);
         if (!(hashSet.size() == sList.size())) {
-            throw new CloudException(R.ERROR, R.NAME_REPEAT);
+            throw new CloudException(Results.ERROR, Results.NAME_REPEAT);
         }
         if (id == treeNode.getId()) {
             treeNode.getChildrenList().add(newNode);

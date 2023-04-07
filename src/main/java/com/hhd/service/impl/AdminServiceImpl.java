@@ -17,7 +17,7 @@ import com.hhd.pojo.entity.Files;
 import com.hhd.service.IAdminService;
 import com.hhd.utils.InitOssClient;
 import com.hhd.utils.JwtUtils;
-import com.hhd.utils.R;
+import com.hhd.utils.Results;
 import com.hhd.utils.ShaThree;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -63,19 +63,19 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         String password = admin.getPassword();
         String code = admin.getCode();
         if (loginName.isEmpty() || password.isEmpty()) {
-            throw new CloudException(R.ERROR, R.EMPTY_ERROR);
+            throw new CloudException(Results.ERROR, Results.EMPTY_ERROR);
         }
         LambdaUpdateWrapper<Admin> lqw = new LambdaUpdateWrapper<>();
         Admin exist = aMapper.selectOne(lqw.eq(Admin::getLoginName, loginName));
         if (exist == null) {
-            throw new CloudException(R.ERROR, R.NON_REGISTER);
+            throw new CloudException(Results.ERROR, Results.NON_REGISTER);
         }
         if (!ShaThree.encrypt(password).equals(exist.getPassword())) {
-            throw new CloudException(R.ERROR, R.PASSWORD_ERR);
+            throw new CloudException(Results.ERROR, Results.PASSWORD_ERR);
         }
         String code1 = template.opsForValue().get("checkCode");
         if (!code.equalsIgnoreCase(code1)) {
-            throw new CloudException(R.ERROR, R.CHECK_ERROR);
+            throw new CloudException(Results.ERROR, Results.CHECK_ERROR);
         }
         String token = JwtUtils.getJwtToken(exist);
         Map<String, Admin> map = new HashMap<>(1);
@@ -134,8 +134,8 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     }
 
     @Override
-    public R delFileByMd5(Files files) {
-        R r = R.ok();
+    public Results delFileByMd5(Files files) {
+        Results results = Results.ok();
         aMapper.delByMd5(files.getMd5());
         String videoId = files.getVideoId();
         String createTime = new DateTime(files.getCreateTime()).toDateStr();
@@ -152,7 +152,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
                 //调用初始化对象的方法实现删除
                 client.getAcsResponse(request);
             } catch (Exception e) {
-                throw new CloudException(R.ERROR, R.DELETE_VA_ERR);
+                throw new CloudException(Results.ERROR, Results.DELETE_VA_ERR);
             }
         } else {
             OSS ossClient = new OSSClientBuilder().build(InitOssClient.END_POINT,
@@ -161,12 +161,12 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
                 String fileKey = createTime.substring(0, 10) + "/" + fileName + "." + type;
                 ossClient.deleteObject(InitOssClient.BUCKET_NAME, fileKey);
             } catch (Exception e) {
-                return R.error();
+                return Results.error();
             } finally {
                 ossClient.shutdown();
             }
         }
-        return r;
+        return results;
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.hhd.controller;
 
 import com.hhd.service.ISmsService;
 import com.hhd.utils.PassToken;
-import com.hhd.utils.R;
+import com.hhd.utils.Results;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +26,11 @@ public class SmsController {
     @PassToken
     @Operation(summary = "获取短信验证码")
     @PostMapping("/{tel}")
-    public R send(@PathVariable String tel) {
+    public Results send(@PathVariable String tel) {
         if (redisTemplate.opsForValue().get(tel) != null) {
-            return R.ok();
+            return Results.ok();
         }
-        return service.getSmsCode(tel) ? R.ok() : R.error().message(R.SEND_SMS_ERR);
+        return service.getSmsCode(tel) ? Results.ok() : Results.error().message(Results.SEND_SMS_ERR);
     }
 
 }

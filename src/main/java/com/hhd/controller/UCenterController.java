@@ -34,18 +34,18 @@ public class UCenterController {
     @PassToken
     @Operation(summary = "用户登录")
     @PostMapping("/login")
-    public R login(@RequestBody UCenter ucenter) {
+    public Results login(@RequestBody UCenter ucenter) {
         Map.Entry<String, UCenter> entry = uService.login(ucenter).entrySet().iterator().next();
         String token = entry.getKey();
         UCenter user = entry.getValue();
         uService.removeExpirationVip(user);
-        return R.ok().data("token", token).data("user", user);
+        return Results.ok().data("token", token).data("user", user);
     }
 
     @PassToken
     @Operation(summary = "用户注册")
     @PostMapping("/register")
-    public R register(@RequestBody Register register) {
+    public Results register(@RequestBody Register register) {
         return uService.register(register);
     }
 
@@ -53,26 +53,26 @@ public class UCenterController {
     @Operation(summary = "根据id查询用户信息")
     @Cacheable(cacheNames = "info", unless = "#result==null", key = "#id")
     @GetMapping("getInfo/{id}")
-    public R getInfo(@PathVariable String id) {
-        return R.ok().data("user", uService.selectOne(id));
+    public Results getInfo(@PathVariable String id) {
+        return Results.ok().data("user", uService.selectOne(id));
     }
 
     @ConfirmToken
     @Operation(summary = "用户更改信息")
     @CachePut(value = "info", key = "#uCenter.id")
     @PostMapping("update")
-    public R updateInfo(@RequestBody UCenter uCenter) {
+    public Results updateInfo(@RequestBody UCenter uCenter) {
         if (uCenter.getPassword().length() != MD5LENGTH) {
             uCenter.setPassword(ShaThree.encrypt(uCenter.getPassword()));
         }
-        return uService.updateById(uCenter) ? R.ok().data("user", uCenter) : R.error();
+        return uService.updateById(uCenter) ? Results.ok().data("user", uCenter) : Results.error();
     }
 
     @PassToken
     @Operation(summary = "查询手机有无被注册")
     @Cacheable("mobile")
     @GetMapping("mobile/{mobile}")
-    public R selectMobileUser(@PathVariable String mobile) {
+    public Results selectMobileUser(@PathVariable String mobile) {
         return uService.selectOneByMobile(mobile);
     }
 
@@ -80,7 +80,7 @@ public class UCenterController {
     @Operation(summary = "充值会员")
     @CachePut(value = "info", key = "#uCenter.id")
     @PostMapping("/vip/{month}")
-    public R recharge(@RequestBody UCenter uCenter, @PathVariable int month) {
+    public Results recharge(@RequestBody UCenter uCenter, @PathVariable int month) {
         return uService.upToVip(uCenter, month);
     }
 }

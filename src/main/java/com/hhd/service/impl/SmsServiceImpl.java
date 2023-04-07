@@ -10,7 +10,7 @@ import com.hhd.exceptionhandler.CloudException;
 import com.hhd.service.ISmsService;
 import com.hhd.utils.CheckCodeUtils;
 import com.hhd.utils.InitOssClient;
-import com.hhd.utils.R;
+import com.hhd.utils.Results;
 import darabonba.core.client.ClientOverrideConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -57,9 +57,9 @@ public class SmsServiceImpl implements ISmsService {
             SendSmsResponse resp = response.get();
             System.out.println(new Gson().toJson(resp));
         } catch (InterruptedException e) {
-            throw new CloudException(R.ERROR, R.INTER_ERR);
+            throw new CloudException(Results.ERROR, Results.INTER_ERR);
         } catch (ExecutionException e) {
-            throw new CloudException(R.ERROR, R.EXECUTION_ERR);
+            throw new CloudException(Results.ERROR, Results.EXECUTION_ERR);
         }
         redisTemplate.opsForValue().set(tel, code, 1, TimeUnit.MINUTES);
         return true;
