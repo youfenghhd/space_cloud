@@ -219,7 +219,7 @@ public class OssServiceImpl implements IOssService {
             System.out.println("Error Message:" + ce.getMessage());
         } finally {
             if (ossClient != null) {
-                System.out.print(one.getVideoId() == null ? "非会员用户" : "会员用户");
+                System.out.print(user.getVipTime() == null ? "非会员用户" : "会员用户");
                 System.out.println("下载" + (one.getSize() / 1024 / 1024) + "M大小文件所用时间:" +
                         (System.currentTimeMillis() - stime) / 1000 + "秒");
                 ossClient.shutdown();

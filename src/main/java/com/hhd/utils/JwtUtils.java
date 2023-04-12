@@ -15,14 +15,14 @@ public class JwtUtils {
     public static String getJwtToken(UCenter uCenter) {
         return JWT.create().withAudience(uCenter.getId())
                 .withClaim("userId", uCenter.getId())
-                .withExpiresAt(DateUtils.addMinutes(new DateTime(), 20))
+                .withExpiresAt(DateUtils.addHours(new DateTime(), 2))
                 .sign(Algorithm.HMAC256(uCenter.getPassword()));
     }
 
     public static String getJwtToken(Admin admin) {
         return JWT.create().withAudience(admin.getAid())
                 .withClaim("userId", admin.getAid())
-                .withExpiresAt(DateUtils.addMinutes(new DateTime(), 20))
+                .withExpiresAt(DateUtils.addHours(new DateTime(), 2))
                 .sign(Algorithm.HMAC256(admin.getPassword()));
     }
 }
