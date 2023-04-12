@@ -160,12 +160,7 @@ public class FileController {
     @PutMapping("/del/{userId}")
     public Results logicDelFile(@RequestBody String[] idList, @PathVariable String userId) {
         LambdaQueryWrapper<UCenter> lqw = new LambdaQueryWrapper<>();
-        UCenter user = userService.getOne(lqw.eq(UCenter::getId, userId));
         for (String s : idList) {
-            Files files = fService.selectOne(s);
-            user.setMemory(user.getMemory() - files.getSize());
-            user.setId(userId);
-            userService.updateById(user);
             fService.logicDelFile(s);
         }
         return Results.ok();
