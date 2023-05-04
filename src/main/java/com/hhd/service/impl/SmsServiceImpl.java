@@ -12,10 +12,10 @@ import com.hhd.utils.CheckCodeUtils;
 import com.hhd.utils.InitOssClient;
 import com.hhd.utils.Results;
 import darabonba.core.client.ClientOverrideConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 public class SmsServiceImpl implements ISmsService {
-    @Autowired
+    @Resource
     private RedisTemplate<String, String> redisTemplate;
 
     @Override

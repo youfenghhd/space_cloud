@@ -12,11 +12,11 @@ import com.hhd.service.IUCenterService;
 import com.hhd.utils.JwtUtils;
 import com.hhd.utils.Results;
 import com.hhd.utils.ShaThree;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import wiremock.org.apache.commons.lang3.time.DateUtils;
 
+import javax.annotation.Resource;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -32,9 +32,9 @@ import java.util.Map;
  */
 @Service
 public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> implements IUCenterService {
-    @Autowired
+    @Resource
     private RedisTemplate<String, String> redisTemplate;
-    @Autowired
+    @Resource
     private UcenterMapper uMapper;
 
     private static final ThreadLocal<DateFormat> THREAD_LOCAL = ThreadLocal.withInitial(() ->
@@ -128,17 +128,14 @@ public class UCenterServiceImpl extends ServiceImpl<UcenterMapper, UCenter> impl
     @Override
     public Results upToVip(UCenter uCenter, int month) {
         LambdaUpdateWrapper<UCenter> lqw = new LambdaUpdateWrapper<>();
-        DateTime newDate;
         try {
-            if (uCenter.getVipTime() == null) {
-                newDate = new DateTime();
-            } else {
-                newDate = new DateTime(THREAD_LOCAL.get().parse(uCenter.getVipTime()));
-            }
+            DateTime newDate = uCenter.getVipTime() == null ? new DateTime() :
+                    new DateTime(THREAD_LOCAL.get().parse(uCenter.getVipTime()));
             String newVipTime = THREAD_LOCAL.get().format(DateUtils.addMonths(newDate, month));
             uCenter.setVipTime(newVipTime);
             return uMapper.update(new UCenter(), lqw.set(UCenter::getVipTime, newVipTime)
-                    .eq(UCenter::getId, uCenter.getId())) > 0 ? Results.ok().data("user", uCenter) : Results.error();
+                    .eq(UCenter::getId, uCenter.getId())) > 0 ?
+                    Results.ok().data("user", uCenter) : Results.error();
         } catch (Exception e) {
             throw new CloudException(Results.ERROR, Results.GLOBAL_ERR);
         }

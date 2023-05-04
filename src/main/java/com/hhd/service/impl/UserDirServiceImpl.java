@@ -5,8 +5,9 @@ import com.hhd.mapper.UserDirMapper;
 import com.hhd.pojo.entity.UserDir;
 import com.hhd.service.IFileService;
 import com.hhd.service.IUserDirService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * <p>
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDirServiceImpl extends ServiceImpl<UserDirMapper, UserDir> implements IUserDirService {
 
-    @Autowired
+    @Resource
     private IFileService service;
 
     @Override

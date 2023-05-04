@@ -4,10 +4,10 @@ import com.hhd.exceptionhandler.CloudException;
 import com.hhd.service.ICkCodeService;
 import com.hhd.utils.CheckCodeUtils;
 import com.hhd.utils.Results;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Map;
 
 /**
@@ -17,7 +17,7 @@ import java.util.Map;
 @Service
 public class CkCodeServiceImpl implements ICkCodeService {
 
-    @Autowired
+    @Resource
     private RedisTemplate<String, String> redisTemplate;
 
     @Override

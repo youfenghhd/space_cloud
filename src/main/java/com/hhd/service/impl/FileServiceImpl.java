@@ -14,10 +14,10 @@ import com.hhd.pojo.entity.Files;
 import com.hhd.service.IFileService;
 import com.hhd.utils.InitOssClient;
 import com.hhd.utils.Results;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import wiremock.org.apache.commons.lang3.time.DateUtils;
 
+import javax.annotation.Resource;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -39,7 +39,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, Files> implements I
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
     private static final String VIDEO = "video";
     private static final String AUDIO = "audio";
-    @Autowired
+    @Resource
     private FileMapper fMapper;
 
     @Override

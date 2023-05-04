@@ -66,7 +66,6 @@ public class UserDirController {
         String string = JSON.toJSONString(tNode);
         userDir.setUserDir(string);
         return uService.setUserDir(userDir) > 0 ? Results.ok().data("dir", userDir) : Results.error();
-
     }
 
     @ConfirmToken
@@ -93,7 +92,8 @@ public class UserDirController {
     @Operation(summary = "根据传入的名字，userId，目录路径url，父文件id修改文件夹")
     @CacheEvict(value = "getFile", allEntries = true)
     @PutMapping("/{userid}/{name}/{id}")
-    public Results updateDir(@PathVariable long id, @PathVariable String name, @PathVariable String userid, @RequestBody String url) {
+    public Results updateDir(@PathVariable long id, @PathVariable String name,
+                             @PathVariable String userid, @RequestBody String url) {
         UserDir userDir = uService.getUserDir(userid);
         TreeNode treeNode = JSON.parseObject(userDir.getUserDir(), new TypeReference<TreeNode>() {
         });
@@ -109,7 +109,8 @@ public class UserDirController {
             files.setFileDir(file.getFileDir());
             fService.updateById(files);
         }
-        return uService.setUserDir(userDir) > 0 ? Results.ok().data("updateOk", treeNode) : Results.error();
+        return uService.setUserDir(userDir) > 0 ? Results.ok().data("updateOk", treeNode)
+                : Results.error();
     }
 
 

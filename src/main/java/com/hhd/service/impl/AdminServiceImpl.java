@@ -24,6 +24,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import wiremock.org.apache.commons.lang3.time.DateUtils;
 
+import javax.annotation.Resource;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -43,11 +44,11 @@ import static com.hhd.utils.InitVodClient.initVodClient;
 @Service
 public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements IAdminService {
 
-    @Autowired
+    @Resource
     private AdminMapper aMapper;
-    @Autowired
+    @Resource
     private UcenterMapper uMapper;
-    @Autowired
+    @Resource
     private FileMapper fMapper;
 
     private static final String VIDEO = "video";
@@ -119,7 +120,8 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     public int logicDelUser(String id) {
         LambdaUpdateWrapper<UCenter> lqw = new LambdaUpdateWrapper<>();
         return uMapper.update(new UCenter(),
-                lqw.set(UCenter::getLogicDelTime, THREAD_LOCAL.get().format(DateUtils.addDays(new DateTime(), 30)))
+                lqw.set(UCenter::getLogicDelTime, THREAD_LOCAL.get()
+                                .format(DateUtils.addDays(new DateTime(), 30)))
                         .eq(UCenter::getId, id));
     }
 

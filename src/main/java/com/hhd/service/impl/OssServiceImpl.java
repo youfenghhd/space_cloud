@@ -24,6 +24,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,9 +42,9 @@ import java.util.Map;
 @Service
 public class OssServiceImpl implements IOssService {
     private final Md5OfFile md5 = new Md5OfFile();
-    @Autowired
+    @Resource
     private IFileService fService;
-    @Autowired
+    @Resource
     private IUCenterService uService;
 
     @Override
@@ -190,9 +191,10 @@ public class OssServiceImpl implements IOssService {
             DownloadFileRequest downloadFileRequest = new DownloadFileRequest(InitOssClient.BUCKET_NAME, objectName);
             // 指定Object下载到本地文件的完整路径
             downloadFileRequest.setDownloadFile(user.getDownLoadAdd() + "\\" + one.getFileName() + "." + one.getType());
+            // 设置文件分片数
             if (user.getVipTime() == null) {
                 downloadFileRequest.setPartSize(1024 * 64);
-//                downloadFileRequest.setTaskNum(3);
+            // downloadFileRequest.setTaskNum(3);
             } else {
                 downloadFileRequest.setPartSize(1 * 1024 * 1024);
                 downloadFileRequest.setTaskNum(10);
@@ -200,11 +202,8 @@ public class OssServiceImpl implements IOssService {
             downloadFileRequest.setEnableCheckpoint(true);
             // 设置断点记录文件的完整路径
             downloadFileRequest.setCheckpointFile(user.getDownLoadAdd() + "\\" + one.getFileName() + ".dcp");
-
             DownloadFileResult downloadRes = ossClient.downloadFile(downloadFileRequest);
-
             ObjectMetadata objectMetadata = downloadRes.getObjectMetadata();
-
         } catch (OSSException oe) {
             System.out.println("Caught an OSSException, which means your request made it to OSS, "
                     + "but was rejected with an error response for some reason.");
