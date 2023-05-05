@@ -22,16 +22,18 @@ public class CheckCodeUtils {
     private static final String VERIFY_CODES = "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final Random RANDOM = new Random();
     private static final String[] patch = {"00000", "0000", "000", "00", "0", ""};
+
     public static Map<String, byte[]> generateJpg() throws Exception {
-       // String path = "../tmp/tmp.jpg";
-        String path="src/main/resources/static/checkCode.jpg";
+        // String path = "../tmp/tmp.jpg";
+        String path = "src/main/resources/static/checkCode.jpg";
         OutputStream fos = Files.newOutputStream(Paths.get(path));
-        Map<String, byte[]> map = new HashMap<>();
+        Map<String, byte[]> map = new HashMap<>(8);
         String checkCode = outputVerifyImage(100, 40, fos, 4);
         byte[] byte64 = getByte64(path);
         map.put(checkCode, byte64);
         return map;
     }
+
     public static byte[] getByte64(String path) {
         File file = new File(path);
         FileInputStream fileInputStream = null;
@@ -55,6 +57,7 @@ public class CheckCodeUtils {
         }
         return imgData;
     }
+
     public static String generateTel(String tel) {
         //随机密钥
         int encryption = 44311688;
@@ -66,6 +69,7 @@ public class CheckCodeUtils {
         String code = result < 0 ? (-result % 1000000) + "" : result % 1000000 + "";
         return code + patch[code.length() - 1];
     }
+
     /**
      * 输出随机验证码图片流,并返回验证码值（一般传入输出流，响应response页面端，Web项目用的较多）
      *

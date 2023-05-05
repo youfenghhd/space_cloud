@@ -19,7 +19,6 @@ import com.hhd.utils.InitOssClient;
 import com.hhd.utils.JwtUtils;
 import com.hhd.utils.Results;
 import com.hhd.utils.ShaThree;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import wiremock.org.apache.commons.lang3.time.DateUtils;
@@ -53,7 +52,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
 
     private static final String VIDEO = "video";
     private static final String AUDIO = "audio";
-    @Autowired
+    @Resource
     private RedisTemplate<String, String> template;
     private static final ThreadLocal<DateFormat> THREAD_LOCAL = ThreadLocal.withInitial(() ->
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
